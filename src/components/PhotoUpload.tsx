@@ -1,5 +1,5 @@
 import React from 'react';
-import { Camera, X } from 'lucide-react';
+import { Camera, X, Car } from 'lucide-react';
 
 interface PhotoUploadProps {
   label: string;
@@ -12,30 +12,70 @@ interface PhotoUploadProps {
 
 const VehicleAngleGuide = () => {
   return (
-    <div className="grid grid-cols-2 gap-3 p-4 bg-card rounded-lg border border-border">
-      <div className="text-center">
-        <div className="w-16 h-12 bg-primary/10 mx-auto mb-2 rounded flex items-center justify-center">
-          <span className="text-xs font-bold text-primary">AVANT</span>
-        </div>
-        <p className="text-xs text-muted-foreground">Vue de face</p>
+    <div className="space-y-4">
+      <div className="text-center mb-3">
+        <h4 className="text-sm font-semibold text-foreground mb-1">Exemples de photos à transmettre</h4>
+        <p className="text-xs text-muted-foreground">Positionnez-vous à 2-3 mètres du véhicule</p>
       </div>
-      <div className="text-center">
-        <div className="w-16 h-12 bg-primary/10 mx-auto mb-2 rounded flex items-center justify-center">
-          <span className="text-xs font-bold text-primary">ARRIÈRE</span>
+      
+      <div className="grid grid-cols-2 gap-3 p-4 bg-card rounded-lg border border-border">
+        <div className="text-center">
+          <div className="w-16 h-12 bg-primary/10 mx-auto mb-2 rounded flex items-center justify-center relative">
+            <Car className="w-6 h-6 text-primary rotate-0" />
+            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-success rounded-full flex items-center justify-center">
+              <Camera className="w-2 h-2 text-white" />
+            </div>
+          </div>
+          <p className="text-xs font-medium text-foreground">AVANT</p>
+          <p className="text-xs text-muted-foreground">Vue de face complète</p>
         </div>
-        <p className="text-xs text-muted-foreground">Vue de dos</p>
+        
+        <div className="text-center">
+          <div className="w-16 h-12 bg-primary/10 mx-auto mb-2 rounded flex items-center justify-center relative">
+            <Car className="w-6 h-6 text-primary rotate-180" />
+            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-success rounded-full flex items-center justify-center">
+              <Camera className="w-2 h-2 text-white" />
+            </div>
+          </div>
+          <p className="text-xs font-medium text-foreground">ARRIÈRE</p>
+          <p className="text-xs text-muted-foreground">Vue de dos complète</p>
+        </div>
+        
+        <div className="text-center">
+          <div className="w-16 h-12 bg-primary/10 mx-auto mb-2 rounded flex items-center justify-center relative">
+            <Car className="w-6 h-6 text-primary -rotate-90" />
+            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-success rounded-full flex items-center justify-center">
+              <Camera className="w-2 h-2 text-white" />
+            </div>
+          </div>
+          <p className="text-xs font-medium text-foreground">GAUCHE</p>
+          <p className="text-xs text-muted-foreground">Côté conducteur</p>
+        </div>
+        
+        <div className="text-center">
+          <div className="w-16 h-12 bg-primary/10 mx-auto mb-2 rounded flex items-center justify-center relative">
+            <Car className="w-6 h-6 text-primary rotate-90" />
+            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-success rounded-full flex items-center justify-center">
+              <Camera className="w-2 h-2 text-white" />
+            </div>
+          </div>
+          <p className="text-xs font-medium text-foreground">DROITE</p>
+          <p className="text-xs text-muted-foreground">Côté passager</p>
+        </div>
       </div>
-      <div className="text-center">
-        <div className="w-16 h-12 bg-primary/10 mx-auto mb-2 rounded flex items-center justify-center">
-          <span className="text-xs font-bold text-primary">GAUCHE</span>
+      
+      <div className="bg-info/10 border border-info/20 rounded-lg p-3">
+        <div className="flex items-start space-x-2">
+          <Camera className="w-4 h-4 text-info flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-xs font-medium text-info">Conseils pour de bonnes photos :</p>
+            <ul className="text-xs text-info/80 mt-1 space-y-1">
+              <li>• Éclairage naturel de préférence</li>
+              <li>• Véhicule visible en entier sur chaque photo</li>
+              <li>• Éviter les reflets et ombres importantes</li>
+            </ul>
+          </div>
         </div>
-        <p className="text-xs text-muted-foreground">Côté conducteur</p>
-      </div>
-      <div className="text-center">
-        <div className="w-16 h-12 bg-primary/10 mx-auto mb-2 rounded flex items-center justify-center">
-          <span className="text-xs font-bold text-primary">DROITE</span>
-        </div>
-        <p className="text-xs text-muted-foreground">Côté passager</p>
       </div>
     </div>
   );
