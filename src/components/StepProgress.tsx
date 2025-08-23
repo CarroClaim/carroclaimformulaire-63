@@ -18,7 +18,7 @@ export const StepProgress: React.FC<StepProgressProps> = ({
   return <div className="w-full py-2 sm:py-4">
       <div className="flex justify-between items-center relative px-2 sm:px-4">
         {/* Progress Line */}
-        <div className="absolute top-3 sm:top-4 left-4 right-4 h-0.5 bg-muted">
+        <div className="absolute top-1/2 transform -translate-y-1/2 left-8 right-8 h-0.5 bg-muted">
           <div className="h-full bg-gradient-primary transition-all duration-500 ease-out" style={{
           width: `${currentStep / (steps.length - 1) * 100}%`
         }} />
