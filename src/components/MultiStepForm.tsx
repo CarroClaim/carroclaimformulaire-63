@@ -249,7 +249,7 @@ export const MultiStepForm: React.FC = () => {
         // Sélection des dommages
         return <div className="space-y-8">
             <div className="text-center mx-0 px-0 py-0 my-0">
-              <div className="relative inline-block">
+              <div className="relative inline-block my-0 py-[7px] px-0">
                 <Car className="w-20 h-20 text-primary mb-6 mx-0 px-[14px]" />
               </div>
               <h2 className="font-bold text-foreground mb-4 text-xl">Dommages du véhicule</h2>
@@ -448,7 +448,7 @@ export const MultiStepForm: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-card/80 backdrop-blur-sm rounded-3xl shadow-elegant border border-border/50 overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-hero p-8 text-center mx-0 py-0 px-[24px]">
+          <div className="bg-gradient-hero p-8 text-center mx-0 px-[24px] py-[9px]">
             <h1 className="font-bold text-white mb-2 py-0 text-lg">Demande d'expertise automobile</h1>
             <p className="text-white/90 text-xs">Transmettez vos photos pour obtenir un devis ou prendre rendez-vous</p>
           </div>
@@ -459,13 +459,13 @@ export const MultiStepForm: React.FC = () => {
           </div>
 
           {/* Content */}
-          <div className="p-8">
+          <div className="p-8 px-[8px] py-0">
             {renderStepContent()}
           </div>
 
           {/* Navigation */}
           <div className="flex justify-between items-center p-8 bg-muted/30 border-t border-border/50">
-            <Button onClick={prevStep} variant="outline" disabled={currentStep === 0} className="min-w-32">
+            <Button onClick={prevStep} variant="outline" disabled={currentStep === 0} className="min-w-32 py-0 mx-[5px] px-[3px]">
               <ChevronLeft className="w-4 h-4 mr-2" />
               Précédent
             </Button>
@@ -474,7 +474,7 @@ export const MultiStepForm: React.FC = () => {
               {currentStep + 1} / {steps.length}
             </div>
 
-            {currentStep < steps.length - 1 ? <Button onClick={nextStep} disabled={!canProceed()} className="min-w-32">
+            {currentStep < steps.length - 1 ? <Button onClick={nextStep} disabled={!canProceed()} className="min-w-32 mx-[30px]">
                 Suivant
                 <ChevronRight className="w-4 h-4 ml-2" />
               </Button> : <div className="min-w-32" />}

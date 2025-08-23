@@ -15,7 +15,7 @@ export const StepProgress: React.FC<StepProgressProps> = ({
   steps,
   currentStep
 }) => {
-  return <div className="w-full py-6">
+  return <div className="w-full py-[15px]">
       <div className="flex justify-between items-center relative mx-0 px-0 py-0 my-0">
         {/* Progress Line */}
         <div className="absolute top-4 left-0 w-full h-0.5 bg-muted">
