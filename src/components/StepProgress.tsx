@@ -37,7 +37,7 @@ export const StepProgress: React.FC<StepProgressProps> = ({
               </div>
               <div className="mt-1 text-center px-0.5 max-w-[60px] sm:max-w-none">
                 <p className={`
-                    text-[8px] sm:text-[10px] font-medium transition-colors duration-300 leading-tight break-words
+                    text-[6px] sm:text-[8px] font-medium transition-colors duration-300 leading-tight break-words
                     ${isCurrent ? 'text-primary' : isCompleted ? 'text-foreground' : 'text-muted-foreground'}
                   `}>
                   {step.title}
