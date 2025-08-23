@@ -147,7 +147,7 @@ export const MultiStepForm: React.FC = () => {
     switch (currentStep) {
       case 0:
         // Préparation
-        return <div className="space-y-8">
+        return <div className="space-y-4 sm:space-y-8">
             <div className="text-center space-y-4 sm:space-y-6">
               <div className="relative inline-block">
                 <FileText className="w-12 h-12 sm:w-20 sm:h-20 text-primary mx-auto mb-4 sm:mb-6" />
@@ -156,46 +156,46 @@ export const MultiStepForm: React.FC = () => {
               <p className="text-sm sm:text-lg text-muted-foreground mb-4 sm:mb-8">Assurez-vous d'avoir ces éléments :</p>
             </div>
 
-            <div className="bg-card p-6 rounded-2xl shadow-card border border-border">
-              <div className="flex items-center mb-4">
-                <FileText className="w-6 h-6 text-primary mr-3" />
-                <h3 className="text-lg font-semibold text-foreground">Documents requis</h3>
+            <div className="bg-card p-4 sm:p-6 rounded-2xl shadow-card border border-border">
+              <div className="flex items-center mb-3 sm:mb-4">
+                <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-primary mr-3" />
+                <h3 className="text-base sm:text-lg font-semibold text-foreground">Documents requis</h3>
               </div>
-              <ul className="space-y-3">
+              <ul className="space-y-2 sm:space-y-3">
                 {["Photo de la carte grise", "Photo du compteur kilométrique", "4 photos des angles du véhicule", "Photos des dommages"].map((item, index) => <li key={index} className="flex items-start">
-                    <CheckCircle className="w-5 h-5 mr-3 mt-0.5 text-success flex-shrink-0" />
-                    <span className="text-foreground">{item}</span>
+                    <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 mt-0.5 text-success flex-shrink-0" />
+                    <span className="text-sm sm:text-base text-foreground">{item}</span>
                   </li>)}
               </ul>
             </div>
 
             <div className="text-center">
-              <p className="text-muted-foreground">
-                <Clock className="w-4 h-4 inline mr-2" />
+              <p className="text-xs sm:text-base text-muted-foreground">
+                <Clock className="w-3 h-3 sm:w-4 sm:h-4 inline mr-2" />
                 Temps estimé : 5-10 minutes
               </p>
             </div>
           </div>;
       case 1:
         // Type de demande
-        return <div className="space-y-8">
+        return <div className="space-y-4 sm:space-y-8">
             <div className="text-center">
               <div className="relative inline-block">
-                <Settings className="w-20 h-20 text-primary mx-auto mb-6" />
+                <Settings className="w-12 h-12 sm:w-20 sm:h-20 text-primary mx-auto mb-4 sm:mb-6" />
               </div>
-              <h2 className="text-3xl font-bold text-foreground mb-4">Type de demande</h2>
-              <p className="text-lg text-muted-foreground mb-8">Choisissez le service souhaité :</p>
+              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Type de demande</h2>
+              <p className="text-sm sm:text-lg text-muted-foreground mb-4 sm:mb-8">Choisissez le service souhaité :</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-8">
               <div onClick={() => updateFormData('requestType', 'quote')} className={`
-                  p-4 sm:p-8 border-2 rounded-2xl cursor-pointer transition-all duration-300
+                  p-3 sm:p-8 border-2 rounded-2xl cursor-pointer transition-all duration-300
                   ${formData.requestType === 'quote' ? 'border-primary bg-primary/5 shadow-lg' : 'border-border hover:border-primary hover:shadow-md'}
                 `}>
                 <div className="text-center">
-                  <FileText className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 text-primary" />
-                  <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-foreground">Recevoir un devis</h3>
-                  <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4">
+                  <FileText className="w-10 h-10 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-4 text-primary" />
+                  <h3 className="text-base sm:text-xl font-bold mb-1 sm:mb-3 text-foreground">Recevoir un devis</h3>
+                  <p className="text-xs sm:text-base text-muted-foreground mb-2 sm:mb-4">
                     Obtenez une estimation basée sur vos photos
                   </p>
                   <ul className="text-xs sm:text-sm text-muted-foreground space-y-1 sm:space-y-2 text-left">
@@ -208,13 +208,13 @@ export const MultiStepForm: React.FC = () => {
               </div>
 
               <div onClick={() => updateFormData('requestType', 'appointment')} className={`
-                  p-4 sm:p-8 border-2 rounded-2xl cursor-pointer transition-all duration-300
+                  p-3 sm:p-8 border-2 rounded-2xl cursor-pointer transition-all duration-300
                   ${formData.requestType === 'appointment' ? 'border-primary bg-primary/5 shadow-lg' : 'border-border hover:border-primary hover:shadow-md'}
                 `}>
                 <div className="text-center">
-                  <Camera className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 text-primary" />
-                  <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-foreground">Transmettre photos pour réparation</h3>
-                  <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4">
+                  <Camera className="w-10 h-10 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-4 text-primary" />
+                  <h3 className="text-base sm:text-xl font-bold mb-1 sm:mb-3 text-foreground">Transmettre photos pour réparation</h3>
+                  <p className="text-xs sm:text-base text-muted-foreground mb-2 sm:mb-4">
                     Planifiez une intervention directe
                   </p>
                   <ul className="text-xs sm:text-sm text-muted-foreground space-y-1 sm:space-y-2 text-left">
@@ -227,7 +227,7 @@ export const MultiStepForm: React.FC = () => {
               </div>
             </div>
 
-            {formData.requestType === 'appointment' && <div className="grid md:grid-cols-2 gap-6 bg-card p-6 rounded-xl border border-border">
+            {formData.requestType === 'appointment' && <div className="grid md:grid-cols-2 gap-4 sm:gap-6 bg-card p-4 sm:p-6 rounded-xl border border-border">
                 <div>
                   <label className="block text-sm font-semibold text-foreground mb-2">
                     Date préférée
@@ -247,13 +247,13 @@ export const MultiStepForm: React.FC = () => {
           </div>;
       case 2:
         // Sélection des dommages
-        return <div className="space-y-8">
-            <div className="text-center mx-0 px-0 py-0 my-0">
-              <div className="relative inline-block my-0 py-[7px] px-0">
-                <Car className="w-20 h-20 text-primary mb-6 mx-0 px-[14px]" />
+        return <div className="space-y-4 sm:space-y-8">
+            <div className="text-center">
+              <div className="relative inline-block">
+                <Car className="w-12 h-12 sm:w-20 sm:h-20 text-primary mb-4 sm:mb-6" />
               </div>
-              <h2 className="font-bold text-foreground mb-4 text-xl">Dommages du véhicule</h2>
-              <p className="text-muted-foreground text-sm">Cliquez sur les zones endommagées :</p>
+              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Dommages du véhicule</h2>
+              <p className="text-sm sm:text-lg text-muted-foreground">Cliquez sur les zones endommagées :</p>
             </div>
 
             <CarDamageSelector selectedAreas={formData.selectedDamages} onAreaSelect={handleDamageSelect} />
@@ -267,19 +267,19 @@ export const MultiStepForm: React.FC = () => {
           </div>;
       case 3:
         // Photos documents
-        return <div className="space-y-8">
+        return <div className="space-y-4 sm:space-y-8">
             <div className="text-center">
               <div className="relative inline-block">
-                <Image className="w-20 h-20 text-primary mx-auto mb-6" />
-                <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-accent rounded-full flex items-center justify-center">
+                <Image className="w-12 h-12 sm:w-20 sm:h-20 text-primary mx-auto mb-4 sm:mb-6" />
+                <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-5 h-5 sm:w-6 sm:h-6 bg-gradient-accent rounded-full flex items-center justify-center">
                   <span className="text-xs font-bold text-accent-foreground">4</span>
                 </div>
               </div>
-              <h2 className="text-3xl font-bold text-foreground mb-4">Documents officiels</h2>
-              <p className="text-lg text-muted-foreground">Ajoutez les photos de vos documents :</p>
+              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Documents officiels</h2>
+              <p className="text-sm sm:text-lg text-muted-foreground">Ajoutez les photos de vos documents :</p>
             </div>
 
-            <div className="space-y-8">
+            <div className="space-y-4 sm:space-y-8">
               <PhotoUpload label="Carte grise" description="1 photo claire de votre carte grise (recto)" photos={formData.photos.registration} onPhotosChange={photos => updatePhotos('registration', photos)} maxFiles={1} />
 
               <PhotoUpload label="Compteur kilométrique" description="1 photo du tableau de bord montrant le kilométrage actuel" photos={formData.photos.mileage} onPhotosChange={photos => updatePhotos('mileage', photos)} maxFiles={1} />
@@ -288,19 +288,19 @@ export const MultiStepForm: React.FC = () => {
           </div>;
       case 4:
         // Photos véhicule
-        return <div className="space-y-8">
+        return <div className="space-y-4 sm:space-y-8">
             <div className="text-center">
               <div className="relative inline-block">
-                <Camera className="w-20 h-20 text-primary mx-auto mb-6" />
-                <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-accent rounded-full flex items-center justify-center">
+                <Camera className="w-12 h-12 sm:w-20 sm:h-20 text-primary mx-auto mb-4 sm:mb-6" />
+                <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-5 h-5 sm:w-6 sm:h-6 bg-gradient-accent rounded-full flex items-center justify-center">
                   <span className="text-xs font-bold text-accent-foreground">5</span>
                 </div>
               </div>
-              <h2 className="text-3xl font-bold text-foreground mb-4">Photos du véhicule</h2>
-              <p className="text-lg text-muted-foreground">Prenez les photos de votre véhicule :</p>
+              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Photos du véhicule</h2>
+              <p className="text-sm sm:text-lg text-muted-foreground">Prenez les photos de votre véhicule :</p>
             </div>
 
-            <div className="space-y-8">
+            <div className="space-y-4 sm:space-y-8">
               <PhotoUpload label="4 angles du véhicule" description="1 photo de chaque angle : avant, arrière, gauche, droite" photos={formData.photos.vehicleAngles} onPhotosChange={photos => updatePhotos('vehicleAngles', photos)} maxFiles={4} showGuide={true} />
 
               <PhotoUpload label="Photos des dommages" description="Photos détaillées de chaque zone endommagée (rapprochées et éloignées)" photos={formData.photos.damagePhotos} onPhotosChange={photos => updatePhotos('damagePhotos', photos)} maxFiles={10} />
@@ -309,19 +309,19 @@ export const MultiStepForm: React.FC = () => {
           </div>;
       case 5:
         // Contact
-        return <div className="space-y-8">
+        return <div className="space-y-4 sm:space-y-8">
             <div className="text-center">
               <div className="relative inline-block">
-                <User className="w-20 h-20 text-primary mx-auto mb-6" />
-                <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-accent rounded-full flex items-center justify-center">
+                <User className="w-12 h-12 sm:w-20 sm:h-20 text-primary mx-auto mb-4 sm:mb-6" />
+                <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-5 h-5 sm:w-6 sm:h-6 bg-gradient-accent rounded-full flex items-center justify-center">
                   <span className="text-xs font-bold text-accent-foreground">6</span>
                 </div>
               </div>
-              <h2 className="text-3xl font-bold text-foreground mb-4">Informations de contact</h2>
-              <p className="text-lg text-muted-foreground">Renseignez vos coordonnées :</p>
+              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Informations de contact</h2>
+              <p className="text-sm sm:text-lg text-muted-foreground">Renseignez vos coordonnées :</p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label className="block text-sm font-semibold text-foreground mb-2">
                   Prénom *
@@ -353,7 +353,7 @@ export const MultiStepForm: React.FC = () => {
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-semibold text-foreground mb-2 flex items-center mx-[5px] my-px">
+                <label className="block text-sm font-semibold text-foreground mb-2 flex items-center">
                   <MapPin className="w-4 h-4 mr-2" />
                   Adresse
                 </label>
@@ -377,48 +377,48 @@ export const MultiStepForm: React.FC = () => {
           </div>;
       case 6:
         // Récapitulatif
-        return <div className="space-y-8">
+        return <div className="space-y-4 sm:space-y-8">
             <div className="text-center">
               <div className="relative inline-block">
-                <CheckCircle className="w-20 h-20 text-primary mx-auto mb-6" />
-                <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-accent rounded-full flex items-center justify-center">
+                <CheckCircle className="w-12 h-12 sm:w-20 sm:h-20 text-primary mx-auto mb-4 sm:mb-6" />
+                <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-5 h-5 sm:w-6 sm:h-6 bg-gradient-accent rounded-full flex items-center justify-center">
                   <span className="text-xs font-bold text-accent-foreground">7</span>
                 </div>
               </div>
-              <h2 className="text-3xl font-bold text-foreground mb-4">Récapitulatif de votre demande</h2>
-              <p className="text-lg text-muted-foreground">Vérifiez vos informations avant envoi :</p>
+              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Récapitulatif de votre demande</h2>
+              <p className="text-sm sm:text-lg text-muted-foreground">Vérifiez vos informations avant envoi :</p>
             </div>
 
-            <div className="space-y-6">
-              <div className="bg-gradient-card p-6 rounded-2xl shadow-card border border-border/50">
-                <h3 className="text-lg font-semibold text-foreground mb-3">Type de demande</h3>
-                <p className="text-muted-foreground">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="bg-gradient-card p-4 sm:p-6 rounded-2xl shadow-card border border-border/50">
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">Type de demande</h3>
+                <p className="text-sm sm:text-base text-muted-foreground">
                   {formData.requestType === 'quote' ? 'Demande de devis' : 'Prise de rendez-vous'}
                 </p>
-                {formData.requestType === 'appointment' && formData.preferredDate && <p className="text-sm text-muted-foreground mt-2">
+                {formData.requestType === 'appointment' && formData.preferredDate && <p className="text-xs sm:text-sm text-muted-foreground mt-2">
                     Date souhaitée : {formData.preferredDate} {formData.preferredTime && `à ${formData.preferredTime}`}
                   </p>}
               </div>
 
-              <div className="bg-gradient-card p-6 rounded-2xl shadow-card border border-border/50">
-                <h3 className="text-lg font-semibold text-foreground mb-3">Contact</h3>
-                <p className="text-muted-foreground">
+              <div className="bg-gradient-card p-4 sm:p-6 rounded-2xl shadow-card border border-border/50">
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">Contact</h3>
+                <p className="text-sm sm:text-base text-muted-foreground">
                   {formData.contact.firstName} {formData.contact.lastName}
                 </p>
-                <p className="text-sm text-muted-foreground">{formData.contact.email}</p>
-                <p className="text-sm text-muted-foreground">{formData.contact.phone}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">{formData.contact.email}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">{formData.contact.phone}</p>
               </div>
 
-              <div className="bg-gradient-card p-6 rounded-2xl shadow-card border border-border/50">
-                <h3 className="text-lg font-semibold text-foreground mb-3">Dommages sélectionnés</h3>
-                <p className="text-muted-foreground">
+              <div className="bg-gradient-card p-4 sm:p-6 rounded-2xl shadow-card border border-border/50">
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">Dommages sélectionnés</h3>
+                <p className="text-sm sm:text-base text-muted-foreground">
                   {formData.selectedDamages.length > 0 ? `${formData.selectedDamages.length} zone(s) sélectionnée(s)` : 'Aucune zone spécifique sélectionnée'}
                 </p>
               </div>
 
-              <div className="bg-gradient-card p-6 rounded-2xl shadow-card border border-border/50">
-                <h3 className="text-lg font-semibold text-foreground mb-3">Photos ajoutées</h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="bg-gradient-card p-4 sm:p-6 rounded-2xl shadow-card border border-border/50">
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">Photos ajoutées</h3>
+                <div className="grid grid-cols-2 gap-4 text-xs sm:text-sm">
                   <div>
                     <p className="text-muted-foreground">
                       Documents : {formData.photos.registration.length + formData.photos.mileage.length} photo(s)
@@ -434,8 +434,8 @@ export const MultiStepForm: React.FC = () => {
             </div>
 
             <div className="text-center">
-              <Button onClick={submitForm} variant="accent" size="lg" className="px-12">
-                <Send className="w-5 h-5 mr-2" />
+              <Button onClick={submitForm} variant="accent" size="lg" className="px-8 sm:px-12">
+                <Send className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 Envoyer ma demande
               </Button>
             </div>
