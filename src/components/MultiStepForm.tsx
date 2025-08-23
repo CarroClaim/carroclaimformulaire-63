@@ -464,20 +464,20 @@ export const MultiStepForm: React.FC = () => {
           </div>
 
           {/* Navigation */}
-          <div className="flex justify-between items-center p-4 sm:p-6 bg-muted/30 border-t border-border/50">
-            <Button onClick={prevStep} variant="outline" disabled={currentStep === 0} className="min-w-32 py-0 mx-[5px] px-[3px]">
-              <ChevronLeft className="w-4 h-4 mr-2" />
+          <div className="flex justify-between items-center p-3 sm:p-4 bg-muted/30 border-t border-border/50">
+            <Button onClick={prevStep} variant="outline" disabled={currentStep === 0} className="text-xs sm:text-sm px-3 py-2 min-w-0">
+              <ChevronLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
               Précédent
             </Button>
             
-            <div className="text-sm text-muted-foreground">
+            <div className="text-xs sm:text-sm text-muted-foreground">
               {currentStep + 1} / {steps.length}
             </div>
 
-            {currentStep < steps.length - 1 ? <Button onClick={nextStep} disabled={!canProceed()} className="min-w-32 mx-[30px]">
+            {currentStep < steps.length - 1 ? <Button onClick={nextStep} disabled={!canProceed()} className="text-xs sm:text-sm px-3 py-2 min-w-0">
                 Suivant
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </Button> : <div className="min-w-32" />}
+                <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
+              </Button> : <div className="min-w-0" />}
           </div>
         </div>
       </div>
