@@ -148,12 +148,12 @@ export const MultiStepForm: React.FC = () => {
       case 0:
         // Préparation
         return <div className="space-y-8">
-            <div className="text-center">
+            <div className="text-center space-y-4 sm:space-y-6">
               <div className="relative inline-block">
-                <FileText className="w-20 h-20 text-primary mx-auto mb-6" />
+                <FileText className="w-12 h-12 sm:w-20 sm:h-20 text-primary mx-auto mb-4 sm:mb-6" />
               </div>
-              <h2 className="text-3xl font-bold text-foreground mb-4">Préparation de votre demande</h2>
-              <p className="text-lg text-muted-foreground mb-8">Assurez-vous d'avoir ces éléments :</p>
+              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Préparation de votre demande</h2>
+              <p className="text-sm sm:text-lg text-muted-foreground mb-4 sm:mb-8">Assurez-vous d'avoir ces éléments :</p>
             </div>
 
             <div className="bg-card p-6 rounded-2xl shadow-card border border-border">
