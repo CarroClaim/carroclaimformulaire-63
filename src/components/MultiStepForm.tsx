@@ -204,11 +204,11 @@ export const MultiStepForm: React.FC = () => {
               <p className="text-lg text-muted-foreground mb-8">Choisissez le service souhaité :</p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
               <div
                 onClick={() => updateFormData('requestType', 'quote')}
                 className={`
-                  p-8 border-2 rounded-2xl cursor-pointer transition-all duration-300
+                  p-4 sm:p-8 border-2 rounded-2xl cursor-pointer transition-all duration-300
                   ${formData.requestType === 'quote'
                     ? 'border-primary bg-primary/5 shadow-lg'
                     : 'border-border hover:border-primary hover:shadow-md'
@@ -216,20 +216,20 @@ export const MultiStepForm: React.FC = () => {
                 `}
               >
                 <div className="text-center">
-                  <FileText className="w-16 h-16 mx-auto mb-4 text-primary" />
-                  <h3 className="text-xl font-bold mb-3 text-foreground">Recevoir un devis</h3>
-                  <p className="text-muted-foreground mb-4">
+                  <FileText className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 text-primary" />
+                  <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-foreground">Recevoir un devis</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4">
                     Obtenez une estimation basée sur vos photos
                   </p>
-                  <ul className="text-sm text-muted-foreground space-y-2 text-left">
+                  <ul className="text-xs sm:text-sm text-muted-foreground space-y-1 sm:space-y-2 text-left">
                     {[
                       "Évaluation précise par nos experts",
                       "Devis détaillé sous 48h", 
                       "Service gratuit et sans engagement"
                     ].map((item, index) => (
                       <li key={index} className="flex items-start">
-                        <CheckCircle className="w-4 h-4 mr-2 mt-0.5 text-success flex-shrink-0" />
-                        {item}
+                        <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-2 mt-0.5 text-success flex-shrink-0" />
+                        <span className="text-xs sm:text-sm">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -239,7 +239,7 @@ export const MultiStepForm: React.FC = () => {
               <div
                 onClick={() => updateFormData('requestType', 'appointment')}
                 className={`
-                  p-8 border-2 rounded-2xl cursor-pointer transition-all duration-300
+                  p-4 sm:p-8 border-2 rounded-2xl cursor-pointer transition-all duration-300
                   ${formData.requestType === 'appointment'
                     ? 'border-primary bg-primary/5 shadow-lg'
                     : 'border-border hover:border-primary hover:shadow-md'
@@ -247,20 +247,20 @@ export const MultiStepForm: React.FC = () => {
                 `}
               >
                 <div className="text-center">
-                  <Calendar className="w-16 h-16 mx-auto mb-4 text-primary" />
-                  <h3 className="text-xl font-bold mb-3 text-foreground">Fixer un rendez-vous</h3>
-                  <p className="text-muted-foreground mb-4">
+                  <Camera className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 text-primary" />
+                  <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-foreground">Transmettre photos pour réparation</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4">
                     Planifiez une intervention directe
                   </p>
-                  <ul className="text-sm text-muted-foreground space-y-2 text-left">
+                  <ul className="text-xs sm:text-sm text-muted-foreground space-y-1 sm:space-y-2 text-left">
                     {[
                       "Préparation via vos photos",
                       "Rendez-vous selon vos disponibilités",
                       "Expertise complète sur place"
                     ].map((item, index) => (
                       <li key={index} className="flex items-start">
-                        <CheckCircle className="w-4 h-4 mr-2 mt-0.5 text-success flex-shrink-0" />
-                        {item}
+                        <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-2 mt-0.5 text-success flex-shrink-0" />
+                        <span className="text-xs sm:text-sm">{item}</span>
                       </li>
                     ))}
                   </ul>
