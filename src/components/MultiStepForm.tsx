@@ -464,7 +464,7 @@ export const MultiStepForm: React.FC = () => {
           </div>
 
           {/* Navigation */}
-          <div className="flex justify-between items-center p-8 bg-muted/30 border-t border-border/50">
+          <div className="flex justify-between items-center p-4 sm:p-6 bg-muted/30 border-t border-border/50">
             <Button onClick={prevStep} variant="outline" disabled={currentStep === 0} className="min-w-32 py-0 mx-[5px] px-[3px]">
               <ChevronLeft className="w-4 h-4 mr-2" />
               Précédent
