@@ -353,7 +353,7 @@ export const MultiStepForm: React.FC = () => {
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-semibold text-foreground mb-2 flex items-center">
+                <label className="block text-sm font-semibold text-foreground mb-2 flex items-center mx-[5px] my-px">
                   <MapPin className="w-4 h-4 mr-2" />
                   Adresse
                 </label>
