@@ -109,77 +109,161 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
         {description && <p className="text-sm text-muted-foreground mb-3">{description}</p>}
       </div>
 
-      {showGuide && <VehicleAngleGuide />}
-
-      <div className="relative">
-        <input
-          type="file"
-          accept="image/*"
-          multiple={maxFiles > 1}
-          onChange={handleFileChange}
-          className="hidden"
-          id={inputId}
-          disabled={photos.length >= maxFiles}
-        />
-        <label
-          htmlFor={inputId}
-          className={`
-            relative block w-full border-2 border-dashed rounded-xl p-8 text-center 
-            transition-all duration-300 cursor-pointer group
-            ${photos.length >= maxFiles 
-              ? 'border-muted bg-muted/20 cursor-not-allowed' 
-              : 'border-muted-foreground/25 hover:border-primary hover:bg-primary/5 hover:shadow-primary'
-            }
-          `}
-        >
-          <div className="flex flex-col items-center space-y-3">
-            <div className={`
-              p-3 rounded-full transition-colors duration-300
-              ${photos.length >= maxFiles 
-                ? 'bg-muted text-muted-foreground' 
-                : 'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground'
-              }
-            `}>
-              <Camera className="w-6 h-6" />
-            </div>
-            <div>
-              <p className={`text-sm font-medium ${photos.length >= maxFiles ? 'text-muted-foreground' : 'text-foreground'}`}>
-                {photos.length >= maxFiles 
-                  ? `Limite atteinte (${photos.length}/${maxFiles})`
-                  : `Cliquez pour ajouter ${maxFiles === 1 ? 'une photo' : 'des photos'}`
-                }
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                {photos.length}/{maxFiles} photo{maxFiles > 1 ? 's' : ''}
-              </p>
-            </div>
+      {showGuide ? (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Colonne gauche - Exemples */}
+          <div>
+            <VehicleAngleGuide />
           </div>
-        </label>
-      </div>
-
-      {photos.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-          {photos.map((photo, index) => (
-            <div key={index} className="relative group">
-              <div className="aspect-square rounded-lg overflow-hidden bg-muted border border-border shadow-sm">
-                <img
-                  src={URL.createObjectURL(photo)}
-                  alt={`Photo ${index + 1}`}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-              <button
-                onClick={() => removePhoto(index)}
-                className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-destructive/80 transition-colors shadow-md"
+          
+          {/* Colonne droite - Upload et photos ajoutées */}
+          <div className="space-y-4">
+            <div className="relative">
+              <input
+                type="file"
+                accept="image/*"
+                multiple={maxFiles > 1}
+                onChange={handleFileChange}
+                className="hidden"
+                id={inputId}
+                disabled={photos.length >= maxFiles}
+              />
+              <label
+                htmlFor={inputId}
+                className={`
+                  relative block w-full border-2 border-dashed rounded-xl p-6 text-center 
+                  transition-all duration-300 cursor-pointer group
+                  ${photos.length >= maxFiles 
+                    ? 'border-muted bg-muted/20 cursor-not-allowed' 
+                    : 'border-muted-foreground/25 hover:border-primary hover:bg-primary/5 hover:shadow-primary'
+                  }
+                `}
               >
-                <X className="w-3 h-3" />
-              </button>
-              <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
-                {index + 1}
-              </div>
+                <div className="flex flex-col items-center space-y-3">
+                  <div className={`
+                    p-3 rounded-full transition-colors duration-300
+                    ${photos.length >= maxFiles 
+                      ? 'bg-muted text-muted-foreground' 
+                      : 'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground'
+                    }
+                  `}>
+                    <Camera className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className={`text-sm font-medium ${photos.length >= maxFiles ? 'text-muted-foreground' : 'text-foreground'}`}>
+                      {photos.length >= maxFiles 
+                        ? `Limite atteinte (${photos.length}/${maxFiles})`
+                        : `Cliquez pour ajouter ${maxFiles === 1 ? 'une photo' : 'des photos'}`
+                      }
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {photos.length}/{maxFiles} photo{maxFiles > 1 ? 's' : ''}
+                    </p>
+                  </div>
+                </div>
+              </label>
             </div>
-          ))}
+
+            {photos.length > 0 && (
+              <div className="grid grid-cols-2 gap-3">
+                {photos.map((photo, index) => (
+                  <div key={index} className="relative group">
+                    <div className="aspect-square rounded-lg overflow-hidden bg-muted border border-border shadow-sm">
+                      <img
+                        src={URL.createObjectURL(photo)}
+                        alt={`Photo ${index + 1}`}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                    <button
+                      onClick={() => removePhoto(index)}
+                      className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-destructive/80 transition-colors shadow-md"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                    <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                      {index + 1}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
+      ) : (
+        // Layout original pour les autres cas
+        <>
+          <div className="relative">
+            <input
+              type="file"
+              accept="image/*"
+              multiple={maxFiles > 1}
+              onChange={handleFileChange}
+              className="hidden"
+              id={inputId}
+              disabled={photos.length >= maxFiles}
+            />
+            <label
+              htmlFor={inputId}
+              className={`
+                relative block w-full border-2 border-dashed rounded-xl p-8 text-center 
+                transition-all duration-300 cursor-pointer group
+                ${photos.length >= maxFiles 
+                  ? 'border-muted bg-muted/20 cursor-not-allowed' 
+                  : 'border-muted-foreground/25 hover:border-primary hover:bg-primary/5 hover:shadow-primary'
+                }
+              `}
+            >
+              <div className="flex flex-col items-center space-y-3">
+                <div className={`
+                  p-3 rounded-full transition-colors duration-300
+                  ${photos.length >= maxFiles 
+                    ? 'bg-muted text-muted-foreground' 
+                    : 'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground'
+                  }
+                `}>
+                  <Camera className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className={`text-sm font-medium ${photos.length >= maxFiles ? 'text-muted-foreground' : 'text-foreground'}`}>
+                    {photos.length >= maxFiles 
+                      ? `Limite atteinte (${photos.length}/${maxFiles})`
+                      : `Cliquez pour ajouter ${maxFiles === 1 ? 'une photo' : 'des photos'}`
+                    }
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {photos.length}/{maxFiles} photo{maxFiles > 1 ? 's' : ''}
+                  </p>
+                </div>
+              </div>
+            </label>
+          </div>
+
+          {photos.length > 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {photos.map((photo, index) => (
+                <div key={index} className="relative group">
+                  <div className="aspect-square rounded-lg overflow-hidden bg-muted border border-border shadow-sm">
+                    <img
+                      src={URL.createObjectURL(photo)}
+                      alt={`Photo ${index + 1}`}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <button
+                    onClick={() => removePhoto(index)}
+                    className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-destructive/80 transition-colors shadow-md"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                  <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                    {index + 1}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
