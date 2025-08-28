@@ -14,7 +14,161 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      damage_parts: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      photos: {
+        Row: {
+          created_at: string
+          file_name: string
+          file_path: string
+          file_size: number | null
+          id: string
+          mime_type: string | null
+          photo_type: Database["public"]["Enums"]["photo_type"]
+          request_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          photo_type: Database["public"]["Enums"]["photo_type"]
+          request_id: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          photo_type?: Database["public"]["Enums"]["photo_type"]
+          request_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "photos_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      request_damages: {
+        Row: {
+          created_at: string
+          damage_part_id: string
+          id: string
+          request_id: string
+        }
+        Insert: {
+          created_at?: string
+          damage_part_id: string
+          id?: string
+          request_id: string
+        }
+        Update: {
+          created_at?: string
+          damage_part_id?: string
+          id?: string
+          request_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_damages_damage_part_id_fkey"
+            columns: ["damage_part_id"]
+            isOneToOne: false
+            referencedRelation: "damage_parts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "request_damages_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      requests: {
+        Row: {
+          address: string
+          city: string
+          created_at: string
+          description: string | null
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          phone: string
+          postal_code: string
+          preferred_date: string | null
+          preferred_time: string | null
+          request_type: Database["public"]["Enums"]["request_type"]
+          status: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          address: string
+          city: string
+          created_at?: string
+          description?: string | null
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          phone: string
+          postal_code: string
+          preferred_date?: string | null
+          preferred_time?: string | null
+          request_type: Database["public"]["Enums"]["request_type"]
+          status?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          address?: string
+          city?: string
+          created_at?: string
+          description?: string | null
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          phone?: string
+          postal_code?: string
+          preferred_date?: string | null
+          preferred_time?: string | null
+          request_type?: Database["public"]["Enums"]["request_type"]
+          status?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +177,12 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      photo_type:
+        | "registration"
+        | "mileage"
+        | "vehicle_angles"
+        | "damage_photos"
+      request_type: "quote" | "appointment"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +309,14 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      photo_type: [
+        "registration",
+        "mileage",
+        "vehicle_angles",
+        "damage_photos",
+      ],
+      request_type: ["quote", "appointment"],
+    },
   },
 } as const
