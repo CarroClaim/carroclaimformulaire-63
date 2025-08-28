@@ -12,7 +12,7 @@ interface SubmissionResult {
 export const useClaimSubmission = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const submitClaim = async (formData: FormData): Promise<SubmissionResult> => {
+  const submitClaim = async (formData: FormData, damageSelectionCapture?: Blob): Promise<SubmissionResult> => {
     setIsSubmitting(true);
     
     try {
@@ -70,7 +70,34 @@ export const useClaimSubmission = () => {
         }
       }
 
-      // 4. Upload photos if any
+      // 4. Upload damage selection capture if provided
+      if (damageSelectionCapture) {
+        const fileName = `${requestId}/damage_selection_${Date.now()}.png`;
+        
+        try {
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('claim-photos')
+            .upload(fileName, damageSelectionCapture);
+
+          if (!uploadError && uploadData) {
+            // Save capture record in database
+            await supabase
+              .from('photos')
+              .insert({
+                request_id: requestId,
+                photo_type: 'damage_selection' as any,
+                file_name: 'damage_selection.png',
+                file_path: uploadData.path,
+                file_size: damageSelectionCapture.size,
+                mime_type: 'image/png',
+              });
+          }
+        } catch (error) {
+          console.error('Error uploading damage selection:', error);
+        }
+      }
+
+      // 5. Upload photos if any
       await uploadPhotosForRequest(requestId, formData.photos);
 
       toast.success(
