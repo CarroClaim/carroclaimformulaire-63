@@ -76,6 +76,33 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          created_at: string | null
+          first_name: string | null
+          id: string
+          last_name: string | null
+          role: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          first_name?: string | null
+          id: string
+          last_name?: string | null
+          role?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          role?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       request_damages: {
         Row: {
           created_at: string
@@ -117,6 +144,7 @@ export type Database = {
           address: string
           city: string
           created_at: string
+          damage_screenshot: string | null
           description: string | null
           email: string
           first_name: string
@@ -135,6 +163,7 @@ export type Database = {
           address: string
           city: string
           created_at?: string
+          damage_screenshot?: string | null
           description?: string | null
           email: string
           first_name: string
@@ -153,6 +182,7 @@ export type Database = {
           address?: string
           city?: string
           created_at?: string
+          damage_screenshot?: string | null
           description?: string | null
           email?: string
           first_name?: string

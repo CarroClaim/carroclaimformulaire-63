@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AlertCircle, Calendar, Camera, Car, CheckCircle, ChevronLeft, ChevronRight, Clock, FileText, Image, Mail, MapPin, Phone, Settings, User, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import CarDamageSelector from '@/components/CarDamageSelector';
+import CarDamageSelectorWithScreenshot from '@/components/CarDamageSelectorWithScreenshot';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import { StepProgress } from '@/components/StepProgress';
 import { FormData, Step } from '@/types/form';
@@ -33,6 +33,8 @@ export const MultiStepForm: React.FC = () => {
     preferredDate: '',
     preferredTime: ''
   });
+
+  const [damageScreenshot, setDamageScreenshot] = useState<string>('');
   const steps: Step[] = [{
     id: 'preparation',
     title: 'Préparation',
@@ -100,36 +102,52 @@ export const MultiStepForm: React.FC = () => {
     const selectedDamages = formData.selectedDamages.includes(areaId) ? formData.selectedDamages.filter(id => id !== areaId) : [...formData.selectedDamages, areaId];
     updateFormData('selectedDamages', selectedDamages);
   };
-  const submitForm = () => {
-    toast({
-      title: "Demande envoyée avec succès !",
-      description: "Nous vous contacterons dans les plus brefs délais."
-    });
+  const submitForm = async () => {
+    try {
+      const submissionData = {
+        ...formData,
+        damageScreenshot
+      };
+      
+      // Here you would normally submit to your backend
+      // For now, we'll just show success
+      toast({
+        title: "Demande envoyée avec succès !",
+        description: "Nous vous contacterons dans les plus brefs délais."
+      });
 
-    // Reset form
-    setCurrentStep(0);
-    setFormData({
-      requestType: '',
-      selectedDamages: [],
-      photos: {
-        registration: [],
-        mileage: [],
-        vehicleAngles: [],
-        damagePhotos: []
-      },
-      contact: {
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        address: '',
-        city: '',
-        postalCode: ''
-      },
-      description: '',
-      preferredDate: '',
-      preferredTime: ''
-    });
+      // Reset form
+      setCurrentStep(0);
+      setFormData({
+        requestType: '',
+        selectedDamages: [],
+        photos: {
+          registration: [],
+          mileage: [],
+          vehicleAngles: [],
+          damagePhotos: []
+        },
+        contact: {
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          address: '',
+          city: '',
+          postalCode: ''
+        },
+        description: '',
+        preferredDate: '',
+        preferredTime: ''
+      });
+      setDamageScreenshot('');
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Une erreur s'est produite lors de l'envoi",
+        variant: "destructive"
+      });
+    }
   };
   const canProceed = () => {
     switch (currentStep) {
@@ -256,7 +274,11 @@ export const MultiStepForm: React.FC = () => {
               <p className="text-sm sm:text-lg text-muted-foreground">Cliquez sur les zones endommagées :</p>
             </div>
 
-            <CarDamageSelector selectedAreas={formData.selectedDamages} onAreaSelect={handleDamageSelect} />
+            <CarDamageSelectorWithScreenshot 
+              selectedAreas={formData.selectedDamages} 
+              onAreaSelect={handleDamageSelect}
+              onScreenshotCapture={setDamageScreenshot}
+            />
 
             <div>
               <label className="block text-sm font-semibold text-foreground mb-3">
