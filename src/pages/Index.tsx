@@ -1,12 +1,7 @@
 import { MultiStepForm } from '@/components/MultiStepForm';
-import { AuthWrapper } from '@/components/AuthWrapper';
 
 const Index = () => {
-  return (
-    <AuthWrapper>
-      <MultiStepForm />
-    </AuthWrapper>
-  );
+  return <MultiStepForm />;
 };
 
 export default Index;

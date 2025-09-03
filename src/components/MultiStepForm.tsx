@@ -6,7 +6,6 @@ import { PhotoUpload } from '@/components/PhotoUpload';
 import { StepProgress } from '@/components/StepProgress';
 import { FormData, Step } from '@/types/form';
 import { useToast } from '@/hooks/use-toast';
-import { useClaimSubmission } from '@/hooks/useClaimSubmission';
 export const MultiStepForm: React.FC = () => {
   const {
     toast
@@ -101,37 +100,36 @@ export const MultiStepForm: React.FC = () => {
     const selectedDamages = formData.selectedDamages.includes(areaId) ? formData.selectedDamages.filter(id => id !== areaId) : [...formData.selectedDamages, areaId];
     updateFormData('selectedDamages', selectedDamages);
   };
-  const { submitClaim, isSubmitting } = useClaimSubmission();
-  
-  const submitForm = async () => {
-    const result = await submitClaim(formData);
-    
-    if (result.success) {
-      // Reset form on success
-      setCurrentStep(0);
-      setFormData({
-        requestType: '',
-        selectedDamages: [],
-        photos: {
-          registration: [],
-          mileage: [],
-          vehicleAngles: [],
-          damagePhotos: []
-        },
-        contact: {
-          firstName: '',
-          lastName: '',
-          email: '',
-          phone: '',
-          address: '',
-          city: '',
-          postalCode: ''
-        },
-        description: '',
-        preferredDate: '',
-        preferredTime: ''
-      });
-    }
+  const submitForm = () => {
+    toast({
+      title: "Demande envoyée avec succès !",
+      description: "Nous vous contacterons dans les plus brefs délais."
+    });
+
+    // Reset form
+    setCurrentStep(0);
+    setFormData({
+      requestType: '',
+      selectedDamages: [],
+      photos: {
+        registration: [],
+        mileage: [],
+        vehicleAngles: [],
+        damagePhotos: []
+      },
+      contact: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        address: '',
+        city: '',
+        postalCode: ''
+      },
+      description: '',
+      preferredDate: '',
+      preferredTime: ''
+    });
   };
   const canProceed = () => {
     switch (currentStep) {
@@ -436,19 +434,9 @@ export const MultiStepForm: React.FC = () => {
             </div>
 
             <div className="text-center">
-              <Button 
-                onClick={submitForm} 
-                variant="accent" 
-                size="lg" 
-                className="px-8 sm:px-12"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                ) : (
-                  <Send className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                )}
-                {isSubmitting ? 'Envoi en cours...' : 'Envoyer ma demande'}
+              <Button onClick={submitForm} variant="accent" size="lg" className="px-8 sm:px-12">
+                <Send className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                Envoyer ma demande
               </Button>
             </div>
           </div>;
