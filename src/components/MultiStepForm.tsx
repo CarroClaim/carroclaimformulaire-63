@@ -147,18 +147,18 @@ export const MultiStepForm: React.FC = () => {
     switch (currentStep) {
       case 0:
         // Préparation
-        return <div className="space-y-4 sm:space-y-8">
+        return <div className="space-y-4 sm:space-y-8 px-[29px] mx-0 bg-blue-900 py-[13px]">
             <div className="text-center space-y-4 sm:space-y-6">
               <div className="relative inline-block">
-                <FileText className="w-12 h-12 sm:w-20 sm:h-20 text-primary mx-auto mb-4 sm:mb-6" />
+                <FileText className="w-12 h-12 sm:w-20 sm:h-20 text-primary mx-auto mb-4 sm:mb-6 bg-transparent" />
               </div>
-              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Préparation de votre demande</h2>
-              <p className="text-sm sm:text-lg text-muted-foreground mb-4 sm:mb-8">Assurez-vous d'avoir ces éléments :</p>
+              <h2 className="text-xl sm:text-3xl font-bold mb-2 sm:mb-4 text-slate-50">Préparation de votre demande</h2>
+              <p className="text-sm sm:text-lg mb-4 sm:mb-8 text-slate-50">Assurez-vous d'avoir ces éléments :</p>
             </div>
 
             <div className="bg-card p-4 sm:p-6 rounded-2xl shadow-card border border-border">
               <div className="flex items-center mb-3 sm:mb-4">
-                <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-primary mr-3" />
+                <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-primary mr-3 rounded-sm bg-transparent" />
                 <h3 className="text-base sm:text-lg font-semibold text-foreground">Documents requis</h3>
               </div>
               <ul className="space-y-2 sm:space-y-3">
@@ -170,7 +170,7 @@ export const MultiStepForm: React.FC = () => {
             </div>
 
             <div className="text-center">
-              <p className="text-xs sm:text-base text-muted-foreground">
+              <p className="text-xs sm:text-base py-[13px] my-[10px] text-slate-50">
                 <Clock className="w-3 h-3 sm:w-4 sm:h-4 inline mr-2" />
                 Temps estimé : 5-10 minutes
               </p>
@@ -448,8 +448,8 @@ export const MultiStepForm: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-card/80 backdrop-blur-sm rounded-3xl shadow-elegant border border-border/50 overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-hero p-8 text-center mx-0 px-[24px] py-[9px]">
-            <h1 className="font-bold text-white mb-2 py-0 text-lg">Demande d'expertise automobile</h1>
+          <div className="bg-gradient-hero p-8 text-center rounded-sm bg-blue-950 mx-px px-[25px] py-[23px]">
+            <h1 className="font-bold text-white mb-2 py-0 text-lg">Déclaration de sinsitre</h1>
             <p className="text-white/90 text-xs">Transmettez vos photos pour obtenir un devis ou prendre rendez-vous</p>
           </div>
 
