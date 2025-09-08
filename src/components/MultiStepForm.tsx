@@ -259,9 +259,7 @@ export const MultiStepForm: React.FC = () => {
             <CarDamageSelector selectedAreas={formData.selectedDamages} onAreaSelect={handleDamageSelect} />
 
             <div>
-              <label className="block text-sm font-semibold text-foreground mb-3">
-                Description des dommages (optionnel)
-              </label>
+              <label className="block text-sm font-semibold text-foreground mb-3 rounded-sm bg-indigo-950">Description des dommages (op)tionnel</label>
               <textarea value={formData.description} onChange={e => updateFormData('description', e.target.value)} rows={4} className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 resize-none" placeholder="Décrivez les circonstances de l'incident et les dommages observés..." />
             </div>
           </div>;
