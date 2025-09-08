@@ -147,18 +147,18 @@ export const MultiStepForm: React.FC = () => {
     switch (currentStep) {
       case 0:
         // Préparation
-        return <div className="space-y-4 sm:space-y-8 px-[29px] mx-0 bg-blue-900 py-[13px]">
+        return <div className="space-y-4 sm:space-y-8">
             <div className="text-center space-y-4 sm:space-y-6">
               <div className="relative inline-block">
-                <FileText className="w-12 h-12 sm:w-20 sm:h-20 text-primary mx-auto mb-4 sm:mb-6 bg-transparent" />
+                <FileText className="w-12 h-12 sm:w-20 sm:h-20 text-primary mx-auto mb-4 sm:mb-6" />
               </div>
-              <h2 className="text-xl sm:text-3xl font-bold mb-2 sm:mb-4 text-slate-50">Préparation de votre demande</h2>
-              <p className="text-sm sm:text-lg mb-4 sm:mb-8 text-slate-50">Assurez-vous d'avoir ces éléments :</p>
+              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Préparation de votre demande</h2>
+              <p className="text-sm sm:text-lg text-muted-foreground mb-4 sm:mb-8">Assurez-vous d'avoir ces éléments :</p>
             </div>
 
             <div className="bg-card p-4 sm:p-6 rounded-2xl shadow-card border border-border">
               <div className="flex items-center mb-3 sm:mb-4">
-                <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-primary mr-3 rounded-sm bg-transparent" />
+                <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-primary mr-3" />
                 <h3 className="text-base sm:text-lg font-semibold text-foreground">Documents requis</h3>
               </div>
               <ul className="space-y-2 sm:space-y-3">
@@ -170,7 +170,7 @@ export const MultiStepForm: React.FC = () => {
             </div>
 
             <div className="text-center">
-              <p className="text-xs sm:text-base py-[13px] my-[10px] text-slate-50">
+              <p className="text-xs sm:text-base text-muted-foreground">
                 <Clock className="w-3 h-3 sm:w-4 sm:h-4 inline mr-2" />
                 Temps estimé : 5-10 minutes
               </p>
@@ -178,7 +178,7 @@ export const MultiStepForm: React.FC = () => {
           </div>;
       case 1:
         // Type de demande
-        return <div className="space-y-4 sm:-space-y-8 ">
+        return <div className="space-y-4 sm:space-y-8">
             <div className="text-center">
               <div className="relative inline-block">
                 <Settings className="w-12 h-12 sm:w-20 sm:h-20 text-primary mx-auto mb-4 sm:mb-6" />
@@ -192,16 +192,16 @@ export const MultiStepForm: React.FC = () => {
                   p-3 sm:p-8 border-2 rounded-2xl cursor-pointer transition-all duration-300
                   ${formData.requestType === 'quote' ? 'border-primary bg-primary/5 shadow-lg' : 'border-border hover:border-primary hover:shadow-md'}
                 `}>
-                <div className="text-center bg-transparent">
+                <div className="text-center">
                   <FileText className="w-10 h-10 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-4 text-primary" />
-                  <h3 className="text-base sm:text-xl font-bold mb-1 sm:mb-3 text-slate-50">Recevoir un devis</h3>
-                  <p className="text-xs sm:text-base mb-2 sm:mb-4 text-slate-50">
+                  <h3 className="text-base sm:text-xl font-bold mb-1 sm:mb-3 text-foreground">Recevoir un devis</h3>
+                  <p className="text-xs sm:text-base text-muted-foreground mb-2 sm:mb-4">
                     Obtenez une estimation basée sur vos photos
                   </p>
                   <ul className="text-xs sm:text-sm text-muted-foreground space-y-1 sm:space-y-2 text-left">
                     {["Évaluation précise par nos experts", "Devis détaillé sous 48h", "Service gratuit et sans engagement"].map((item, index) => <li key={index} className="flex items-start">
                         <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-2 mt-0.5 text-success flex-shrink-0" />
-                        <span className="text-xs sm:text-sm text-slate-50">{item}</span>
+                        <span className="text-xs sm:text-sm">{item}</span>
                       </li>)}
                   </ul>
                 </div>
@@ -213,14 +213,14 @@ export const MultiStepForm: React.FC = () => {
                 `}>
                 <div className="text-center">
                   <Camera className="w-10 h-10 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-4 text-primary" />
-                  <h3 className="text-base sm:text-xl font-bold mb-1 sm:mb-3 text-slate-50">Transmettre photos pour réparation</h3>
-                  <p className="text-xs sm:text-base mb-2 sm:mb-4 text-slate-50">
+                  <h3 className="text-base sm:text-xl font-bold mb-1 sm:mb-3 text-foreground">Transmettre photos pour réparation</h3>
+                  <p className="text-xs sm:text-base text-muted-foreground mb-2 sm:mb-4">
                     Planifiez une intervention directe
                   </p>
                   <ul className="text-xs sm:text-sm text-muted-foreground space-y-1 sm:space-y-2 text-left">
                     {["Préparation via vos photos", "Rendez-vous selon vos disponibilités", "Expertise complète sur place"].map((item, index) => <li key={index} className="flex items-start">
                         <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-2 mt-0.5 text-success flex-shrink-0" />
-                        <span className="text-xs sm:text-sm text-slate-50">{item}</span>
+                        <span className="text-xs sm:text-sm">{item}</span>
                       </li>)}
                   </ul>
                 </div>
@@ -259,7 +259,9 @@ export const MultiStepForm: React.FC = () => {
             <CarDamageSelector selectedAreas={formData.selectedDamages} onAreaSelect={handleDamageSelect} />
 
             <div>
-              <label className="block text-sm font-semibold text-foreground mb-3 rounded-sm bg-indigo-950">Description des dommages (op)tionnel</label>
+              <label className="block text-sm font-semibold text-foreground mb-3">
+                Description des dommages (optionnel)
+              </label>
               <textarea value={formData.description} onChange={e => updateFormData('description', e.target.value)} rows={4} className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 resize-none" placeholder="Décrivez les circonstances de l'incident et les dommages observés..." />
             </div>
           </div>;
@@ -446,9 +448,9 @@ export const MultiStepForm: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-card/80 backdrop-blur-sm rounded-3xl shadow-elegant border border-border/50 overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-hero p-8 text-center rounded-sm mx-px px-[25px] py-[23px] bg-[#011174]/[0.31]">
-            <h1 className="font-bold text-white mb-2 py-0 text-lg">Déclaration de sinsitre</h1>
-            <p className="text-xs text-slate-50">Transmettez vos photos pour obtenir un devis ou prendre rendez-vous</p>
+          <div className="bg-gradient-hero p-8 text-center mx-0 px-[24px] py-[9px]">
+            <h1 className="font-bold text-white mb-2 py-0 text-lg">Demande d'expertise automobile</h1>
+            <p className="text-white/90 text-xs">Transmettez vos photos pour obtenir un devis ou prendre rendez-vous</p>
           </div>
 
           {/* Progress */}
@@ -457,7 +459,7 @@ export const MultiStepForm: React.FC = () => {
           </div>
 
           {/* Content */}
-          <div className="p-8 px-[8px] space-y-0 bg-indigo-950">
+          <div className="p-8 px-[8px] py-0">
             {renderStepContent()}
           </div>
 
@@ -472,7 +474,7 @@ export const MultiStepForm: React.FC = () => {
               {currentStep + 1} / {steps.length}
             </div>
 
-            {currentStep < steps.length - 1 ? <Button onClick={nextStep} disabled={!canProceed()} className="text-xs sm:text-sm px-3 py-2 min-w-0 bg-indigo-950 hover:bg-indigo-800 text-slate-50">
+            {currentStep < steps.length - 1 ? <Button onClick={nextStep} disabled={!canProceed()} className="text-xs sm:text-sm px-3 py-2 min-w-0">
                 Suivant
                 <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
               </Button> : <div className="min-w-0" />}
