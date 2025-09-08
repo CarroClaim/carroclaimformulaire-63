@@ -17,7 +17,7 @@ const CarDamageSelector = ({
   };
   return <div className="space-y-4">
       <div className="rounded-lg p-3 sm:p-6 flex justify-center px-0 py-0 bg-white">
-        <svg width="418" height="558" viewBox="0 0 418 558" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-0 my-0 px-0 py-0 rounded bg-indigo-950">
+        <svg width="418" height="558" viewBox="0 0 418 558" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-0 my-0 px-0 py-0 bg-indigo-950 rounded-sm">
           <g>
             {/* Portières */}
             <path style={getPartStyle("Portière avant gauche")} d="m 37,195 11.5,-0.5 H 60 74 l 14.5,0.5 v 26 4 c 0,0 0.5,1.5 1,2.5 0.5,1 1,2 1.5,2 h 2 c 1,0 2.3284,1.024 3.5,2 l 4.5,4 3,78 L 90.5,311 74.5,310 56,309 H 38 Z" onClick={() => onAreaSelect("Portière avant gauche")} />
