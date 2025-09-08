@@ -178,7 +178,7 @@ export const MultiStepForm: React.FC = () => {
           </div>;
       case 1:
         // Type de demande
-        return <div className="space-y-4 sm:space-y-8">
+        return <div className="space-y-4 sm:-space-y-8 ">
             <div className="text-center">
               <div className="relative inline-block">
                 <Settings className="w-12 h-12 sm:w-20 sm:h-20 text-primary mx-auto mb-4 sm:mb-6" />
@@ -192,16 +192,16 @@ export const MultiStepForm: React.FC = () => {
                   p-3 sm:p-8 border-2 rounded-2xl cursor-pointer transition-all duration-300
                   ${formData.requestType === 'quote' ? 'border-primary bg-primary/5 shadow-lg' : 'border-border hover:border-primary hover:shadow-md'}
                 `}>
-                <div className="text-center">
+                <div className="text-center bg-transparent">
                   <FileText className="w-10 h-10 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-4 text-primary" />
-                  <h3 className="text-base sm:text-xl font-bold mb-1 sm:mb-3 text-foreground">Recevoir un devis</h3>
-                  <p className="text-xs sm:text-base text-muted-foreground mb-2 sm:mb-4">
+                  <h3 className="text-base sm:text-xl font-bold mb-1 sm:mb-3 text-slate-50">Recevoir un devis</h3>
+                  <p className="text-xs sm:text-base mb-2 sm:mb-4 text-slate-50">
                     Obtenez une estimation basée sur vos photos
                   </p>
                   <ul className="text-xs sm:text-sm text-muted-foreground space-y-1 sm:space-y-2 text-left">
                     {["Évaluation précise par nos experts", "Devis détaillé sous 48h", "Service gratuit et sans engagement"].map((item, index) => <li key={index} className="flex items-start">
                         <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-2 mt-0.5 text-success flex-shrink-0" />
-                        <span className="text-xs sm:text-sm">{item}</span>
+                        <span className="text-xs sm:text-sm text-slate-50">{item}</span>
                       </li>)}
                   </ul>
                 </div>
@@ -213,14 +213,14 @@ export const MultiStepForm: React.FC = () => {
                 `}>
                 <div className="text-center">
                   <Camera className="w-10 h-10 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-4 text-primary" />
-                  <h3 className="text-base sm:text-xl font-bold mb-1 sm:mb-3 text-foreground">Transmettre photos pour réparation</h3>
-                  <p className="text-xs sm:text-base text-muted-foreground mb-2 sm:mb-4">
+                  <h3 className="text-base sm:text-xl font-bold mb-1 sm:mb-3 text-slate-50">Transmettre photos pour réparation</h3>
+                  <p className="text-xs sm:text-base mb-2 sm:mb-4 text-slate-50">
                     Planifiez une intervention directe
                   </p>
                   <ul className="text-xs sm:text-sm text-muted-foreground space-y-1 sm:space-y-2 text-left">
                     {["Préparation via vos photos", "Rendez-vous selon vos disponibilités", "Expertise complète sur place"].map((item, index) => <li key={index} className="flex items-start">
                         <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-2 mt-0.5 text-success flex-shrink-0" />
-                        <span className="text-xs sm:text-sm">{item}</span>
+                        <span className="text-xs sm:text-sm text-slate-50">{item}</span>
                       </li>)}
                   </ul>
                 </div>
@@ -448,9 +448,9 @@ export const MultiStepForm: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-card/80 backdrop-blur-sm rounded-3xl shadow-elegant border border-border/50 overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-hero p-8 text-center rounded-sm bg-blue-950 mx-px px-[25px] py-[23px]">
+          <div className="bg-gradient-hero p-8 text-center rounded-sm mx-px px-[25px] py-[23px] bg-[#011174]/[0.31]">
             <h1 className="font-bold text-white mb-2 py-0 text-lg">Déclaration de sinsitre</h1>
-            <p className="text-white/90 text-xs">Transmettez vos photos pour obtenir un devis ou prendre rendez-vous</p>
+            <p className="text-xs text-slate-50">Transmettez vos photos pour obtenir un devis ou prendre rendez-vous</p>
           </div>
 
           {/* Progress */}
@@ -459,7 +459,7 @@ export const MultiStepForm: React.FC = () => {
           </div>
 
           {/* Content */}
-          <div className="p-8 px-[8px] py-0">
+          <div className="p-8 px-[8px] space-y-0 bg-indigo-950">
             {renderStepContent()}
           </div>
 
@@ -474,7 +474,7 @@ export const MultiStepForm: React.FC = () => {
               {currentStep + 1} / {steps.length}
             </div>
 
-            {currentStep < steps.length - 1 ? <Button onClick={nextStep} disabled={!canProceed()} className="text-xs sm:text-sm px-3 py-2 min-w-0">
+            {currentStep < steps.length - 1 ? <Button onClick={nextStep} disabled={!canProceed()} className="text-xs sm:text-sm px-3 py-2 min-w-0 bg-indigo-950 hover:bg-indigo-800 text-slate-50">
                 Suivant
                 <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
               </Button> : <div className="min-w-0" />}

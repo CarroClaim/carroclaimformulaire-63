@@ -28,12 +28,12 @@ export const StepProgress: React.FC<StepProgressProps> = ({
         const isCompleted = index < currentStep;
         const isCurrent = index === currentStep;
         const isUpcoming = index > currentStep;
-        return <div key={step.id} className="flex flex-col items-center justify-center relative z-10 min-w-0">
+        return <div key={step.id} className="flex flex-col items-center justify-center relative z-10 min-w-0 bg-transparent">
               <div className={`
                   w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300
                   ${isCompleted ? 'bg-primary border-primary text-primary-foreground shadow-primary' : isCurrent ? 'bg-primary border-primary text-primary-foreground shadow-primary animate-pulse' : 'bg-background border-muted-foreground/30 text-muted-foreground'}
                 `}>
-                {isCompleted ? <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4" /> : <step.icon className="w-3 h-3 sm:w-4 sm:h-4" />}
+                {isCompleted ? <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 bg-indigo-950" /> : <step.icon className="w-3 h-3 sm:w-4 sm:h-4" />}
               </div>
               <div className="mt-1 text-center px-0.5 max-w-[60px] sm:max-w-none">
                 <p className={`
