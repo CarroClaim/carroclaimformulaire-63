@@ -280,28 +280,15 @@ export const MultiStepForm: React.FC = () => {
             </div>
 
             <div className="space-y-4 sm:space-y-8">
-              <PhotoUpload 
-                label="Carte grise" 
-                description="1 photo claire de votre carte grise (recto)" 
-                photos={formData.photos.registration} 
-                onPhotosChange={photos => updatePhotos('registration', photos)} 
-                maxFiles={1} 
-                showDocumentExamples={true} 
-              />
+              <PhotoUpload label="Carte grise" description="1 photo claire de votre carte grise (recto)" photos={formData.photos.registration} onPhotosChange={photos => updatePhotos('registration', photos)} maxFiles={1} showDocumentExamples={true} />
 
-              <PhotoUpload 
-                label="Compteur kilométrique" 
-                description="1 photo du tableau de bord montrant le kilométrage actuel" 
-                photos={formData.photos.mileage} 
-                onPhotosChange={photos => updatePhotos('mileage', photos)} 
-                maxFiles={1} 
-              />
+              <PhotoUpload label="Compteur kilométrique" description="1 photo du tableau de bord montrant le kilométrage actuel" photos={formData.photos.mileage} onPhotosChange={photos => updatePhotos('mileage', photos)} maxFiles={1} />
             </div>
 
           </div>;
       case 4:
         // Photos véhicule
-        return <div className="space-y-4 sm:space-y-8">
+        return <div className="space-y-4 sm:space-y-8 my-0 py-[2px] mx-[70px] px-[30px]">
             <div className="text-center">
               <div className="relative inline-block">
                 <Camera className="w-12 h-12 sm:w-20 sm:h-20 text-primary mx-auto mb-4 sm:mb-6" />
