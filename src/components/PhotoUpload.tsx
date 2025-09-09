@@ -255,11 +255,29 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
           </div>
         </div>
       ) : showDocumentExamples ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div>
-            <DocumentExampleGuide />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="space-y-4">
+            <div className="text-center mb-4">
+              <h4 className="text-sm font-semibold text-foreground mb-2">Exemple de document</h4>
+              <p className="text-sm text-muted-foreground">Veuillez télécharger une photo du recto de votre carte grise dépliée afin que nous puissions identifier votre véhicule (voir exemple).</p>
+              <p className="text-sm text-muted-foreground mt-2">Veuillez utiliser votre appareil en format paysage.</p>
+            </div>
+            
+            <div className="bg-card rounded-lg border border-border p-6 text-center">
+              <div className="aspect-[4/3] bg-muted rounded border-2 border-dashed border-muted-foreground/25 flex items-center justify-center mb-4">
+                <img 
+                  src={carteGrisseExample} 
+                  alt="Exemple de carte grise suisse" 
+                  className="w-full h-full object-contain rounded"
+                />
+              </div>
+            </div>
           </div>
-          <div>
+          
+          <div className="space-y-4">
+            <div className="text-center">
+              <h4 className="text-sm font-semibold text-foreground mb-2">Télécharger votre document</h4>
+            </div>
             {renderUploadArea()}
           </div>
         </div>
