@@ -80,45 +80,42 @@ const VehicleAngleGuide = () => {
     </div>;
 };
 const DocumentExampleGuide = () => {
-  return <div className="space-y-4 mx-[75px] px-0">
-      <div className="text-center mb-3">
-        <h4 className="text-sm font-semibold text-foreground mb-1">Exemples de documents</h4>
-        <p className="text-xs text-muted-foreground">Assurez-vous que tous les détails sont lisibles</p>
+  return <div className="space-y-3">
+      <div className="text-center mb-2">
+        <h4 className="text-xs font-semibold text-foreground mb-1">Exemples</h4>
+        <p className="text-xs text-muted-foreground">Documents lisibles</p>
       </div>
       
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 gap-2">
         {/* Exemple carte grise */}
         <div className="bg-card rounded-lg border border-border overflow-hidden">
-          <div className="p-3 bg-muted/50">
-            <h5 className="text-xs font-semibold text-foreground mb-1">Certificat d'immatriculation (carte grise)</h5>
-            <p className="text-xs text-muted-foreground">Document complet et lisible</p>
+          <div className="p-2 bg-muted/50">
+            <h5 className="text-xs font-semibold text-foreground mb-1">Carte grise</h5>
           </div>
-          <div className="aspect-[3/2] bg-muted">
+          <div className="aspect-[4/3] bg-muted">
             <img src={carteGrisseExample} alt="Exemple de carte grise suisse" className="w-full h-full object-cover" />
           </div>
         </div>
 
         {/* Exemple compteur */}
         <div className="bg-card rounded-lg border border-border overflow-hidden">
-          <div className="p-3 bg-muted/50">
-            <h5 className="text-xs font-semibold text-foreground mb-1">Compteur kilométrique</h5>
-            <p className="text-xs text-muted-foreground">Kilométrage clairement visible</p>
+          <div className="p-2 bg-muted/50">
+            <h5 className="text-xs font-semibold text-foreground mb-1">Compteur</h5>
           </div>
-          <div className="aspect-[3/2] bg-muted">
+          <div className="aspect-[4/3] bg-muted">
             <img src={compteurExample} alt="Exemple de compteur kilométrique" className="w-full h-full object-cover" />
           </div>
         </div>
       </div>
       
-      <div className="bg-info/10 border border-info/20 rounded-lg p-3">
+      <div className="bg-info/10 border border-info/20 rounded-lg p-2">
         <div className="flex items-start space-x-2">
-          <Camera className="w-4 h-4 text-info flex-shrink-0 mt-0.5" />
+          <Camera className="w-3 h-3 text-info flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-xs font-medium text-info">Points importants :</p>
-            <ul className="text-xs text-info/80 mt-1 space-y-1">
-              <li>• Tous les champs doivent être lisibles</li>
-              <li>• Photo bien cadrée sans coupure</li>
-              <li>• Éviter les reflets sur les documents</li>
+            <p className="text-xs font-medium text-info">Conseils :</p>
+            <ul className="text-xs text-info/80 mt-1 space-y-0.5">
+              <li>• Documents lisibles</li>
+              <li>• Pas de reflets</li>
             </ul>
           </div>
         </div>
@@ -144,24 +141,24 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
     onPhotosChange(photos.filter((_, i) => i !== index));
   };
   const inputId = `upload-${label.replace(/\s+/g, '-').toLowerCase()}`;
-  const renderUploadArea = () => <div className="space-y-4">
+  const renderUploadArea = () => <div className="space-y-3">
       <div className="relative">
         <input type="file" accept="image/*" multiple={maxFiles > 1} onChange={handleFileChange} className="hidden" id={inputId} disabled={photos.length >= maxFiles} />
         <label htmlFor={inputId} className={`
-            relative block w-full border-2 border-dashed rounded-xl p-6 text-center 
+            relative block w-full border-2 border-dashed rounded-xl p-4 text-center 
             transition-all duration-300 cursor-pointer group
             ${photos.length >= maxFiles ? 'border-muted bg-muted/20 cursor-not-allowed' : 'border-muted-foreground/25 hover:border-primary hover:bg-primary/5 hover:shadow-primary'}
           `}>
-          <div className="flex flex-col items-center space-y-3 mx-[58px] px-[8px] my-0">
+          <div className="flex flex-col items-center space-y-2">
             <div className={`
-              p-3 rounded-full transition-colors duration-300
+              p-2 rounded-full transition-colors duration-300
               ${photos.length >= maxFiles ? 'bg-muted text-muted-foreground' : 'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground'}
             `}>
-              <Camera className="w-6 h-6" />
+              <Camera className="w-5 h-5" />
             </div>
             <div>
-              <p className={`text-sm font-medium ${photos.length >= maxFiles ? 'text-muted-foreground' : 'text-foreground'}`}>
-                {photos.length >= maxFiles ? `Limite atteinte (${photos.length}/${maxFiles})` : `Cliquez pour ajouter ${maxFiles === 1 ? 'une photo' : 'des photos'}`}
+              <p className={`text-xs font-medium ${photos.length >= maxFiles ? 'text-muted-foreground' : 'text-foreground'}`}>
+                {photos.length >= maxFiles ? `Limite atteinte` : `Ajouter photo`}
               </p>
               <p className="text-xs text-muted-foreground mt-1">
                 {photos.length}/{maxFiles} photo{maxFiles > 1 ? 's' : ''}
@@ -171,15 +168,15 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
         </label>
       </div>
 
-      {photos.length > 0 && <div className="grid grid-cols-2 gap-3">
+      {photos.length > 0 && <div className="grid grid-cols-1 gap-2">
           {photos.map((photo, index) => <div key={index} className="relative group">
               <div className="aspect-square rounded-lg overflow-hidden bg-muted border border-border shadow-sm">
                 <img src={URL.createObjectURL(photo)} alt={`Photo ${index + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
               </div>
-              <button onClick={() => removePhoto(index)} className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-destructive/80 transition-colors shadow-md">
+              <button onClick={() => removePhoto(index)} className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-destructive/80 transition-colors shadow-md">
                 <X className="w-3 h-3" />
               </button>
-              <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+              <div className="absolute bottom-1 left-1 bg-black/60 text-white text-xs px-1.5 py-0.5 rounded">
                 {index + 1}
               </div>
             </div>)}
@@ -198,11 +195,11 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
           <div>
             {renderUploadArea()}
           </div>
-        </div> : showDocumentExamples ? <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="px-0 py-0 my-0 mx-0">
+        </div> : showDocumentExamples ? <div className="grid grid-cols-2 gap-3">
+          <div className="pr-2">
             <DocumentExampleGuide />
           </div>
-          <div>
+          <div className="pl-2">
             {renderUploadArea()}
           </div>
         </div> : <>
