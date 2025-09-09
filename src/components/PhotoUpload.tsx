@@ -143,8 +143,8 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
   const inputId = `upload-${label.replace(/\s+/g, '-').toLowerCase()}`;
   const renderUploadArea = () => <div className="space-y-3">
       <div className="text-center mb-2">
-        <h4 className="text-xs font-semibold text-foreground mb-1">Upload</h4>
-        <p className="text-xs text-muted-foreground">Télécharger photos</p>
+        
+        <p className="text-muted-foreground text-xs text-center font-bold">Télécharger photos</p>
       </div>
       
       <div className="grid grid-cols-1 gap-2">
@@ -193,8 +193,8 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
     </div>;
   return <div className="space-y-4 mx-0">
       <div>
-        <label className="block text-sm font-semibold text-foreground mb-1">{label}</label>
-        {description && <p className="text-sm text-muted-foreground mb-3">{description}</p>}
+        
+        {description}
       </div>
 
       {showGuide ? <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
