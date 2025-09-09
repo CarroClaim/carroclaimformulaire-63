@@ -56,13 +56,9 @@ export const MultiStepForm: React.FC = () => {
     title: 'Dommages',
     icon: Car
   }, {
-    id: 'photos-damage-close',
-    title: 'Photos dommages proches',
+    id: 'photos-damage',
+    title: 'Photos dommages',
     icon: Image
-  }, {
-    id: 'photos-damage-far',
-    title: 'Photos dommages éloignées',
-    icon: Camera
   }, {
     id: 'contact',
     title: 'Contact',
@@ -156,7 +152,7 @@ export const MultiStepForm: React.FC = () => {
     switch (currentStep) {
       case 1: // Type selection
         return formData.requestType !== '';
-      case 7: // Contact
+      case 6: // Contact
         return formData.contact.firstName && formData.contact.lastName && formData.contact.email && formData.contact.phone;
       default:
         return true;
@@ -414,7 +410,7 @@ export const MultiStepForm: React.FC = () => {
         );
 
       case 5:
-        // Photos dommages proches
+        // Photos des dommages (proches et éloignées)
         return (
           <div className="space-y-4 sm:space-y-8">
             <div className="text-center">
@@ -424,8 +420,8 @@ export const MultiStepForm: React.FC = () => {
                   <span className="text-xs font-bold text-accent-foreground">6</span>
                 </div>
               </div>
-              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Photos des dommages proches</h2>
-              <p className="text-sm sm:text-lg text-muted-foreground">Ajoutez des photos rapprochées des dommages :</p>
+              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Photos des dommages</h2>
+              <p className="text-sm sm:text-lg text-muted-foreground">Ajoutez des photos rapprochées et éloignées des dommages :</p>
             </div>
 
             <div className="space-y-4 sm:space-y-8">
@@ -435,39 +431,22 @@ export const MultiStepForm: React.FC = () => {
                 photos={formData.photos.damagePhotosClose}
                 onPhotosChange={(photos) => updatePhotos('damagePhotosClose', photos)}
                 maxFiles={5}
+                showDamageExamples={true}
               />
-            </div>
-          </div>
-        );
 
-      case 6:
-        // Photos dommages éloignées
-        return (
-          <div className="space-y-4 sm:space-y-8">
-            <div className="text-center">
-              <div className="relative inline-block">
-                <Camera className="w-12 h-12 sm:w-20 sm:h-20 text-primary mx-auto mb-4 sm:mb-6" />
-                <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-5 h-5 sm:w-6 sm:h-6 bg-gradient-accent rounded-full flex items-center justify-center">
-                  <span className="text-xs font-bold text-accent-foreground">7</span>
-                </div>
-              </div>
-              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Photos des dommages éloignées</h2>
-              <p className="text-sm sm:text-lg text-muted-foreground">Ajoutez des photos éloignées pour le contexte :</p>
-            </div>
-
-            <div className="space-y-4 sm:space-y-8">
               <PhotoUpload
                 label="Photos des dommages éloignées"
                 description="Photos prises à distance pour montrer le contexte des dommages"
                 photos={formData.photos.damagePhotosFar}
                 onPhotosChange={(photos) => updatePhotos('damagePhotosFar', photos)}
                 maxFiles={5}
+                showDamageExamples={true}
               />
             </div>
           </div>
         );
 
-      case 7:
+      case 6:
         // Contact
         return (
           <div className="space-y-4 sm:space-y-8">
@@ -475,7 +454,7 @@ export const MultiStepForm: React.FC = () => {
               <div className="relative inline-block">
                 <User className="w-12 h-12 sm:w-20 sm:h-20 text-primary mx-auto mb-4 sm:mb-6" />
                 <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-5 h-5 sm:w-6 sm:h-6 bg-gradient-accent rounded-full flex items-center justify-center">
-                  <span className="text-xs font-bold text-accent-foreground">8</span>
+                  <span className="text-xs font-bold text-accent-foreground">7</span>
                 </div>
               </div>
               <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Informations de contact</h2>
@@ -577,7 +556,7 @@ export const MultiStepForm: React.FC = () => {
           </div>
         );
 
-      case 8:
+      case 7:
         // Récapitulatif
         return (
           <div className="space-y-4 sm:space-y-8">
@@ -585,7 +564,7 @@ export const MultiStepForm: React.FC = () => {
               <div className="relative inline-block">
                 <CheckCircle className="w-12 h-12 sm:w-20 sm:h-20 text-primary mx-auto mb-4 sm:mb-6" />
                 <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-5 h-5 sm:w-6 sm:h-6 bg-gradient-accent rounded-full flex items-center justify-center">
-                  <span className="text-xs font-bold text-accent-foreground">9</span>
+                  <span className="text-xs font-bold text-accent-foreground">8</span>
                 </div>
               </div>
               <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Récapitulatif de votre demande</h2>
