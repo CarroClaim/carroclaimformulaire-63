@@ -141,46 +141,53 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
     onPhotosChange(photos.filter((_, i) => i !== index));
   };
   const inputId = `upload-${label.replace(/\s+/g, '-').toLowerCase()}`;
-  const renderUploadArea = () => <div className="space-y-3">
-      <div className="relative">
-        <input type="file" accept="image/*" multiple={maxFiles > 1} onChange={handleFileChange} className="hidden" id={inputId} disabled={photos.length >= maxFiles} />
-        <label htmlFor={inputId} className={`
-            relative block w-full border-2 border-dashed rounded-xl p-4 text-center 
-            transition-all duration-300 cursor-pointer group
-            ${photos.length >= maxFiles ? 'border-muted bg-muted/20 cursor-not-allowed' : 'border-muted-foreground/25 hover:border-primary hover:bg-primary/5 hover:shadow-primary'}
-          `}>
-          <div className="flex flex-col items-center space-y-2">
-            <div className={`
-              p-2 rounded-full transition-colors duration-300
-              ${photos.length >= maxFiles ? 'bg-muted text-muted-foreground' : 'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground'}
-            `}>
-              <Camera className="w-5 h-5" />
-            </div>
-            <div>
-              <p className={`text-xs font-medium ${photos.length >= maxFiles ? 'text-muted-foreground' : 'text-foreground'}`}>
-                {photos.length >= maxFiles ? `Limite atteinte` : `Ajouter photo`}
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                {photos.length}/{maxFiles} photo{maxFiles > 1 ? 's' : ''}
-              </p>
-            </div>
-          </div>
-        </label>
+  const renderUploadArea = () => <div className="space-y-3 h-full flex flex-col">
+      <div className="text-center mb-2">
+        <h4 className="text-xs font-semibold text-foreground mb-1">Upload</h4>
+        <p className="text-xs text-muted-foreground">Télécharger photos</p>
       </div>
+      
+      <div className="flex-1 flex flex-col justify-start">
+        <div className="relative mb-3">
+          <input type="file" accept="image/*" multiple={maxFiles > 1} onChange={handleFileChange} className="hidden" id={inputId} disabled={photos.length >= maxFiles} />
+          <label htmlFor={inputId} className={`
+              relative block w-full border-2 border-dashed rounded-xl p-4 text-center 
+              transition-all duration-300 cursor-pointer group
+              ${photos.length >= maxFiles ? 'border-muted bg-muted/20 cursor-not-allowed' : 'border-muted-foreground/25 hover:border-primary hover:bg-primary/5 hover:shadow-primary'}
+            `}>
+            <div className="flex flex-col items-center space-y-2">
+              <div className={`
+                p-2 rounded-full transition-colors duration-300
+                ${photos.length >= maxFiles ? 'bg-muted text-muted-foreground' : 'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground'}
+              `}>
+                <Camera className="w-5 h-5" />
+              </div>
+              <div>
+                <p className={`text-xs font-medium ${photos.length >= maxFiles ? 'text-muted-foreground' : 'text-foreground'}`}>
+                  {photos.length >= maxFiles ? `Limite atteinte` : `Ajouter photo`}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {photos.length}/{maxFiles} photo{maxFiles > 1 ? 's' : ''}
+                </p>
+              </div>
+            </div>
+          </label>
+        </div>
 
-      {photos.length > 0 && <div className="grid grid-cols-1 gap-2">
-          {photos.map((photo, index) => <div key={index} className="relative group">
-              <div className="aspect-square rounded-lg overflow-hidden bg-muted border border-border shadow-sm">
-                <img src={URL.createObjectURL(photo)} alt={`Photo ${index + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-              </div>
-              <button onClick={() => removePhoto(index)} className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-destructive/80 transition-colors shadow-md">
-                <X className="w-3 h-3" />
-              </button>
-              <div className="absolute bottom-1 left-1 bg-black/60 text-white text-xs px-1.5 py-0.5 rounded">
-                {index + 1}
-              </div>
-            </div>)}
-        </div>}
+        {photos.length > 0 && <div className="grid grid-cols-1 gap-2">
+            {photos.map((photo, index) => <div key={index} className="relative group">
+                <div className="aspect-square rounded-lg overflow-hidden bg-muted border border-border shadow-sm">
+                  <img src={URL.createObjectURL(photo)} alt={`Photo ${index + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                </div>
+                <button onClick={() => removePhoto(index)} className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-destructive/80 transition-colors shadow-md">
+                  <X className="w-3 h-3" />
+                </button>
+                <div className="absolute bottom-1 left-1 bg-black/60 text-white text-xs px-1.5 py-0.5 rounded">
+                  {index + 1}
+                </div>
+              </div>)}
+          </div>}
+      </div>
     </div>;
   return <div className="space-y-4 mx-0">
       <div>
@@ -195,11 +202,11 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
           <div>
             {renderUploadArea()}
           </div>
-        </div> : showDocumentExamples ? <div className="grid grid-cols-2 gap-3">
-          <div className="pr-2">
+        </div> : showDocumentExamples ? <div className="grid grid-cols-2 gap-4 items-start">
+          <div className="space-y-3">
             <DocumentExampleGuide />
           </div>
-          <div className="pl-2">
+          <div className="space-y-3">
             {renderUploadArea()}
           </div>
         </div> : <>
