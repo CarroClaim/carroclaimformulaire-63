@@ -93,7 +93,7 @@ const DocumentExampleGuide = () => {
             <h5 className="text-xs font-semibold text-foreground mb-1">Certificat d'immatriculation (carte grise)</h5>
             <p className="text-xs text-muted-foreground">Document complet et lisible</p>
           </div>
-          <div className="aspect-[4/3] bg-muted">
+          <div className="aspect-[3/2] bg-muted">
             <img src={carteGrisseExample} alt="Exemple de carte grise suisse" className="w-full h-full object-cover" />
           </div>
         </div>
@@ -104,7 +104,7 @@ const DocumentExampleGuide = () => {
             <h5 className="text-xs font-semibold text-foreground mb-1">Compteur kilométrique</h5>
             <p className="text-xs text-muted-foreground">Kilométrage clairement visible</p>
           </div>
-          <div className="aspect-[4/3] bg-muted">
+          <div className="aspect-[3/2] bg-muted">
             <img src={compteurExample} alt="Exemple de compteur kilométrique" className="w-full h-full object-cover" />
           </div>
         </div>
