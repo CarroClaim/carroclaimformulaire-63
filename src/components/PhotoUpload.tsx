@@ -11,6 +11,7 @@ interface PhotoUploadProps {
   showGuide?: boolean;
   showDocumentExamples?: boolean;
   showDamageExamples?: boolean;
+  documentType?: 'carte-grise' | 'compteur' | 'both';
 }
 const VehicleAngleGuide = () => {
   return <div className="space-y-4">
@@ -177,7 +178,8 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
   maxFiles = 1,
   showGuide = false,
   showDocumentExamples = false,
-  showDamageExamples = false
+  showDamageExamples = false,
+  documentType = 'both'
 }) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -289,55 +291,58 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
               <p className="text-muted-foreground text-xs text-center font-bold">Télécharger documents</p>
             </div>
             
-            {/* Uploader carte grise */}
+            {/* Combined uploader for both documents */}
             <div className="bg-card rounded-lg border border-border overflow-hidden">
               <div className="p-2 bg-muted/50">
-                <h5 className="text-xs font-semibold text-foreground mb-1">Carte grise</h5>
+                <h5 className="text-xs font-semibold text-foreground mb-1">Documents officiels</h5>
+                <p className="text-xs text-muted-foreground">Carte grise et compteur kilométrique</p>
               </div>
-              <div className="aspect-[4/3] bg-muted relative">
+              <div className="p-3 space-y-3">
                 <input 
                   type="file" 
                   accept="image/*" 
+                  multiple
                   onChange={handleFileChange} 
                   className="hidden" 
-                  id={`${inputId}-carte-grise`} 
+                  id={`${inputId}-documents`} 
                   disabled={photos.length >= maxFiles} 
                 />
                 <label 
-                  htmlFor={`${inputId}-carte-grise`} 
-                  className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors"
+                  htmlFor={`${inputId}-documents`} 
+                  className="flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors border-2 border-dashed border-muted-foreground/25 rounded-lg p-6"
                 >
                   <div className="text-center">
-                    <Camera className="w-6 h-6 mx-auto mb-1 text-primary" />
-                    <p className="text-xs text-muted-foreground">Cliquer pour uploader</p>
+                    <Camera className="w-8 h-8 mx-auto mb-2 text-primary" />
+                    <p className="text-sm font-medium text-foreground">Cliquer pour ajouter des photos</p>
+                    <p className="text-xs text-muted-foreground mt-1">Carte grise et compteur ({photos.length}/{maxFiles} photos)</p>
                   </div>
                 </label>
-              </div>
-            </div>
-
-            {/* Uploader compteur kilométrique */}
-            <div className="bg-card rounded-lg border border-border overflow-hidden">
-              <div className="p-2 bg-muted/50">
-                <h5 className="text-xs font-semibold text-foreground mb-1">Compteur kilométrique</h5>
-              </div>
-              <div className="aspect-[4/3] bg-muted relative">
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  onChange={handleFileChange} 
-                  className="hidden" 
-                  id={`${inputId}-compteur`} 
-                  disabled={photos.length >= maxFiles} 
-                />
-                <label 
-                  htmlFor={`${inputId}-compteur`} 
-                  className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors"
-                >
-                  <div className="text-center">
-                    <Camera className="w-6 h-6 mx-auto mb-1 text-primary" />
-                    <p className="text-xs text-muted-foreground">Cliquer pour uploader</p>
+                
+                {/* Preview uploaded photos */}
+                {photos.length > 0 && (
+                  <div className="grid grid-cols-2 gap-2 mt-3">
+                    {photos.map((photo, index) => (
+                      <div key={index} className="relative group">
+                        <div className="aspect-[4/3] bg-muted rounded-lg overflow-hidden">
+                          <img 
+                            src={URL.createObjectURL(photo)} 
+                            alt={`Document ${index + 1}`} 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <button
+                          onClick={() => removePhoto(index)}
+                          className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                        <p className="text-xs text-muted-foreground text-center mt-1">
+                          {photo.name}
+                        </p>
+                      </div>
+                    ))}
                   </div>
-                </label>
+                )}
               </div>
             </div>
 

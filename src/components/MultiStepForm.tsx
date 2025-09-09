@@ -18,7 +18,8 @@ export const MultiStepForm: React.FC = () => {
       registration: [],
       mileage: [],
       vehicleAngles: [],
-      damagePhotos: []
+      damagePhotosClose: [],
+      damagePhotosFar: []
     },
     contact: {
       firstName: '',
@@ -115,7 +116,8 @@ export const MultiStepForm: React.FC = () => {
         registration: [],
         mileage: [],
         vehicleAngles: [],
-        damagePhotos: []
+        damagePhotosClose: [],
+        damagePhotosFar: []
       },
       contact: {
         firstName: '',
@@ -303,7 +305,18 @@ export const MultiStepForm: React.FC = () => {
             <div className="space-y-4 sm:space-y-8">
               <PhotoUpload label="4 angles du véhicule" description="1 photo de chaque angle : avant, arrière, gauche, droite" photos={formData.photos.vehicleAngles} onPhotosChange={photos => updatePhotos('vehicleAngles', photos)} maxFiles={4} showGuide={true} />
 
-              <PhotoUpload label="Photos des dommages" description="Photos détaillées de chaque zone endommagée (rapprochées et éloignées)" photos={formData.photos.damagePhotos} onPhotosChange={photos => updatePhotos('damagePhotos', photos)} maxFiles={10} />
+              <PhotoUpload 
+                label="Photos des dommages" 
+                description="Photos détaillées de chaque zone endommagée (rapprochées et éloignées)" 
+                photos={[...formData.photos.damagePhotosClose, ...formData.photos.damagePhotosFar]} 
+                onPhotosChange={(photos) => {
+                  const half = Math.ceil(photos.length / 2);
+                  updatePhotos('damagePhotosClose', photos.slice(0, half));
+                  updatePhotos('damagePhotosFar', photos.slice(half));
+                }} 
+                maxFiles={10} 
+                showDamageExamples={true} 
+              />
             </div>
 
           </div>;
@@ -426,7 +439,7 @@ export const MultiStepForm: React.FC = () => {
                   </div>
                   <div>
                     <p className="text-muted-foreground">
-                      Véhicule : {formData.photos.vehicleAngles.length + formData.photos.damagePhotos.length} photo(s)
+                      Véhicule : {formData.photos.vehicleAngles.length + formData.photos.damagePhotosClose.length + formData.photos.damagePhotosFar.length} photo(s)
                     </p>
                   </div>
                 </div>
