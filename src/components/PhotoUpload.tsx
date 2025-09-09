@@ -219,7 +219,7 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
   return <div className="space-y-4 mx-0">
       
 
-      {showGuide ? <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {showGuide ? <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           <div>
             <VehicleAngleGuide />
           </div>
