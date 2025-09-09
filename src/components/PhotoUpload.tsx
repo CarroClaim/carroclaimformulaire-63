@@ -14,66 +14,60 @@ interface PhotoUploadProps {
 const VehicleAngleGuide = () => {
   return <div className="space-y-4">
       <div className="text-center mb-3">
-        <h4 className="text-sm font-semibold text-foreground mb-1">Exemples de photos à transmettre</h4>
-        <p className="text-xs text-muted-foreground">Positionnez-vous à 2-3 mètres du véhicule</p>
+        <h4 className="text-sm font-semibold text-foreground mb-1">Exemples</h4>
+        <p className="text-xs text-muted-foreground">Angles de prise de vue</p>
       </div>
       
-      <div className="grid grid-cols-2 gap-3 p-4 bg-card rounded-lg border border-border">
-        <div className="text-center">
-          <div className="w-16 h-12 bg-primary/10 mx-auto mb-2 rounded flex items-center justify-center relative">
-            <Car className="w-6 h-6 text-primary rotate-0" />
-            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-success rounded-full flex items-center justify-center">
-              <Camera className="w-2 h-2 text-white" />
+      <div className="space-y-3">
+        {/* Photo avant gauche */}
+        <div className="bg-card rounded-lg border border-border overflow-hidden">
+          <div className="p-2 bg-muted/50">
+            <h5 className="text-xs font-semibold text-foreground">Photo de l'avant gauche</h5>
+          </div>
+          <div className="aspect-[4/3] bg-muted flex items-center justify-center">
+            <div className="text-center">
+              <Car className="w-8 h-8 text-primary mx-auto mb-1 -rotate-45" />
+              <p className="text-xs text-muted-foreground">Vue avant-gauche</p>
             </div>
           </div>
-          <p className="text-xs font-medium text-foreground">AVANT</p>
-          <p className="text-xs text-muted-foreground">Vue de face complète</p>
         </div>
-        
-        <div className="text-center">
-          <div className="w-16 h-12 bg-primary/10 mx-auto mb-2 rounded flex items-center justify-center relative">
-            <Car className="w-6 h-6 text-primary rotate-180" />
-            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-success rounded-full flex items-center justify-center">
-              <Camera className="w-2 h-2 text-white" />
+
+        {/* Photo arrière gauche */}
+        <div className="bg-card rounded-lg border border-border overflow-hidden">
+          <div className="p-2 bg-muted/50">
+            <h5 className="text-xs font-semibold text-foreground">Photo de l'arrière gauche</h5>
+          </div>
+          <div className="aspect-[4/3] bg-muted flex items-center justify-center">
+            <div className="text-center">
+              <Car className="w-8 h-8 text-primary mx-auto mb-1 rotate-[135deg]" />
+              <p className="text-xs text-muted-foreground">Vue arrière-gauche</p>
             </div>
           </div>
-          <p className="text-xs font-medium text-foreground">ARRIÈRE</p>
-          <p className="text-xs text-muted-foreground">Vue de dos complète</p>
         </div>
-        
-        <div className="text-center">
-          <div className="w-16 h-12 bg-primary/10 mx-auto mb-2 rounded flex items-center justify-center relative">
-            <Car className="w-6 h-6 text-primary -rotate-90" />
-            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-success rounded-full flex items-center justify-center">
-              <Camera className="w-2 h-2 text-white" />
+
+        {/* Photo arrière droit */}
+        <div className="bg-card rounded-lg border border-border overflow-hidden">
+          <div className="p-2 bg-muted/50">
+            <h5 className="text-xs font-semibold text-foreground">Photo de l'arrière droit</h5>
+          </div>
+          <div className="aspect-[4/3] bg-muted flex items-center justify-center">
+            <div className="text-center">
+              <Car className="w-8 h-8 text-primary mx-auto mb-1 rotate-45" />
+              <p className="text-xs text-muted-foreground">Vue arrière-droite</p>
             </div>
           </div>
-          <p className="text-xs font-medium text-foreground">GAUCHE</p>
-          <p className="text-xs text-muted-foreground">Côté conducteur</p>
         </div>
-        
-        <div className="text-center">
-          <div className="w-16 h-12 bg-primary/10 mx-auto mb-2 rounded flex items-center justify-center relative">
-            <Car className="w-6 h-6 text-primary rotate-90" />
-            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-success rounded-full flex items-center justify-center">
-              <Camera className="w-2 h-2 text-white" />
-            </div>
+
+        {/* Photo avant droite */}
+        <div className="bg-card rounded-lg border border-border overflow-hidden">
+          <div className="p-2 bg-muted/50">
+            <h5 className="text-xs font-semibold text-foreground">Photo de l'avant droite</h5>
           </div>
-          <p className="text-xs font-medium text-foreground">DROITE</p>
-          <p className="text-xs text-muted-foreground">Côté passager</p>
-        </div>
-      </div>
-      
-      <div className="bg-info/10 border border-info/20 rounded-lg p-3">
-        <div className="flex items-start space-x-2">
-          <Camera className="w-4 h-4 text-info flex-shrink-0 mt-0.5" />
-          <div>
-            <p className="text-xs font-medium text-info">Conseils pour de bonnes photos :</p>
-            <ul className="text-xs text-info/80 mt-1 space-y-1">
-              <li>• Éclairage naturel de préférence</li>
-              <li>• Véhicule visible en entier sur chaque photo</li>
-              <li>• Éviter les reflets et ombres importantes</li>
-            </ul>
+          <div className="aspect-[4/3] bg-muted flex items-center justify-center">
+            <div className="text-center">
+              <Car className="w-8 h-8 text-primary mx-auto mb-1 -rotate-[135deg]" />
+              <p className="text-xs text-muted-foreground">Vue avant-droite</p>
+            </div>
           </div>
         </div>
       </div>
@@ -143,19 +137,18 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
   const inputId = `upload-${label.replace(/\s+/g, '-').toLowerCase()}`;
   const renderUploadArea = () => <div className="space-y-3">
       <div className="text-center mb-2">
-        
         <p className="text-muted-foreground text-xs text-center font-bold">Télécharger photos</p>
       </div>
       
-      <div className="grid grid-cols-1 gap-2">
-        {/* Upload carte grise */}
+      <div className="space-y-3">
+        {/* Upload avant gauche */}
         <div className="bg-card rounded-lg border border-border overflow-hidden">
           <div className="p-2 bg-muted/50">
-            <h5 className="text-xs font-semibold text-foreground mb-1">Carte grise</h5>
+            <h5 className="text-xs font-semibold text-foreground mb-1">Photo de l'avant gauche</h5>
           </div>
           <div className="aspect-[4/3] bg-muted relative">
-            <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id={`${inputId}-carte`} disabled={photos.length >= maxFiles} />
-            <label htmlFor={`${inputId}-carte`} className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
+            <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id={`${inputId}-avant-gauche`} disabled={photos.length >= maxFiles} />
+            <label htmlFor={`${inputId}-avant-gauche`} className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
               <div className="text-center">
                 <Camera className="w-6 h-6 mx-auto mb-1 text-primary" />
                 <p className="text-xs text-muted-foreground">Cliquer pour uploader</p>
@@ -164,14 +157,46 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
           </div>
         </div>
 
-        {/* Upload compteur */}
+        {/* Upload arrière gauche */}
         <div className="bg-card rounded-lg border border-border overflow-hidden">
           <div className="p-2 bg-muted/50">
-            <h5 className="text-xs font-semibold text-foreground mb-1">Compteur</h5>
+            <h5 className="text-xs font-semibold text-foreground mb-1">Photo de l'arrière gauche</h5>
           </div>
           <div className="aspect-[4/3] bg-muted relative">
-            <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id={`${inputId}-compteur`} disabled={photos.length >= maxFiles} />
-            <label htmlFor={`${inputId}-compteur`} className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
+            <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id={`${inputId}-arriere-gauche`} disabled={photos.length >= maxFiles} />
+            <label htmlFor={`${inputId}-arriere-gauche`} className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
+              <div className="text-center">
+                <Camera className="w-6 h-6 mx-auto mb-1 text-primary" />
+                <p className="text-xs text-muted-foreground">Cliquer pour uploader</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        {/* Upload arrière droit */}
+        <div className="bg-card rounded-lg border border-border overflow-hidden">
+          <div className="p-2 bg-muted/50">
+            <h5 className="text-xs font-semibold text-foreground mb-1">Photo de l'arrière droit</h5>
+          </div>
+          <div className="aspect-[4/3] bg-muted relative">
+            <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id={`${inputId}-arriere-droit`} disabled={photos.length >= maxFiles} />
+            <label htmlFor={`${inputId}-arriere-droit`} className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
+              <div className="text-center">
+                <Camera className="w-6 h-6 mx-auto mb-1 text-primary" />
+                <p className="text-xs text-muted-foreground">Cliquer pour uploader</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        {/* Upload avant droite */}
+        <div className="bg-card rounded-lg border border-border overflow-hidden">
+          <div className="p-2 bg-muted/50">
+            <h5 className="text-xs font-semibold text-foreground mb-1">Photo de l'avant droite</h5>
+          </div>
+          <div className="aspect-[4/3] bg-muted relative">
+            <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id={`${inputId}-avant-droite`} disabled={photos.length >= maxFiles} />
+            <label htmlFor={`${inputId}-avant-droite`} className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
               <div className="text-center">
                 <Camera className="w-6 h-6 mx-auto mb-1 text-primary" />
                 <p className="text-xs text-muted-foreground">Cliquer pour uploader</p>
