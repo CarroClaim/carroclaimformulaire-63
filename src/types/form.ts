@@ -5,7 +5,8 @@ export interface FormData {
     registration: File[];
     mileage: File[];
     vehicleAngles: File[];
-    damagePhotos: File[];
+    damagePhotosClose: File[];
+    damagePhotosFar: File[];
   };
   contact: {
     firstName: string;
