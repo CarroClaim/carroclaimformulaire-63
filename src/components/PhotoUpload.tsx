@@ -197,22 +197,24 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
         {description}
       </div>
 
-      {showGuide ? <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {showGuide ? (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div>
             <VehicleAngleGuide />
           </div>
           <div>
             {renderUploadArea()}
           </div>
-        </div> : showDocumentExamples ? <div className="grid grid-cols-2 gap-4 items-start">
+        </div>
+      ) : showDocumentExamples ? (
+        <div className="grid grid-cols-2 gap-4 items-start">
           <div className="space-y-3">
             <DocumentExampleGuide />
           </div>
           <div className="space-y-3">
             {renderUploadArea()}
           </div>
-        </div> : <>
-          {renderUploadArea()}
-        </>}
+        </div>
+      ) : null}
     </div>;
 };
