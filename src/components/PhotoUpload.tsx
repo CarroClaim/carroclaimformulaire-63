@@ -281,6 +281,82 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
 
     if (showDamageExamples || showDocumentExamples) {
       // For damage photos or document photos (simple uploader)
+      if (showDocumentExamples) {
+        // Specific uploaders for documents (carte grise + compteur)
+        return (
+          <div className="space-y-3">
+            <div className="text-center mb-2">
+              <p className="text-muted-foreground text-xs text-center font-bold">Télécharger documents</p>
+            </div>
+            
+            {/* Uploader carte grise */}
+            <div className="bg-card rounded-lg border border-border overflow-hidden">
+              <div className="p-2 bg-muted/50">
+                <h5 className="text-xs font-semibold text-foreground mb-1">Carte grise</h5>
+              </div>
+              <div className="aspect-[4/3] bg-muted relative">
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={handleFileChange} 
+                  className="hidden" 
+                  id={`${inputId}-carte-grise`} 
+                  disabled={photos.length >= maxFiles} 
+                />
+                <label 
+                  htmlFor={`${inputId}-carte-grise`} 
+                  className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors"
+                >
+                  <div className="text-center">
+                    <Camera className="w-6 h-6 mx-auto mb-1 text-primary" />
+                    <p className="text-xs text-muted-foreground">Cliquer pour uploader</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            {/* Uploader compteur kilométrique */}
+            <div className="bg-card rounded-lg border border-border overflow-hidden">
+              <div className="p-2 bg-muted/50">
+                <h5 className="text-xs font-semibold text-foreground mb-1">Compteur kilométrique</h5>
+              </div>
+              <div className="aspect-[4/3] bg-muted relative">
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={handleFileChange} 
+                  className="hidden" 
+                  id={`${inputId}-compteur`} 
+                  disabled={photos.length >= maxFiles} 
+                />
+                <label 
+                  htmlFor={`${inputId}-compteur`} 
+                  className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors"
+                >
+                  <div className="text-center">
+                    <Camera className="w-6 h-6 mx-auto mb-1 text-primary" />
+                    <p className="text-xs text-muted-foreground">Cliquer pour uploader</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            {photos.length > 0 && (
+              <div className="bg-info/10 border border-info/20 rounded-lg p-2">
+                <div className="flex items-start space-x-2">
+                  <Camera className="w-3 h-3 text-info flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-xs font-medium text-info">Photos ajoutées:</p>
+                    <p className="text-xs text-info/80 mt-1">{photos.length}/{maxFiles} photo{maxFiles > 1 ? 's' : ''}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      // For damage photos (simple uploader)
       return (
         <div className="space-y-3">
           <div className="text-center mb-2">
