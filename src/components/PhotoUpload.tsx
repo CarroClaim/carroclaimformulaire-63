@@ -80,7 +80,7 @@ const VehicleAngleGuide = () => {
     </div>;
 };
 const DocumentExampleGuide = () => {
-  return <div className="space-y-4">
+  return <div className="space-y-4 mx-[75px] px-0">
       <div className="text-center mb-3">
         <h4 className="text-sm font-semibold text-foreground mb-1">Exemples de documents</h4>
         <p className="text-xs text-muted-foreground">Assurez-vous que tous les détails sont lisibles</p>
@@ -152,7 +152,7 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
             transition-all duration-300 cursor-pointer group
             ${photos.length >= maxFiles ? 'border-muted bg-muted/20 cursor-not-allowed' : 'border-muted-foreground/25 hover:border-primary hover:bg-primary/5 hover:shadow-primary'}
           `}>
-          <div className="flex flex-col items-center space-y-3">
+          <div className="flex flex-col items-center space-y-3 mx-[58px] px-[8px] my-0">
             <div className={`
               p-3 rounded-full transition-colors duration-300
               ${photos.length >= maxFiles ? 'bg-muted text-muted-foreground' : 'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground'}
@@ -185,7 +185,7 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
             </div>)}
         </div>}
     </div>;
-  return <div className="space-y-4">
+  return <div className="space-y-4 mx-0">
       <div>
         <label className="block text-sm font-semibold text-foreground mb-1">{label}</label>
         {description && <p className="text-sm text-muted-foreground mb-3">{description}</p>}
@@ -213,7 +213,7 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
                 transition-all duration-300 cursor-pointer group
                 ${photos.length >= maxFiles ? 'border-muted bg-muted/20 cursor-not-allowed' : 'border-muted-foreground/25 hover:border-primary hover:bg-primary/5 hover:shadow-primary'}
               `}>
-              <div className="flex flex-col items-center space-y-3">
+              <div className="flex flex-col items-center space-y-3 mx-[58px]">
                 <div className={`
                   p-3 rounded-full transition-colors duration-300
                   ${photos.length >= maxFiles ? 'bg-muted text-muted-foreground' : 'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground'}
