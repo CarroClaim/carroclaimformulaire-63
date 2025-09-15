@@ -305,18 +305,11 @@ export const MultiStepForm: React.FC = () => {
             <div className="space-y-4 sm:space-y-8">
               <PhotoUpload label="4 angles du véhicule" description="1 photo de chaque angle : avant, arrière, gauche, droite" photos={formData.photos.vehicleAngles} onPhotosChange={photos => updatePhotos('vehicleAngles', photos)} maxFiles={4} showGuide={true} />
 
-              <PhotoUpload 
-                label="Photos des dommages" 
-                description="Photos détaillées de chaque zone endommagée (rapprochées et éloignées)" 
-                photos={[...formData.photos.damagePhotosClose, ...formData.photos.damagePhotosFar]} 
-                onPhotosChange={(photos) => {
-                  const half = Math.ceil(photos.length / 2);
-                  updatePhotos('damagePhotosClose', photos.slice(0, half));
-                  updatePhotos('damagePhotosFar', photos.slice(half));
-                }} 
-                maxFiles={10} 
-                showDamageExamples={true} 
-              />
+              <PhotoUpload label="Photos des dommages" description="Photos détaillées de chaque zone endommagée (rapprochées et éloignées)" photos={[...formData.photos.damagePhotosClose, ...formData.photos.damagePhotosFar]} onPhotosChange={photos => {
+              const half = Math.ceil(photos.length / 2);
+              updatePhotos('damagePhotosClose', photos.slice(0, half));
+              updatePhotos('damagePhotosFar', photos.slice(half));
+            }} maxFiles={10} showDamageExamples={true} />
             </div>
 
           </div>;
@@ -461,7 +454,7 @@ export const MultiStepForm: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-card/80 backdrop-blur-sm rounded-3xl shadow-elegant border border-border/50 overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-hero p-8 text-center mx-0 px-[24px] py-[9px]">
+          <div className="bg-gradient-hero p-8 text-center mx-0 px-[24px] py-[9px] bg-blue-950">
             <h1 className="font-bold text-white mb-2 py-0 text-lg">Demande d'expertise automobile</h1>
             <p className="text-white/90 text-xs">Transmettez vos photos pour obtenir un devis ou prendre rendez-vous</p>
           </div>
@@ -472,7 +465,7 @@ export const MultiStepForm: React.FC = () => {
           </div>
 
           {/* Content */}
-          <div className="p-8 px-[8px] py-0">
+          <div className="p-8 px-[8px] py-0 bg-slate-100">
             {renderStepContent()}
           </div>
 
