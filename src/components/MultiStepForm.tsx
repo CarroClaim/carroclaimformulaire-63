@@ -454,13 +454,13 @@ export const MultiStepForm: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-card/80 backdrop-blur-sm rounded-3xl shadow-elegant border border-border/50 overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-hero p-8 text-center mx-0 px-[24px] py-[9px] bg-blue-950">
+          <div className="bg-gradient-hero p-8 text-center mx-0 px-[24px] py-[9px] bg-blue-950 rounded-lg">
             <h1 className="font-bold text-white mb-2 py-0 text-lg">Demande d'expertise automobile</h1>
             <p className="text-white/90 text-xs">Transmettez vos photos pour obtenir un devis ou prendre rendez-vous</p>
           </div>
 
           {/* Progress */}
-          <div className="px-[11px]">
+          <div className="px-[11px] bg-slate-100">
             <StepProgress steps={steps} currentStep={currentStep} />
           </div>
 
