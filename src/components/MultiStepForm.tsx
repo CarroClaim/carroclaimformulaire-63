@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { AlertCircle, Calendar, Camera, Car, CheckCircle, ChevronLeft, ChevronRight, Clock, FileText, Image, Mail, MapPin, Phone, Settings, User, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import CarDamageSelector from '@/components/CarDamageSelector';
+import CarDamageSelector, { CarDamageSelectorHandle } from '@/components/CarDamageSelector';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import { StepProgress } from '@/components/StepProgress';
 import { FormData, Step } from '@/types/form';
 import { useToast } from '@/hooks/use-toast';
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { saveAs } from 'file-saver';
 export const MultiStepForm: React.FC = () => {
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
+  const carMapRef = useRef<CarDamageSelectorHandle | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({
     requestType: '',
@@ -133,6 +134,86 @@ export const MultiStepForm: React.FC = () => {
       preferredTime: ''
     });
   };
+
+  const exportReportPDF = async () => {
+    try {
+      // 1) Récupérer le PNG du sélecteur
+      const pngBlob = await carMapRef.current?.exportPNG({ scale: 2, background: '#ffffff' });
+      if (!pngBlob) throw new Error('PNG non généré');
+
+      const pngArrayBuffer = await pngBlob.arrayBuffer();
+
+      // 2) Créer le PDF
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage([595.28, 841.89]); // A4 portrait en points (72dpi)
+
+      const { width: pw, height: ph } = page.getSize();
+
+      // 3) Titre + métadonnées
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const title = "Rapport d'expertise – Dommages sélectionnés";
+      page.drawText(title, { x: 40, y: ph - 60, size: 16, font, color: rgb(0,0,0) });
+
+      // Infos contact (exemple)
+      const lines = [
+        `Nom: ${formData.contact.firstName || ''} ${formData.contact.lastName || ''}`.trim(),
+        `Email: ${formData.contact.email || '-'}`,
+        `Téléphone: ${formData.contact.phone || '-'}`,
+        `Type: ${formData.requestType === 'appointment' ? 'Prise de rendez-vous' : 'Demande de devis'}`,
+        formData.preferredDate ? `Date souhaitée: ${formData.preferredDate}${formData.preferredTime ? ` ${formData.preferredTime}` : ''}` : null,
+        `Zones: ${formData.selectedDamages.length > 0 ? formData.selectedDamages.join(', ') : 'Aucune'}`
+      ].filter(Boolean) as string[];
+
+      let y = ph - 90;
+      lines.forEach((l) => {
+        page.drawText(l, { x: 40, y, size: 10, font, color: rgb(0.1,0.1,0.1) });
+        y -= 14;
+      });
+
+      // 4) Image du schéma (PNG)
+      const pngImage = await pdfDoc.embedPng(pngArrayBuffer);
+
+      // On occupe la largeur (avec marges), en respectant le ratio
+      const maxImgWidth = pw - 80;   // marges 40
+      const maxImgHeight = ph/2;     // demi-page environ
+      const imgRatio = pngImage.width / pngImage.height;
+
+      let imgW = maxImgWidth;
+      let imgH = imgW / imgRatio;
+      if (imgH > maxImgHeight) {
+        imgH = maxImgHeight;
+        imgW = imgH * imgRatio;
+      }
+
+      page.drawImage(pngImage, {
+        x: 40,
+        y: y - imgH - 20, // un peu d'espace après le bloc texte
+        width: imgW,
+        height: imgH,
+      });
+
+      // 5) Sauvegarde
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+      // Télécharger côté client
+      saveAs(blob, `rapport-expertise-${Date.now()}.pdf`);
+
+      toast({
+        title: "Rapport PDF généré !",
+        description: "Le rapport a été téléchargé avec succès."
+      });
+
+    } catch (e) {
+      console.error(e);
+      toast({
+        title: "Erreur",
+        description: "Impossible de générer le rapport PDF.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const canProceed = () => {
     switch (currentStep) {
       case 1:
@@ -258,7 +339,11 @@ export const MultiStepForm: React.FC = () => {
               <p className="text-sm sm:text-lg text-muted-foreground">Cliquez sur les zones endommagées :</p>
             </div>
 
-            <CarDamageSelector selectedAreas={formData.selectedDamages} onAreaSelect={handleDamageSelect} />
+            <CarDamageSelector 
+              ref={carMapRef}
+              selectedAreas={formData.selectedDamages} 
+              onAreaSelect={handleDamageSelect} 
+            />
 
             <div>
               <label className="block text-sm font-semibold text-foreground mb-3">
@@ -439,7 +524,18 @@ export const MultiStepForm: React.FC = () => {
               </div>
             </div>
 
-            <div className="text-center">
+            <div className="text-center space-y-4">
+              <Button 
+                onClick={exportReportPDF} 
+                variant="outline" 
+                size="lg" 
+                className="px-8 sm:px-12 mr-4"
+                disabled={formData.selectedDamages.length === 0}
+              >
+                <FileText className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                Exporter le rapport PDF
+              </Button>
+
               <Button onClick={submitForm} variant="accent" size="lg" className="px-8 sm:px-12">
                 <Send className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 Envoyer ma demande

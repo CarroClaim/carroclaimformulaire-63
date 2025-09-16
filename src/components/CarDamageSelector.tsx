@@ -1,23 +1,85 @@
-const CarDamageSelector = ({
-  selectedAreas,
-  onAreaSelect
-}: {
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
+import { Canvg } from 'canvg';
+
+export interface CarDamageSelectorHandle {
+  exportPNG: (opts?: { scale?: number; background?: string }) => Promise<Blob>;
+  getSVG: () => SVGSVGElement | null;
+}
+
+type Props = {
   selectedAreas: string[];
   onAreaSelect: (areaId: string) => void;
-}) => {
-  const getPartStyle = (partName: string) => {
-    const isSelected = selectedAreas.includes(partName);
-    return {
-      fill: isSelected ? "#0ea5e9" : "#d9d9d9",
-      stroke: isSelected ? "#0284c7" : "#b0b0b0",
-      strokeWidth: "2",
-      cursor: "pointer",
-      transition: "all 0.3s ease"
+};
+
+const CarDamageSelector = forwardRef<CarDamageSelectorHandle, Props>(
+  ({ selectedAreas, onAreaSelect }, ref) => {
+    const svgRef = useRef<SVGSVGElement | null>(null);
+
+    const getPartStyle = (partName: string) => {
+      const isSelected = selectedAreas.includes(partName);
+      return {
+        fill: isSelected ? "#0ea5e9" : "#d9d9d9",
+        stroke: isSelected ? "#0284c7" : "#b0b0b0",
+        strokeWidth: 2,
+        cursor: "pointer",
+        transition: "all 0.3s ease"
+      } as React.CSSProperties;
     };
-  };
-  return <div className="space-y-4">
-      <div className="rounded-lg p-3 sm:p-6 flex justify-center px-0 py-0 bg-white">
-        <svg width="418" height="558" viewBox="0 0 418 558" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-0 my-0 px-0 py-0 bg-white rounded">
+
+    // ---- Export PNG via canvg ----
+    const exportPNG = async (opts?: { scale?: number; background?: string }) => {
+      const svg = svgRef.current;
+      if (!svg) throw new Error("SVG introuvable");
+
+      const { width, height } = svg.getBoundingClientRect();
+      const scale = opts?.scale ?? 2; // 2x pour meilleur rendu
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(width * scale));
+      canvas.height = Math.max(1, Math.round(height * scale));
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error("Contexte 2D non disponible");
+
+      // Fond blanc (ou perso) pour éviter un fond transparent dans le PDF
+      if (opts?.background || true) {
+        ctx.fillStyle = opts?.background ?? '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // Sérialiser le SVG courant
+      const serializer = new XMLSerializer();
+      // IMPORTANT : fixer width/height sur l'élément SVG pour export net
+      const svgClone = svg.cloneNode(true) as SVGSVGElement;
+      svgClone.setAttribute('width', `${canvas.width}px`);
+      svgClone.setAttribute('height', `${canvas.height}px`);
+
+      const svgText = serializer.serializeToString(svgClone);
+
+      // canvg rend le SVG dans le canvas
+      const v = await Canvg.fromString(ctx, svgText, { ignoreMouse: true, ignoreAnimation: true });
+      await v.render();
+
+      return await new Promise<Blob>((resolve) =>
+        canvas.toBlob((blob) => resolve(blob as Blob), 'image/png', 0.92)
+      );
+    };
+
+    useImperativeHandle(ref, () => ({
+      exportPNG,
+      getSVG: () => svgRef.current
+    }));
+    return (
+      <div className="space-y-4">
+        <div className="rounded-lg p-3 sm:p-6 flex justify-center bg-white">
+          <svg
+            ref={svgRef}
+            width="418" height="558" viewBox="0 0 418 558"
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-full h-auto max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl bg-white rounded"
+            aria-labelledby="car-map-title car-map-desc" role="img"
+          >
+            <title id="car-map-title">Carte interactive des zones de carrosserie</title>
+            <desc id="car-map-desc">Cliquez pour sélectionner les zones endommagées</desc>
           <g>
             {/* Portières */}
             <path style={getPartStyle("Portière avant gauche")} d="m 37,195 11.5,-0.5 H 60 74 l 14.5,0.5 v 26 4 c 0,0 0.5,1.5 1,2.5 0.5,1 1,2 1.5,2 h 2 c 1,0 2.3284,1.024 3.5,2 l 4.5,4 3,78 L 90.5,311 74.5,310 56,309 H 38 Z" onClick={() => onAreaSelect("Portière avant gauche")} />
@@ -102,21 +164,30 @@ const CarDamageSelector = ({
             {/* Bas de caisse */}
             <rect style={getPartStyle("Bas de caisse gauche")} x="24" y="195" width="11" height="181" onClick={() => onAreaSelect("Bas de caisse gauche")} />
             <rect style={getPartStyle("Bas de caisse droite")} x="384" y="195" width="11" height="181" onClick={() => onAreaSelect("Bas de caisse droite")} />
-          </g>
-        </svg>
-      </div>
+            </g>
+          </svg>
+        </div>
 
-      {selectedAreas.length > 0 && <div className="bg-blue-50 p-4 rounded-lg">
-          <h4 className="font-medium text-blue-900 mb-2">Zones sélectionnées :</h4>
-          <div className="flex flex-wrap gap-2">
-            {selectedAreas.map(areaName => <span key={areaName} className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
-                {areaName}
-                <button onClick={() => onAreaSelect(areaName)} className="ml-2 text-blue-600 hover:text-blue-800">
-                  ×
-                </button>
-              </span>)}
+        {selectedAreas.length > 0 && (
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <h4 className="font-medium text-blue-900 mb-2">Zones sélectionnées :</h4>
+            <div className="flex flex-wrap gap-2">
+              {selectedAreas.map(areaName => (
+                <span key={areaName} className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
+                  {areaName}
+                  <button onClick={() => onAreaSelect(areaName)} className="ml-2 text-blue-600 hover:text-blue-800">
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
           </div>
-        </div>}
-    </div>;
-};
+        )}
+      </div>
+    );
+  }
+);
+
+CarDamageSelector.displayName = 'CarDamageSelector';
+
 export default CarDamageSelector;
