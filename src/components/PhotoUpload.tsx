@@ -93,7 +93,7 @@ const DocumentExampleGuide = ({
         
         <div className="bg-card rounded-lg border border-border overflow-hidden">
           <div className="aspect-[4/3] bg-muted">
-            <img src={carteGrisseExample} alt="Exemple de carte grise suisse" className="w-full h-full object-cover" />
+            <img src={carteGrisseExample} alt="Exemple de carte grise suisse" className="object-cover mx-auto" style={{ width: '136px', height: '125px' }} />
           </div>
         </div>
         
@@ -121,7 +121,7 @@ const DocumentExampleGuide = ({
         <div className="space-y-2">
           <div className="bg-card rounded-lg border border-border overflow-hidden">
             <div className="aspect-[4/3] bg-muted">
-              <img src={compteurExample} alt="Exemple de compteur analogique" className="w-full h-full object-cover" />
+              <img src={compteurExample} alt="Exemple de compteur analogique" className="object-cover" style={{ width: '136px', height: '125px' }} />
             </div>
           </div>
           <div className="bg-card rounded-lg border border-border overflow-hidden">
@@ -157,7 +157,7 @@ const DocumentExampleGuide = ({
             <h5 className="text-xs font-semibold text-foreground mb-1">Carte grise</h5>
           </div>
           <div className="aspect-[4/3] bg-muted">
-            <img src={carteGrisseExample} alt="Exemple de carte grise suisse" className="w-full h-full object-cover" />
+            <img src={carteGrisseExample} alt="Exemple de carte grise suisse" className="object-cover mx-auto" style={{ width: '136px', height: '125px' }} />
           </div>
         </div>
 
@@ -166,7 +166,7 @@ const DocumentExampleGuide = ({
             <h5 className="text-xs font-semibold text-foreground mb-1">Compteur</h5>
           </div>
           <div className="aspect-[4/3] bg-muted">
-            <img src={compteurExample} alt="Exemple de compteur kilométrique" className="w-full h-full object-cover" />
+            <img src={compteurExample} alt="Exemple de compteur kilométrique" className="object-cover mx-auto" style={{ width: '136px', height: '125px' }} />
           </div>
         </div>
       </div>
