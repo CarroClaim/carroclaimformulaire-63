@@ -264,86 +264,81 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
   const inputId = `upload-${label.replace(/\s+/g, '-').toLowerCase()}`;
   const renderUploadArea = () => {
     if (showGuide) {
-      // For vehicle angles (4 angles)
+      // For vehicle angles (4 angles) - Grid layout matching reference
+      const vehicleAngles = [
+        { name: 'Photo de l\'avant-gauche', rotation: '-rotate-45', id: 'avant-gauche' },
+        { name: 'Photo de l\'arrière-gauche', rotation: 'rotate-[135deg]', id: 'arriere-gauche' },
+        { name: 'Photo de l\'arrière-droit', rotation: 'rotate-45', id: 'arriere-droit' },
+        { name: 'Photo de l\'avant-droit', rotation: '-rotate-[135deg]', id: 'avant-droit' }
+      ];
+
       return (
-        <div className="space-y-3">
-          <div className="text-center mb-2">
-            <p className="text-muted-foreground text-xs text-center font-bold">Télécharger photos</p>
-          </div>
-          
-          <div className="space-y-3">
-            {/* Upload avant gauche */}
-            <div className="bg-card rounded-lg border border-border overflow-hidden">
-              <div className="p-2 bg-muted/50">
-                <h5 className="text-xs font-semibold text-foreground mb-1">Photo de l'avant gauche</h5>
-              </div>
-              <div className="aspect-[4/3] bg-muted relative">
-                <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id={`${inputId}-avant-gauche`} disabled={photos.length >= maxFiles} />
-                <label htmlFor={`${inputId}-avant-gauche`} className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
-                  <div className="text-center">
-                    <Camera className="w-6 h-6 mx-auto mb-1 text-primary" />
-                    <p className="text-xs text-muted-foreground">Cliquer pour uploader</p>
-                  </div>
-                </label>
-              </div>
+        <div className="space-y-4">
+          {/* Header row */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-center">
+              <h4 className="text-sm font-semibold text-foreground">Exemples</h4>
             </div>
-
-            {/* Upload arrière gauche */}
-            <div className="bg-card rounded-lg border border-border overflow-hidden">
-              <div className="p-2 bg-muted/50">
-                <h5 className="text-xs font-semibold text-foreground mb-1">Photo de l'arrière gauche</h5>
-              </div>
-              <div className="aspect-[4/3] bg-muted relative">
-                <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id={`${inputId}-arriere-gauche`} disabled={photos.length >= maxFiles} />
-                <label htmlFor={`${inputId}-arriere-gauche`} className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
-                  <div className="text-center">
-                    <Camera className="w-6 h-6 mx-auto mb-1 text-primary" />
-                    <p className="text-xs text-muted-foreground">Cliquer pour uploader</p>
-                  </div>
-                </label>
-              </div>
-            </div>
-
-            {/* Upload arrière droit */}
-            <div className="bg-card rounded-lg border border-border overflow-hidden">
-              <div className="p-2 bg-muted/50">
-                <h5 className="text-xs font-semibold text-foreground mb-1">Photo de l'arrière droit</h5>
-              </div>
-              <div className="aspect-[4/3] bg-muted relative">
-                <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id={`${inputId}-arriere-droit`} disabled={photos.length >= maxFiles} />
-                <label htmlFor={`${inputId}-arriere-droit`} className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
-                  <div className="text-center">
-                    <Camera className="w-6 h-6 mx-auto mb-1 text-primary" />
-                    <p className="text-xs text-muted-foreground">Cliquer pour uploader</p>
-                  </div>
-                </label>
-              </div>
-            </div>
-
-            {/* Upload avant droite */}
-            <div className="bg-card rounded-lg border border-border overflow-hidden">
-              <div className="p-2 bg-muted/50">
-                <h5 className="text-xs font-semibold text-foreground mb-1">Photo de l'avant droite</h5>
-              </div>
-              <div className="aspect-[4/3] bg-muted relative">
-                <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id={`${inputId}-avant-droite`} disabled={photos.length >= maxFiles} />
-                <label htmlFor={`${inputId}-avant-droite`} className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
-                  <div className="text-center">
-                    <Camera className="w-6 h-6 mx-auto mb-1 text-primary" />
-                    <p className="text-xs text-muted-foreground">Cliquer pour uploader</p>
-                  </div>
-                </label>
-              </div>
+            <div className="text-center">
+              <h4 className="text-sm font-semibold text-foreground">Télécharger photos</h4>
             </div>
           </div>
 
+          {/* 4 rows for each vehicle angle */}
+          <div className="space-y-4">
+            {vehicleAngles.map((angle, index) => (
+              <div key={angle.id} className="grid grid-cols-2 gap-4">
+                {/* Example column */}
+                <div className="bg-card rounded-lg border border-border overflow-hidden">
+                  <div className="p-2 bg-muted/50">
+                    <h5 className="text-xs font-semibold text-foreground">{angle.name}</h5>
+                  </div>
+                  <div className="aspect-[4/3] bg-muted flex items-center justify-center">
+                    <div className="text-center">
+                      <Car className={`w-16 h-16 text-primary mx-auto mb-1 ${angle.rotation}`} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Upload column */}
+                <div className="bg-card rounded-lg border border-border overflow-hidden">
+                  <div className="p-2 bg-muted/50">
+                    <h5 className="text-xs font-semibold text-foreground">{angle.name}</h5>
+                  </div>
+                  <div className="aspect-[4/3] bg-muted relative">
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handleFileChange} 
+                      className="hidden" 
+                      id={`${inputId}-${angle.id}`} 
+                      disabled={photos.length >= maxFiles} 
+                    />
+                    <label 
+                      htmlFor={`${inputId}-${angle.id}`} 
+                      className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors"
+                    >
+                      <div className="text-center">
+                        <Camera className="w-8 h-8 mx-auto mb-2 text-primary" />
+                        <p className="text-xs text-muted-foreground">Cliquer pour uploader</p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Status indicator */}
           {photos.length > 0 && (
-            <div className="bg-info/10 border border-info/20 rounded-lg p-2">
+            <div className="bg-info/10 border border-info/20 rounded-lg p-3 mt-4">
               <div className="flex items-start space-x-2">
-                <Camera className="w-3 h-3 text-info flex-shrink-0 mt-0.5" />
+                <Camera className="w-4 h-4 text-info flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-xs font-medium text-info">Photos ajoutées:</p>
-                  <p className="text-xs text-info/80 mt-1">{photos.length}/{maxFiles} photo{maxFiles > 1 ? 's' : ''}</p>
+                  <p className="text-sm font-medium text-info">Photos ajoutées: {photos.length}/{maxFiles}</p>
+                  <p className="text-xs text-info/80 mt-1">
+                    {photos.map((photo, idx) => photo.name).join(', ')}
+                  </p>
                 </div>
               </div>
             </div>
@@ -470,13 +465,8 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
   return (
     <div className="space-y-4 mx-0">
       {showGuide ? (
-        <div className="grid grid-cols-2 gap-2 md:gap-6">
-          <div>
-            <VehicleAngleGuide />
-          </div>
-          <div>
-            {renderUploadArea()}
-          </div>
+        <div className="w-full">
+          {renderUploadArea()}
         </div>
       ) : showDocumentExamples ? (
         <div className="space-y-4">
