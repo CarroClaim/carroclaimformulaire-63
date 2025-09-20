@@ -4,6 +4,8 @@ import carteGrisseExample from '../assets/carte-grise-suisse-example.jpg';
 import compteurExample from '../assets/compteur-kilometrique-example.jpg';
 import carRearLeft from '../assets/car-rear-left.png';
 import carFrontLeft from '../assets/car-front-left.png';
+import carRearRight from '../assets/car-rear-right.png';
+import carFrontRight from '../assets/car-front-right.png';
 interface PhotoUploadProps {
   label: string;
   description?: string;
@@ -280,14 +282,12 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
         },
         { 
           name: 'Photo de l\'arrière-droit', 
-          image: null, // Utilise l'icône Car en attendant
-          rotation: 'rotate-45',
+          image: carRearRight,
           id: 'arriere-droit' 
         },
         { 
           name: 'Photo de l\'avant-droit', 
-          image: null, // Utilise l'icône Car en attendant  
-          rotation: '-rotate-[135deg]',
+          image: carFrontRight,
           id: 'avant-droit' 
         }
       ];
@@ -314,16 +314,12 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
                     <h5 className="text-xs font-semibold text-foreground">{angle.name}</h5>
                   </div>
                   <div className="aspect-[4/3] bg-muted flex items-center justify-center">
-                    <div className="text-center">
-                      {angle.image ? (
-                        <img 
-                          src={angle.image} 
-                          alt={angle.name}
-                          className="w-16 h-16 object-contain mx-auto"
-                        />
-                      ) : (
-                        <Car className={`w-16 h-16 text-primary mx-auto mb-1 ${angle.rotation}`} />
-                      )}
+                    <div className="text-center p-2">
+                      <img 
+                        src={angle.image} 
+                        alt={angle.name}
+                        className="w-20 h-16 object-contain mx-auto filter drop-shadow-sm"
+                      />
                     </div>
                   </div>
                 </div>
