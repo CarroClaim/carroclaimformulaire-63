@@ -108,12 +108,24 @@ const MultiStepFormContent: React.FC = () => {
    * Génère un PDF avec les informations et le schéma des dommages
    */
   const exportReportPDF = async () => {
+    console.log('Tentative d\'export PDF...');
+    console.log('Ref actuelle:', carSelectorRef.current);
+    console.log('Dommages sélectionnés:', formData.selectedDamages);
+    
     try {
       // Référence au composant de sélection des dommages
       if (!carSelectorRef.current?.exportPNG) {
-        throw new Error('Composant de sélection des dommages non trouvé');
+        console.error('Référence au composant CarDamageSelector manquante');
+        toast({
+          title: "❌ Erreur",
+          description: "Le composant de sélection des dommages n'est pas disponible. Veuillez recharger la page.",
+          variant: "destructive",
+          duration: 5000
+        });
+        return;
       }
 
+      console.log('Export PNG en cours...');
       // Génération du PNG via l'API du composant
       const pngBlob = await carSelectorRef.current.exportPNG({ scale: 2, background: '#ffffff' });
       const pngArrayBuffer = await pngBlob.arrayBuffer();
@@ -518,7 +530,7 @@ const MultiStepFormContent: React.FC = () => {
                 variant="outline" 
                 size="lg" 
                 className="px-8 sm:px-12 mr-4"
-                disabled={formData.selectedDamages.length === 0}
+                disabled={false}
               >
                 <FileText className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 Exporter le rapport PDF
