@@ -559,32 +559,7 @@ const MultiStepFormContent: React.FC = () => {
     </div>;
 };
 
-// Simple test component that uses FormContext
-const SimpleTestComponent: React.FC = () => {
-  const { currentStep, formData } = useFormContext();
-  
-  return (
-    <div>
-      <h2>Context Test</h2>
-      <p>Current Step: {currentStep}</p>
-      <p>Request Type: {formData.requestType || 'None'}</p>
-    </div>
-  );
-};
-
-// Test with FormProvider + useFormContext
-export const MultiStepForm: React.FC = () => {
-  return (
-    <FormProvider>
-      <div data-theme="corporate" className="min-h-screen">
-        <SimpleTestComponent />
-      </div>
-    </FormProvider>
-  );
-};
-
-// Original complex component (commented out temporarily)
-/*
+// Composant principal avec Provider - Version finale fonctionnelle
 export const MultiStepForm: React.FC = () => {
   return (
     <FormProvider>
@@ -594,4 +569,3 @@ export const MultiStepForm: React.FC = () => {
     </FormProvider>
   );
 };
-*/
