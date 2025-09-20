@@ -82,9 +82,11 @@ const VehicleAngleGuide = () => {
     </div>;
 };
 const DocumentExampleGuide = ({
-  documentType
+  documentType,
+  handleFileChange
 }: {
   documentType?: string;
+  handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
   if (documentType === 'carte-grise') {
     return <div className="space-y-3">
@@ -120,7 +122,7 @@ const DocumentExampleGuide = ({
             width: '136px',
             height: '125px'
           }}>
-              <input type="file" accept="image/*" className="hidden" id="upload-carte-grise" />
+              <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id="upload-carte-grise" />
               <label htmlFor="upload-carte-grise" className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
                 <div className="text-center">
                   <Camera className="w-6 h-6 mx-auto mb-1 text-primary" />
@@ -179,7 +181,7 @@ const DocumentExampleGuide = ({
             width: '136px',
             height: '125px'
           }}>
-              <input type="file" accept="image/*" className="hidden" id="upload-compteur" />
+              <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id="upload-compteur" />
               <label htmlFor="upload-compteur" className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
                 <div className="text-center">
                   <Camera className="w-6 h-6 mx-auto mb-1 text-primary" />
@@ -245,7 +247,7 @@ const DocumentExampleGuide = ({
             width: '136px',
             height: '125px'
           }}>
-              <input type="file" accept="image/*" className="hidden" id="upload-carte-grise-both" />
+              <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id="upload-carte-grise-both" />
               <label htmlFor="upload-carte-grise-both" className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
                 <div className="text-center">
                   <Camera className="w-6 h-6 mx-auto mb-1 text-primary" />
@@ -281,7 +283,7 @@ const DocumentExampleGuide = ({
             width: '136px',
             height: '125px'
           }}>
-              <input type="file" accept="image/*" className="hidden" id="upload-compteur-both" />
+              <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id="upload-compteur-both" />
               <label htmlFor="upload-compteur-both" className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
                 <div className="text-center">
                   <Camera className="w-6 h-6 mx-auto mb-1 text-primary" />
@@ -520,7 +522,7 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
         </div> : showDocumentExamples ? <div className="space-y-4">
           <div className="grid grid-cols-1 gap-4 items-start">
             <div className="space-y-3">
-              <DocumentExampleGuide documentType={documentType} />
+              <DocumentExampleGuide documentType={documentType} handleFileChange={handleFileChange} />
             </div>
             <div className="space-y-3">
               {renderUploadArea()}
