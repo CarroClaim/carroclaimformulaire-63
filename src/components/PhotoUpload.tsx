@@ -2,6 +2,8 @@ import React from 'react';
 import { Camera, X, Car } from 'lucide-react';
 import carteGrisseExample from '../assets/carte-grise-suisse-example.jpg';
 import compteurExample from '../assets/compteur-kilometrique-example.jpg';
+import carRearLeft from '../assets/car-rear-left.png';
+import carFrontLeft from '../assets/car-front-left.png';
 interface PhotoUploadProps {
   label: string;
   description?: string;
@@ -266,10 +268,28 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
     if (showGuide) {
       // For vehicle angles (4 angles) - Grid layout matching reference
       const vehicleAngles = [
-        { name: 'Photo de l\'avant-gauche', rotation: '-rotate-45', id: 'avant-gauche' },
-        { name: 'Photo de l\'arrière-gauche', rotation: 'rotate-[135deg]', id: 'arriere-gauche' },
-        { name: 'Photo de l\'arrière-droit', rotation: 'rotate-45', id: 'arriere-droit' },
-        { name: 'Photo de l\'avant-droit', rotation: '-rotate-[135deg]', id: 'avant-droit' }
+        { 
+          name: 'Photo de l\'avant-gauche', 
+          image: carFrontLeft,
+          id: 'avant-gauche' 
+        },
+        { 
+          name: 'Photo de l\'arrière-gauche', 
+          image: carRearLeft,
+          id: 'arriere-gauche' 
+        },
+        { 
+          name: 'Photo de l\'arrière-droit', 
+          image: null, // Utilise l'icône Car en attendant
+          rotation: 'rotate-45',
+          id: 'arriere-droit' 
+        },
+        { 
+          name: 'Photo de l\'avant-droit', 
+          image: null, // Utilise l'icône Car en attendant  
+          rotation: '-rotate-[135deg]',
+          id: 'avant-droit' 
+        }
       ];
 
       return (
@@ -295,7 +315,15 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
                   </div>
                   <div className="aspect-[4/3] bg-muted flex items-center justify-center">
                     <div className="text-center">
-                      <Car className={`w-16 h-16 text-primary mx-auto mb-1 ${angle.rotation}`} />
+                      {angle.image ? (
+                        <img 
+                          src={angle.image} 
+                          alt={angle.name}
+                          className="w-16 h-16 object-contain mx-auto"
+                        />
+                      ) : (
+                        <Car className={`w-16 h-16 text-primary mx-auto mb-1 ${angle.rotation}`} />
+                      )}
                     </div>
                   </div>
                 </div>
