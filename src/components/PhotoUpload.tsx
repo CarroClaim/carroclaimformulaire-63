@@ -101,14 +101,23 @@ const DocumentExampleGuide = ({
         <div className="grid grid-cols-2 gap-4">
           {/* Example column */}
           <div className="bg-card rounded-lg border border-border overflow-hidden">
-            <div className="bg-muted flex items-center justify-center" style={{ width: '136px', height: '125px' }}>
-              <img src={carteGrisseExample} alt="Exemple de carte grise suisse" className="object-cover mx-auto" style={{ width: '136px', height: '125px' }} />
+            <div className="bg-muted flex items-center justify-center" style={{
+            width: '136px',
+            height: '125px'
+          }}>
+              <img src={carteGrisseExample} alt="Exemple de carte grise suisse" className="object-cover mx-auto" style={{
+              width: '136px',
+              height: '125px'
+            }} />
             </div>
           </div>
           
           {/* Upload column */}
           <div className="bg-card rounded-lg border border-border overflow-hidden">
-            <div className="bg-muted relative" style={{ width: '136px', height: '125px' }}>
+            <div className="bg-muted relative" style={{
+            width: '136px',
+            height: '125px'
+          }}>
               <input type="file" accept="image/*" className="hidden" id="upload-carte-grise" />
               <label htmlFor="upload-carte-grise" className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
                 <div className="text-center">
@@ -151,14 +160,23 @@ const DocumentExampleGuide = ({
         <div className="grid grid-cols-2 gap-4">
           {/* Example column */}
           <div className="bg-card rounded-lg border border-border overflow-hidden">
-            <div className="bg-muted flex items-center justify-center" style={{ width: '136px', height: '125px' }}>
-              <img src={compteurExample} alt="Exemple de compteur analogique" className="object-cover" style={{ width: '136px', height: '125px' }} />
+            <div className="bg-muted flex items-center justify-center" style={{
+            width: '136px',
+            height: '125px'
+          }}>
+              <img src={compteurExample} alt="Exemple de compteur analogique" className="object-cover" style={{
+              width: '136px',
+              height: '125px'
+            }} />
             </div>
           </div>
           
           {/* Upload column */}
           <div className="bg-card rounded-lg border border-border overflow-hidden">
-            <div className="bg-muted relative" style={{ width: '136px', height: '125px' }}>
+            <div className="bg-muted relative" style={{
+            width: '136px',
+            height: '125px'
+          }}>
               <input type="file" accept="image/*" className="hidden" id="upload-compteur" />
               <label htmlFor="upload-compteur" className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
                 <div className="text-center">
@@ -206,8 +224,14 @@ const DocumentExampleGuide = ({
             <div className="p-2 bg-muted/50">
               <h5 className="text-xs font-semibold text-foreground mb-1">Carte grise</h5>
             </div>
-            <div className="bg-muted flex items-center justify-center" style={{ width: '136px', height: '125px' }}>
-              <img src={carteGrisseExample} alt="Exemple de carte grise suisse" className="object-cover mx-auto" style={{ width: '136px', height: '125px' }} />
+            <div className="bg-muted flex items-center justify-center" style={{
+            width: '136px',
+            height: '125px'
+          }}>
+              <img src={carteGrisseExample} alt="Exemple de carte grise suisse" className="object-cover mx-auto" style={{
+              width: '136px',
+              height: '125px'
+            }} />
             </div>
           </div>
           
@@ -215,7 +239,10 @@ const DocumentExampleGuide = ({
             <div className="p-2 bg-muted/50">
               <h5 className="text-xs font-semibold text-foreground mb-1">Carte grise</h5>
             </div>
-            <div className="bg-muted relative" style={{ width: '136px', height: '125px' }}>
+            <div className="bg-muted relative" style={{
+            width: '136px',
+            height: '125px'
+          }}>
               <input type="file" accept="image/*" className="hidden" id="upload-carte-grise-both" />
               <label htmlFor="upload-carte-grise-both" className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
                 <div className="text-center">
@@ -233,8 +260,14 @@ const DocumentExampleGuide = ({
             <div className="p-2 bg-muted/50">
               <h5 className="text-xs font-semibold text-foreground mb-1">Compteur</h5>
             </div>
-            <div className="bg-muted flex items-center justify-center" style={{ width: '136px', height: '125px' }}>
-              <img src={compteurExample} alt="Exemple de compteur kilométrique" className="object-cover mx-auto" style={{ width: '136px', height: '125px' }} />
+            <div className="bg-muted flex items-center justify-center" style={{
+            width: '136px',
+            height: '125px'
+          }}>
+              <img src={compteurExample} alt="Exemple de compteur kilométrique" className="object-cover mx-auto" style={{
+              width: '136px',
+              height: '125px'
+            }} />
             </div>
           </div>
           
@@ -242,7 +275,10 @@ const DocumentExampleGuide = ({
             <div className="p-2 bg-muted/50">
               <h5 className="text-xs font-semibold text-foreground mb-1">Compteur</h5>
             </div>
-            <div className="bg-muted relative" style={{ width: '136px', height: '125px' }}>
+            <div className="bg-muted relative" style={{
+            width: '136px',
+            height: '125px'
+          }}>
               <input type="file" accept="image/*" className="hidden" id="upload-compteur-both" />
               <label htmlFor="upload-compteur-both" className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
                 <div className="text-center">
@@ -380,7 +416,10 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
                   </div>
                   <div className="aspect-[4/3] bg-muted flex items-center justify-center">
                     <div className="text-center p-2">
-                      <img src={angle.image} alt={angle.name} className="object-contain mx-auto filter drop-shadow-sm" style={{ width: '136px', height: '125px' }} />
+                      <img src={angle.image} alt={angle.name} className="object-contain mx-auto filter drop-shadow-sm" style={{
+                    width: '136px',
+                    height: '125px'
+                  }} />
                     </div>
                   </div>
                 </div>
@@ -423,37 +462,13 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
         // Specific uploaders for individual documents
         return <div className="space-y-4">
             <div className="text-center mb-3">
-              <h3 className="text-sm font-bold text-foreground mb-1">{label}</h3>
-              <p className="text-xs text-muted-foreground">{description}</p>
+              
+              
             </div>
             
             {/* Upload area */}
             <div className="bg-card rounded-lg border border-border overflow-hidden">
-              <div className="p-3 space-y-3">
-                <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id={inputId} disabled={photos.length >= maxFiles} />
-                <label htmlFor={inputId} className="flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors border-2 border-dashed border-muted-foreground/25 rounded-lg p-6">
-                  <div className="text-center">
-                    <Camera className="w-8 h-8 mx-auto mb-2 text-primary" />
-                    <p className="text-sm font-medium text-foreground">Cliquer pour ajouter des photos</p>
-                    <p className="text-xs text-muted-foreground mt-1">{photos.length}/{maxFiles} photo{maxFiles > 1 ? 's' : ''}</p>
-                  </div>
-                </label>
-                
-                {/* Preview uploaded photos */}
-                {photos.length > 0 && <div className="space-y-2 mt-3">
-                    {photos.map((photo, index) => <div key={index} className="relative group">
-                        <div className="aspect-[4/3] bg-muted rounded-lg overflow-hidden">
-                          <img src={URL.createObjectURL(photo)} alt={`${label} ${index + 1}`} className="w-full h-full object-cover" />
-                        </div>
-                        <button onClick={() => removePhoto(index)} className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <X className="w-3 h-3" />
-                        </button>
-                        <p className="text-xs text-muted-foreground text-center mt-1 truncate">
-                          {photo.name}
-                        </p>
-                      </div>)}
-                  </div>}
-              </div>
+              
             </div>
           </div>;
       }
