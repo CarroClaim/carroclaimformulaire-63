@@ -371,9 +371,11 @@ class FormSubmissionService {
    */
   private extractPhotoUrls(photos: File[]): string[] {
     return photos
-      .map(photo => photoUploadService.getFileMetadata(photo))
-      .filter(metadata => metadata !== null)
-      .map(metadata => metadata!.publicUrl);
+      .map(photo => {
+        const metadata = photoUploadService.getFileMetadata(photo);
+        return metadata?.publicUrl || '';
+      })
+      .filter(url => url !== ''); // Filtrer les URLs vides
   }
 
   private generateSessionId(): string {

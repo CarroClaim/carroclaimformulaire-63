@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Camera, X, Car } from 'lucide-react';
 import carteGrisseExample from '../assets/carte-grise-suisse-example.jpg';
 import compteurExample from '../assets/compteur-kilometrique-example.jpg';
@@ -373,11 +373,44 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
   showDamageExamples = false,
   documentType = 'both'
 }) => {
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [isUploading, setIsUploading] = useState(false);
+  
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
     const remainingSlots = maxFiles - photos.length;
     const filesToAdd = files.slice(0, remainingSlots);
-    onPhotosChange([...photos, ...filesToAdd]);
+    
+    setIsUploading(true);
+    
+    try {
+      // Import du service d'upload
+      const { photoUploadService } = await import('@/services/photoUploadService');
+      
+      // Validation des fichiers
+      const validation = photoUploadService.validateFiles(filesToAdd);
+      if (!validation.isValid) {
+        console.error('Validation échouée:', validation.error);
+        setIsUploading(false);
+        return;
+      }
+
+      // Upload vers Supabase Storage
+      console.log('Upload des fichiers vers Supabase...');
+      const uploadedFiles = await photoUploadService.uploadToSupabase(filesToAdd, 'vehicleAngles');
+      console.log('Fichiers uploadés avec succès:', uploadedFiles);
+      
+      // Ajouter les fichiers uploadés à l'état
+      onPhotosChange([...photos, ...uploadedFiles]);
+      
+    } catch (error) {
+      console.error('Erreur lors de l\'upload:', error);
+      // En cas d'erreur, on ajoute quand même les fichiers localement
+      onPhotosChange([...photos, ...filesToAdd]);
+    } finally {
+      setIsUploading(false);
+    }
   };
   const removePhoto = (index: number) => {
     onPhotosChange(photos.filter((_, i) => i !== index));
@@ -440,10 +473,19 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
                   <div className="aspect-[4/3] bg-muted relative">
                     <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id={`${inputId}-${angle.id}`} disabled={photos.length >= maxFiles} />
                     <label htmlFor={`${inputId}-${angle.id}`} className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
-                      <div className="text-center">
-                        <Camera className="w-8 h-8 mx-auto mb-2 text-primary" />
-                        <p className="text-xs text-muted-foreground">Cliquer pour uploader</p>
-                      </div>
+                 <div className="text-center">
+                   {isUploading ? (
+                     <>
+                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto mb-1"></div>
+                       <p className="text-xs text-muted-foreground">Upload en cours...</p>
+                     </>
+                   ) : (
+                     <>
+                       <Camera className="w-8 h-8 mx-auto mb-2 text-primary" />
+                       <p className="text-xs text-muted-foreground">Cliquer pour uploader</p>
+                     </>
+                   )}
+                 </div>
                     </label>
                   </div>
                 </div>

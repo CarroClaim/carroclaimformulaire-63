@@ -84,7 +84,10 @@ const MultiStepFormContent: React.FC = () => {
    * Utilise le service de soumission via le contexte
    */
   const handleSubmit = async () => {
+    if (isLoading) return; // Empêcher les double-clics
+    
     try {
+      console.log('Début de soumission du formulaire...');
       const success = await submitForm();
       if (success) {
         toast({
@@ -94,9 +97,10 @@ const MultiStepFormContent: React.FC = () => {
         });
       }
     } catch (error) {
+      console.error('Erreur lors de la soumission:', error);
       toast({
         title: "❌ Erreur de soumission",
-        description: "Une erreur s'est produite. Veuillez réessayer.",
+        description: error instanceof Error ? error.message : "Une erreur s'est produite. Veuillez réessayer.",
         variant: "destructive",
         duration: 5000
       });
@@ -536,9 +540,18 @@ const MultiStepFormContent: React.FC = () => {
                 Exporter le rapport PDF
               </Button>
 
-              <Button onClick={submitForm} variant="accent" size="lg" className="px-8 sm:px-12">
-                <Send className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                Envoyer ma demande
+              <Button onClick={handleSubmit} variant="accent" size="lg" className="px-8 sm:px-12" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Envoi en cours...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                    Envoyer ma demande
+                  </>
+                )}
               </Button>
             </div>
           </div>;
