@@ -1,40 +1,42 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { AlertCircle, Calendar, Camera, Car, CheckCircle, ChevronLeft, ChevronRight, Clock, FileText, Image, Mail, MapPin, Phone, Settings, User, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import CarDamageSelector, { CarDamageSelectorHandle } from '@/components/CarDamageSelector';
+import { FormProvider, useFormContext } from '@/context/FormContext';
+import CarDamageSelector from '@/components/CarDamageSelector';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import { StepProgress } from '@/components/StepProgress';
-import { FormData, Step } from '@/types/form';
+import { Step } from '@/types/form';
 import { useToast } from '@/hooks/use-toast';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { saveAs } from 'file-saver';
-export const MultiStepForm: React.FC = () => {
+/**
+ * COMPOSANT PRINCIPAL DU FORMULAIRE MULTI-ÉTAPES
+ * 
+ * Ce composant orchestre l'ensemble du formulaire avec :
+ * - Gestion d'état centralisée via FormContext
+ * - Intégration du thème corporate DaisyUI
+ * - Validation automatique et navigation intelligente
+ * - Upload et gestion des photos via Supabase
+ */
+
+// Composant interne utilisant le contexte
+const MultiStepFormContent: React.FC = () => {
   const { toast } = useToast();
-  const carMapRef = useRef<CarDamageSelectorHandle | null>(null);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState<FormData>({
-    requestType: '',
-    selectedDamages: [],
-    photos: {
-      registration: [],
-      mileage: [],
-      vehicleAngles: [],
-      damagePhotosClose: [],
-      damagePhotosFar: []
-    },
-    contact: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      address: '',
-      city: '',
-      postalCode: ''
-    },
-    description: '',
-    preferredDate: '',
-    preferredTime: ''
-  });
+  const {
+    currentStep,
+    formData,
+    nextStep,
+    prevStep,
+    updateFormData,
+    updatePhotos,
+    updateContact,
+    canProceedToNextStep,
+    submitForm,
+    error,
+    isLoading,
+    validationErrors
+  } = useFormContext();
+  // Définition des étapes avec icônes
   const steps: Step[] = [{
     id: 'preparation',
     title: 'Préparation',
@@ -64,97 +66,70 @@ export const MultiStepForm: React.FC = () => {
     title: 'Validation',
     icon: CheckCircle
   }];
-  const nextStep = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-  const prevStep = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-  const updateFormData = (field: keyof FormData, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-  const updatePhotos = (category: keyof FormData['photos'], photos: File[]) => {
-    setFormData(prev => ({
-      ...prev,
-      photos: {
-        ...prev.photos,
-        [category]: photos
-      }
-    }));
-  };
-  const updateContact = (field: keyof FormData['contact'], value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      contact: {
-        ...prev.contact,
-        [field]: value
-      }
-    }));
-  };
+
+  /**
+   * GESTION DE LA SÉLECTION DES DOMMAGES
+   * Logique pour sélectionner/désélectionner les zones endommagées
+   */
   const handleDamageSelect = (areaId: string) => {
-    const selectedDamages = formData.selectedDamages.includes(areaId) ? formData.selectedDamages.filter(id => id !== areaId) : [...formData.selectedDamages, areaId];
+    const selectedDamages = formData.selectedDamages.includes(areaId) 
+      ? formData.selectedDamages.filter(id => id !== areaId) 
+      : [...formData.selectedDamages, areaId];
     updateFormData('selectedDamages', selectedDamages);
   };
-  const submitForm = () => {
-    toast({
-      title: "Demande envoyée avec succès !",
-      description: "Nous vous contacterons dans les plus brefs délais."
-    });
 
-    // Reset form
-    setCurrentStep(0);
-    setFormData({
-      requestType: '',
-      selectedDamages: [],
-      photos: {
-        registration: [],
-        mileage: [],
-        vehicleAngles: [],
-        damagePhotosClose: [],
-        damagePhotosFar: []
-      },
-      contact: {
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        address: '',
-        city: '',
-        postalCode: ''
-      },
-      description: '',
-      preferredDate: '',
-      preferredTime: ''
-    });
+  /**
+   * SOUMISSION DU FORMULAIRE AVEC GESTION D'ERREURS
+   * Utilise le service de soumission via le contexte
+   */
+  const handleSubmit = async () => {
+    try {
+      const success = await submitForm();
+      if (success) {
+        toast({
+          title: "✅ Demande envoyée avec succès !",
+          description: "Nous vous contacterons dans les plus brefs délais.",
+          duration: 5000
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "❌ Erreur de soumission",
+        description: "Une erreur s'est produite. Veuillez réessayer.",
+        variant: "destructive",
+        duration: 5000
+      });
+    }
   };
 
+  /**
+   * GÉNÉRATION ET EXPORT DU RAPPORT PDF
+   * Génère un PDF avec les informations et le schéma des dommages
+   */
   const exportReportPDF = async () => {
     try {
-      // 1) Récupérer le PNG du sélecteur
-      const pngBlob = await carMapRef.current?.exportPNG({ scale: 2, background: '#ffffff' });
-      if (!pngBlob) throw new Error('PNG non généré');
+      // Référence au composant de sélection des dommages
+      const carSelectorElement = document.querySelector('[data-car-selector]') as any;
+      
+      if (!carSelectorElement?.exportPNG) {
+        throw new Error('Composant de sélection des dommages non trouvé');
+      }
 
+      // Génération du PNG via l'API du composant
+      const pngBlob = await carSelectorElement.exportPNG({ scale: 2, background: '#ffffff' });
       const pngArrayBuffer = await pngBlob.arrayBuffer();
 
-      // 2) Créer le PDF
+      // Création du document PDF
       const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage([595.28, 841.89]); // A4 portrait en points (72dpi)
-
+      const page = pdfDoc.addPage([595.28, 841.89]); // A4 portrait
       const { width: pw, height: ph } = page.getSize();
 
-      // 3) Titre + métadonnées
+      // Ajout du titre et des informations
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const title = "Rapport d'expertise – Dommages sélectionnés";
       page.drawText(title, { x: 40, y: ph - 60, size: 16, font, color: rgb(0,0,0) });
 
-      // Infos contact (exemple)
+      // Informations du contact et de la demande
       const lines = [
         `Nom: ${formData.contact.firstName || ''} ${formData.contact.lastName || ''}`.trim(),
         `Email: ${formData.contact.email || '-'}`,
@@ -170,12 +145,10 @@ export const MultiStepForm: React.FC = () => {
         y -= 14;
       });
 
-      // 4) Image du schéma (PNG)
+      // Intégration de l'image du schéma
       const pngImage = await pdfDoc.embedPng(pngArrayBuffer);
-
-      // On occupe la largeur (avec marges), en respectant le ratio
-      const maxImgWidth = pw - 80;   // marges 40
-      const maxImgHeight = ph/2;     // demi-page environ
+      const maxImgWidth = pw - 80;
+      const maxImgHeight = ph / 2;
       const imgRatio = pngImage.width / pngImage.height;
 
       let imgW = maxImgWidth;
@@ -187,29 +160,29 @@ export const MultiStepForm: React.FC = () => {
 
       page.drawImage(pngImage, {
         x: 40,
-        y: y - imgH - 20, // un peu d'espace après le bloc texte
+        y: y - imgH - 20,
         width: imgW,
         height: imgH,
       });
 
-      // 5) Sauvegarde
+      // Téléchargement du PDF
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-
-      // Télécharger côté client
       saveAs(blob, `rapport-expertise-${Date.now()}.pdf`);
 
       toast({
-        title: "Rapport PDF généré !",
-        description: "Le rapport a été téléchargé avec succès."
+        title: "✅ Rapport PDF généré !",
+        description: "Le rapport a été téléchargé avec succès.",
+        duration: 3000
       });
 
     } catch (e) {
       console.error(e);
       toast({
-        title: "Erreur",
+        title: "❌ Erreur",
         description: "Impossible de générer le rapport PDF.",
-        variant: "destructive"
+        variant: "destructive",
+        duration: 5000
       });
     }
   };
@@ -340,7 +313,7 @@ export const MultiStepForm: React.FC = () => {
             </div>
 
             <CarDamageSelector 
-              ref={carMapRef}
+              data-car-selector="true"
               selectedAreas={formData.selectedDamages} 
               onAreaSelect={handleDamageSelect} 
             />
@@ -576,7 +549,7 @@ export const MultiStepForm: React.FC = () => {
               {currentStep + 1} / {steps.length}
             </div>
 
-            {currentStep < steps.length - 1 ? <Button onClick={nextStep} disabled={!canProceed()} className="text-xs sm:text-sm px-3 py-2 min-w-0">
+            {currentStep < steps.length - 1 ? <Button onClick={nextStep} disabled={!canProceedToNextStep()} className="text-xs sm:text-sm px-3 py-2 min-w-0">
                 Suivant
                 <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
               </Button> : <div className="min-w-0" />}
@@ -584,4 +557,15 @@ export const MultiStepForm: React.FC = () => {
         </div>
       </div>
     </div>;
+};
+
+// Composant principal avec Provider
+export const MultiStepForm: React.FC = () => {
+  return (
+    <FormProvider>
+      <div data-theme="corporate" className="min-h-screen">
+        <MultiStepFormContent />
+      </div>
+    </FormProvider>
+  );
 };

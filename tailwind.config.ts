@@ -121,5 +121,48 @@ export default {
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [require("tailwindcss-animate"), require("daisyui")],
+	daisyui: {
+		themes: [
+			{
+				corporate: {
+					"primary": "hsl(217 91% 60%)",
+					"primary-focus": "hsl(217 91% 50%)", 
+					"primary-content": "hsl(0 0% 100%)",
+					"secondary": "hsl(210 40% 96%)",
+					"secondary-focus": "hsl(210 40% 86%)",
+					"secondary-content": "hsl(222 84% 5%)",
+					"accent": "hsl(199 89% 48%)",
+					"accent-focus": "hsl(199 89% 38%)",
+					"accent-content": "hsl(0 0% 100%)",
+					"neutral": "hsl(215 16% 47%)",
+					"neutral-focus": "hsl(215 16% 37%)",
+					"neutral-content": "hsl(0 0% 100%)",
+					"base-100": "hsl(0 0% 100%)",
+					"base-200": "hsl(210 40% 98%)",
+					"base-300": "hsl(210 40% 96%)",
+					"base-content": "hsl(222 84% 5%)",
+					"info": "hsl(199 89% 48%)",
+					"info-content": "hsl(0 0% 100%)",
+					"success": "hsl(142 76% 36%)",
+					"success-content": "hsl(0 0% 100%)",
+					"warning": "hsl(43 96% 56%)",
+					"warning-content": "hsl(222 84% 5%)",
+					"error": "hsl(0 84% 60%)",
+					"error-content": "hsl(0 0% 100%)",
+					"--rounded-box": "0.75rem",
+					"--rounded-btn": "0.5rem",
+					"--rounded-badge": "1.9rem",
+					"--animation-btn": "0.25s",
+					"--animation-input": "0.2s",
+					"--btn-text-case": "uppercase",
+					"--navbar-padding": "0.5rem",
+					"--border-btn": "2px"
+				}
+			}
+		],
+		base: false, // Désactive les styles de base DaisyUI pour garder les nôtres
+		styled: true,
+		utils: true
+	},
 } satisfies Config;
