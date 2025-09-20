@@ -339,10 +339,26 @@ const MultiStepFormContent: React.FC = () => {
               <p className="text-sm sm:text-lg text-muted-foreground">Ajoutez les photos de vos documents :</p>
             </div>
 
-            <div className="space-y-4 sm:space-y-8">
-              <PhotoUpload label="Carte grise" description="1 photo claire de votre carte grise (recto)" photos={formData.photos.registration} onPhotosChange={photos => updatePhotos('registration', photos)} maxFiles={1} showDocumentExamples={true} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+              <PhotoUpload 
+                label="CARTE GRISE" 
+                description="Document d'immatriculation" 
+                photos={formData.photos.registration} 
+                onPhotosChange={photos => updatePhotos('registration', photos)} 
+                maxFiles={1} 
+                showDocumentExamples={true} 
+                documentType="carte-grise" 
+              />
 
-              <PhotoUpload label="Compteur kilométrique" description="1 photo du tableau de bord montrant le kilométrage actuel" photos={formData.photos.mileage} onPhotosChange={photos => updatePhotos('mileage', photos)} maxFiles={1} showDocumentExamples={true} documentType="compteur" />
+              <PhotoUpload 
+                label="COMPTEUR OFFICIEL" 
+                description="Kilométrage du véhicule" 
+                photos={formData.photos.mileage} 
+                onPhotosChange={photos => updatePhotos('mileage', photos)} 
+                maxFiles={1} 
+                showDocumentExamples={true} 
+                documentType="compteur" 
+              />
             </div>
 
           </div>;

@@ -75,15 +75,86 @@ const VehicleAngleGuide = () => {
       </div>
     </div>;
 };
-const DocumentExampleGuide = () => {
-  return <div className="space-y-3">
+const DocumentExampleGuide = ({ documentType }: { documentType?: string }) => {
+  if (documentType === 'carte-grise') {
+    return (
+      <div className="space-y-3">
+        <div className="text-center mb-2">
+          <h4 className="text-xs font-semibold text-foreground mb-1">Exemples</h4>
+          <p className="text-xs text-muted-foreground">Document d'immatriculation</p>
+        </div>
+        
+        <div className="bg-card rounded-lg border border-border overflow-hidden">
+          <div className="aspect-[4/3] bg-muted">
+            <img src={carteGrisseExample} alt="Exemple de carte grise suisse" className="w-full h-full object-cover" />
+          </div>
+        </div>
+        
+        <div className="bg-info/10 border border-info/20 rounded-lg p-2">
+          <div className="flex items-start space-x-2">
+            <Camera className="w-3 h-3 text-info flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-xs font-medium text-info">Conseils :</p>
+              <ul className="text-xs text-info/80 mt-1 space-y-0.5">
+                <li>• Documents lisibles</li>
+                <li>• Pas de reflets</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (documentType === 'compteur') {
+    return (
+      <div className="space-y-3">
+        <div className="text-center mb-2">
+          <h4 className="text-xs font-semibold text-foreground mb-1">Exemples</h4>
+          <p className="text-xs text-muted-foreground">Compteur kilométrique</p>
+        </div>
+        
+        <div className="space-y-2">
+          <div className="bg-card rounded-lg border border-border overflow-hidden">
+            <div className="aspect-[4/3] bg-muted">
+              <img src={compteurExample} alt="Exemple de compteur analogique" className="w-full h-full object-cover" />
+            </div>
+          </div>
+          <div className="bg-card rounded-lg border border-border overflow-hidden">
+            <div className="aspect-[4/3] bg-muted flex items-center justify-center">
+              <div className="bg-slate-800 text-blue-400 p-4 rounded text-center font-mono">
+                <div className="text-2xl font-bold">123456</div>
+                <div className="text-xs">km</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-info/10 border border-info/20 rounded-lg p-2">
+          <div className="flex items-start space-x-2">
+            <Camera className="w-3 h-3 text-info flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-xs font-medium text-info">Conseils :</p>
+              <ul className="text-xs text-info/80 mt-1 space-y-0.5">
+                <li>• Kilométrage lisible</li>
+                <li>• Photo nette du tableau de bord</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Fallback for 'both' or undefined
+  return (
+    <div className="space-y-3">
       <div className="text-center mb-2">
         <h4 className="text-xs font-semibold text-foreground mb-1">Exemples</h4>
         <p className="text-xs text-muted-foreground">Documents lisibles</p>
       </div>
       
       <div className="grid grid-cols-1 gap-2">
-        {/* Exemple carte grise */}
         <div className="bg-card rounded-lg border border-border overflow-hidden">
           <div className="p-2 bg-muted/50">
             <h5 className="text-xs font-semibold text-foreground mb-1">Carte grise</h5>
@@ -93,7 +164,6 @@ const DocumentExampleGuide = () => {
           </div>
         </div>
 
-        {/* Exemple compteur */}
         <div className="bg-card rounded-lg border border-border overflow-hidden">
           <div className="p-2 bg-muted/50">
             <h5 className="text-xs font-semibold text-foreground mb-1">Compteur</h5>
@@ -116,7 +186,8 @@ const DocumentExampleGuide = () => {
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
 
 const DamageExampleGuide = () => {
@@ -284,49 +355,45 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
     if (showDamageExamples || showDocumentExamples) {
       // For damage photos or document photos (simple uploader)
       if (showDocumentExamples) {
-        // Specific uploaders for documents (carte grise + compteur)
+        // Specific uploaders for individual documents
         return (
-          <div className="space-y-3">
-            <div className="text-center mb-2">
-              <p className="text-muted-foreground text-xs text-center font-bold">Télécharger documents</p>
+          <div className="space-y-4">
+            <div className="text-center mb-3">
+              <h3 className="text-sm font-bold text-foreground mb-1">{label}</h3>
+              <p className="text-xs text-muted-foreground">{description}</p>
             </div>
             
-            {/* Combined uploader for both documents */}
+            {/* Upload area */}
             <div className="bg-card rounded-lg border border-border overflow-hidden">
-              <div className="p-2 bg-muted/50">
-                <h5 className="text-xs font-semibold text-foreground mb-1">Documents officiels</h5>
-                <p className="text-xs text-muted-foreground">Carte grise et compteur kilométrique</p>
-              </div>
               <div className="p-3 space-y-3">
                 <input 
                   type="file" 
                   accept="image/*" 
-                  multiple
                   onChange={handleFileChange} 
                   className="hidden" 
-                  id={`${inputId}-documents`} 
+                  id={inputId} 
                   disabled={photos.length >= maxFiles} 
                 />
                 <label 
-                  htmlFor={`${inputId}-documents`} 
+                  htmlFor={inputId} 
                   className="flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors border-2 border-dashed border-muted-foreground/25 rounded-lg p-6"
                 >
                   <div className="text-center">
                     <Camera className="w-8 h-8 mx-auto mb-2 text-primary" />
                     <p className="text-sm font-medium text-foreground">Cliquer pour ajouter des photos</p>
-                    <p className="text-xs text-muted-foreground mt-1">Carte grise et compteur ({photos.length}/{maxFiles} photos)</p>
+                    <p className="text-xs text-muted-foreground mt-1">{photos.length}/{maxFiles} photo{maxFiles > 1 ? 's' : ''}</p>
                   </div>
                 </label>
                 
                 {/* Preview uploaded photos */}
                 {photos.length > 0 && (
-                  <div className="grid grid-cols-2 gap-2 mt-3">
+                  <div className="space-y-2 mt-3">
                     {photos.map((photo, index) => (
                       <div key={index} className="relative group">
                         <div className="aspect-[4/3] bg-muted rounded-lg overflow-hidden">
                           <img 
                             src={URL.createObjectURL(photo)} 
-                            alt={`Document ${index + 1}`} 
+                            alt={`${label} ${index + 1}`} 
                             className="w-full h-full object-cover"
                           />
                         </div>
@@ -336,7 +403,7 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
                         >
                           <X className="w-3 h-3" />
                         </button>
-                        <p className="text-xs text-muted-foreground text-center mt-1">
+                        <p className="text-xs text-muted-foreground text-center mt-1 truncate">
                           {photo.name}
                         </p>
                       </div>
@@ -345,18 +412,6 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
                 )}
               </div>
             </div>
-
-            {photos.length > 0 && (
-              <div className="bg-info/10 border border-info/20 rounded-lg p-2">
-                <div className="flex items-start space-x-2">
-                  <Camera className="w-3 h-3 text-info flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-xs font-medium text-info">Photos ajoutées:</p>
-                    <p className="text-xs text-info/80 mt-1">{photos.length}/{maxFiles} photo{maxFiles > 1 ? 's' : ''}</p>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         );
       }
@@ -412,30 +467,46 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
 
     return null;
   };
-  return <div className="space-y-4 mx-0">
-      
-
-      {showGuide ? <div className="grid grid-cols-2 gap-2 md:gap-6">
+  return (
+    <div className="space-y-4 mx-0">
+      {showGuide ? (
+        <div className="grid grid-cols-2 gap-2 md:gap-6">
           <div>
             <VehicleAngleGuide />
           </div>
           <div>
             {renderUploadArea()}
           </div>
-        </div> : showDocumentExamples ? <div className="grid grid-cols-2 gap-4 items-start">
-          <div className="space-y-3">
-            <DocumentExampleGuide />
+        </div>
+      ) : showDocumentExamples ? (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-4 items-start">
+            <div className="space-y-3">
+              <DocumentExampleGuide documentType={documentType} />
+            </div>
+            <div className="space-y-3">
+              {renderUploadArea()}
+            </div>
           </div>
-          <div className="space-y-3">
-            {renderUploadArea()}
-          </div>
-        </div> : showDamageExamples ? <div className="grid grid-cols-2 gap-4 items-start">
+        </div>
+      ) : showDamageExamples ? (
+        <div className="grid grid-cols-2 gap-4 items-start">
           <div className="space-y-3">
             <DamageExampleGuide />
           </div>
           <div className="space-y-3">
             {renderUploadArea()}
           </div>
-        </div> : null}
-    </div>;
+        </div>
+      ) : (
+        <div>
+          <div className="mb-3">
+            <h3 className="text-sm font-semibold text-foreground mb-1">{label}</h3>
+            {description && <p className="text-xs text-muted-foreground">{description}</p>}
+          </div>
+          {renderUploadArea()}
+        </div>
+      )}
+    </div>
+  );
 };
