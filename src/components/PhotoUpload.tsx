@@ -79,10 +79,13 @@ const VehicleAngleGuide = () => {
       </div>
     </div>;
 };
-const DocumentExampleGuide = ({ documentType }: { documentType?: string }) => {
+const DocumentExampleGuide = ({
+  documentType
+}: {
+  documentType?: string;
+}) => {
   if (documentType === 'carte-grise') {
-    return (
-      <div className="space-y-3">
+    return <div className="space-y-3">
         <div className="text-center mb-2">
           <h4 className="text-xs font-semibold text-foreground mb-1">Exemples</h4>
           <p className="text-xs text-muted-foreground">Document d'immatriculation</p>
@@ -106,13 +109,10 @@ const DocumentExampleGuide = ({ documentType }: { documentType?: string }) => {
             </div>
           </div>
         </div>
-      </div>
-    );
+      </div>;
   }
-
   if (documentType === 'compteur') {
-    return (
-      <div className="space-y-3">
+    return <div className="space-y-3">
         <div className="text-center mb-2">
           <h4 className="text-xs font-semibold text-foreground mb-1">Exemples</h4>
           <p className="text-xs text-muted-foreground">Compteur kilométrique</p>
@@ -125,12 +125,7 @@ const DocumentExampleGuide = ({ documentType }: { documentType?: string }) => {
             </div>
           </div>
           <div className="bg-card rounded-lg border border-border overflow-hidden">
-            <div className="aspect-[4/3] bg-muted flex items-center justify-center">
-              <div className="bg-slate-800 text-blue-400 p-4 rounded text-center font-mono">
-                <div className="text-2xl font-bold">123456</div>
-                <div className="text-xs">km</div>
-              </div>
-            </div>
+            
           </div>
         </div>
         
@@ -146,13 +141,11 @@ const DocumentExampleGuide = ({ documentType }: { documentType?: string }) => {
             </div>
           </div>
         </div>
-      </div>
-    );
+      </div>;
   }
 
   // Fallback for 'both' or undefined
-  return (
-    <div className="space-y-3">
+  return <div className="space-y-3">
       <div className="text-center mb-2">
         <h4 className="text-xs font-semibold text-foreground mb-1">Exemples</h4>
         <p className="text-xs text-muted-foreground">Documents lisibles</p>
@@ -190,13 +183,10 @@ const DocumentExampleGuide = ({ documentType }: { documentType?: string }) => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 const DamageExampleGuide = () => {
-  return (
-    <div className="space-y-3">
+  return <div className="space-y-3">
       <div className="text-center mb-2">
         <h4 className="text-xs font-semibold text-foreground mb-1">Exemples</h4>
         <p className="text-xs text-muted-foreground">Photos de dommages</p>
@@ -242,8 +232,7 @@ const DamageExampleGuide = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
 export const PhotoUpload: React.FC<PhotoUploadProps> = ({
   label,
@@ -269,31 +258,24 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
   const renderUploadArea = () => {
     if (showGuide) {
       // For vehicle angles (4 angles) - Grid layout matching reference
-      const vehicleAngles = [
-        { 
-          name: 'Photo de l\'avant-gauche', 
-          image: carFrontLeft,
-          id: 'avant-gauche' 
-        },
-        { 
-          name: 'Photo de l\'arrière-gauche', 
-          image: carRearLeft,
-          id: 'arriere-gauche' 
-        },
-        { 
-          name: 'Photo de l\'arrière-droit', 
-          image: carRearRight,
-          id: 'arriere-droit' 
-        },
-        { 
-          name: 'Photo de l\'avant-droit', 
-          image: carFrontRight,
-          id: 'avant-droit' 
-        }
-      ];
-
-      return (
-        <div className="space-y-4">
+      const vehicleAngles = [{
+        name: 'Photo de l\'avant-gauche',
+        image: carFrontLeft,
+        id: 'avant-gauche'
+      }, {
+        name: 'Photo de l\'arrière-gauche',
+        image: carRearLeft,
+        id: 'arriere-gauche'
+      }, {
+        name: 'Photo de l\'arrière-droit',
+        image: carRearRight,
+        id: 'arriere-droit'
+      }, {
+        name: 'Photo de l\'avant-droit',
+        image: carFrontRight,
+        id: 'avant-droit'
+      }];
+      return <div className="space-y-4">
           {/* Header row */}
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center">
@@ -306,8 +288,7 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
 
           {/* 4 rows for each vehicle angle */}
           <div className="space-y-4">
-            {vehicleAngles.map((angle, index) => (
-              <div key={angle.id} className="grid grid-cols-2 gap-4">
+            {vehicleAngles.map((angle, index) => <div key={angle.id} className="grid grid-cols-2 gap-4">
                 {/* Example column */}
                 <div className="bg-card rounded-lg border border-border overflow-hidden">
                   <div className="p-2 bg-muted/50">
@@ -315,11 +296,7 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
                   </div>
                   <div className="aspect-[4/3] bg-muted flex items-center justify-center">
                     <div className="text-center p-2">
-                      <img 
-                        src={angle.image} 
-                        alt={angle.name}
-                        className="w-20 h-16 object-contain mx-auto filter drop-shadow-sm"
-                      />
+                      <img src={angle.image} alt={angle.name} className="w-20 h-16 object-contain mx-auto filter drop-shadow-sm" />
                     </div>
                   </div>
                 </div>
@@ -330,18 +307,8 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
                     <h5 className="text-xs font-semibold text-foreground">{angle.name}</h5>
                   </div>
                   <div className="aspect-[4/3] bg-muted relative">
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      onChange={handleFileChange} 
-                      className="hidden" 
-                      id={`${inputId}-${angle.id}`} 
-                      disabled={photos.length >= maxFiles} 
-                    />
-                    <label 
-                      htmlFor={`${inputId}-${angle.id}`} 
-                      className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors"
-                    >
+                    <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id={`${inputId}-${angle.id}`} disabled={photos.length >= maxFiles} />
+                    <label htmlFor={`${inputId}-${angle.id}`} className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
                       <div className="text-center">
                         <Camera className="w-8 h-8 mx-auto mb-2 text-primary" />
                         <p className="text-xs text-muted-foreground">Cliquer pour uploader</p>
@@ -349,13 +316,11 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
                     </label>
                   </div>
                 </div>
-              </div>
-            ))}
+              </div>)}
           </div>
 
           {/* Status indicator */}
-          {photos.length > 0 && (
-            <div className="bg-info/10 border border-info/20 rounded-lg p-3 mt-4">
+          {photos.length > 0 && <div className="bg-info/10 border border-info/20 rounded-lg p-3 mt-4">
               <div className="flex items-start space-x-2">
                 <Camera className="w-4 h-4 text-info flex-shrink-0 mt-0.5" />
                 <div>
@@ -365,18 +330,14 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
                   </p>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
-      );
+            </div>}
+        </div>;
     }
-
     if (showDamageExamples || showDocumentExamples) {
       // For damage photos or document photos (simple uploader)
       if (showDocumentExamples) {
         // Specific uploaders for individual documents
-        return (
-          <div className="space-y-4">
+        return <div className="space-y-4">
             <div className="text-center mb-3">
               <h3 className="text-sm font-bold text-foreground mb-1">{label}</h3>
               <p className="text-xs text-muted-foreground">{description}</p>
@@ -385,18 +346,8 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
             {/* Upload area */}
             <div className="bg-card rounded-lg border border-border overflow-hidden">
               <div className="p-3 space-y-3">
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  onChange={handleFileChange} 
-                  className="hidden" 
-                  id={inputId} 
-                  disabled={photos.length >= maxFiles} 
-                />
-                <label 
-                  htmlFor={inputId} 
-                  className="flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors border-2 border-dashed border-muted-foreground/25 rounded-lg p-6"
-                >
+                <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id={inputId} disabled={photos.length >= maxFiles} />
+                <label htmlFor={inputId} className="flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors border-2 border-dashed border-muted-foreground/25 rounded-lg p-6">
                   <div className="text-center">
                     <Camera className="w-8 h-8 mx-auto mb-2 text-primary" />
                     <p className="text-sm font-medium text-foreground">Cliquer pour ajouter des photos</p>
@@ -405,39 +356,26 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
                 </label>
                 
                 {/* Preview uploaded photos */}
-                {photos.length > 0 && (
-                  <div className="space-y-2 mt-3">
-                    {photos.map((photo, index) => (
-                      <div key={index} className="relative group">
+                {photos.length > 0 && <div className="space-y-2 mt-3">
+                    {photos.map((photo, index) => <div key={index} className="relative group">
                         <div className="aspect-[4/3] bg-muted rounded-lg overflow-hidden">
-                          <img 
-                            src={URL.createObjectURL(photo)} 
-                            alt={`${label} ${index + 1}`} 
-                            className="w-full h-full object-cover"
-                          />
+                          <img src={URL.createObjectURL(photo)} alt={`${label} ${index + 1}`} className="w-full h-full object-cover" />
                         </div>
-                        <button
-                          onClick={() => removePhoto(index)}
-                          className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
+                        <button onClick={() => removePhoto(index)} className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <X className="w-3 h-3" />
                         </button>
                         <p className="text-xs text-muted-foreground text-center mt-1 truncate">
                           {photo.name}
                         </p>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                      </div>)}
+                  </div>}
               </div>
             </div>
-          </div>
-        );
+          </div>;
       }
 
       // For damage photos (simple uploader)
-      return (
-        <div className="space-y-3">
+      return <div className="space-y-3">
           <div className="text-center mb-2">
             <p className="text-muted-foreground text-xs text-center font-bold">Télécharger photos</p>
           </div>
@@ -447,19 +385,8 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
               <h5 className="text-xs font-semibold text-foreground mb-1">{label}</h5>
             </div>
             <div className="aspect-[4/3] bg-muted relative">
-              <input 
-                type="file" 
-                accept="image/*" 
-                multiple
-                onChange={handleFileChange} 
-                className="hidden" 
-                id={inputId} 
-                disabled={photos.length >= maxFiles} 
-              />
-              <label 
-                htmlFor={inputId} 
-                className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors"
-              >
+              <input type="file" accept="image/*" multiple onChange={handleFileChange} className="hidden" id={inputId} disabled={photos.length >= maxFiles} />
+              <label htmlFor={inputId} className="absolute inset-0 flex items-center justify-center cursor-pointer hover:bg-primary/5 transition-colors">
                 <div className="text-center">
                   <Camera className="w-6 h-6 mx-auto mb-1 text-primary" />
                   <p className="text-xs text-muted-foreground">Cliquer pour uploader</p>
@@ -469,8 +396,7 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
             </div>
           </div>
 
-          {photos.length > 0 && (
-            <div className="bg-info/10 border border-info/20 rounded-lg p-2">
+          {photos.length > 0 && <div className="bg-info/10 border border-info/20 rounded-lg p-2">
               <div className="flex items-start space-x-2">
                 <Camera className="w-3 h-3 text-info flex-shrink-0 mt-0.5" />
                 <div>
@@ -478,22 +404,15 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
                   <p className="text-xs text-info/80 mt-1">{photos.length}/{maxFiles} photo{maxFiles > 1 ? 's' : ''}</p>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
-      );
+            </div>}
+        </div>;
     }
-
     return null;
   };
-  return (
-    <div className="space-y-4 mx-0">
-      {showGuide ? (
-        <div className="w-full">
+  return <div className="space-y-4 mx-0">
+      {showGuide ? <div className="w-full">
           {renderUploadArea()}
-        </div>
-      ) : showDocumentExamples ? (
-        <div className="space-y-4">
+        </div> : showDocumentExamples ? <div className="space-y-4">
           <div className="grid grid-cols-1 gap-4 items-start">
             <div className="space-y-3">
               <DocumentExampleGuide documentType={documentType} />
@@ -502,25 +421,19 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
               {renderUploadArea()}
             </div>
           </div>
-        </div>
-      ) : showDamageExamples ? (
-        <div className="grid grid-cols-2 gap-4 items-start">
+        </div> : showDamageExamples ? <div className="grid grid-cols-2 gap-4 items-start">
           <div className="space-y-3">
             <DamageExampleGuide />
           </div>
           <div className="space-y-3">
             {renderUploadArea()}
           </div>
-        </div>
-      ) : (
-        <div>
+        </div> : <div>
           <div className="mb-3">
             <h3 className="text-sm font-semibold text-foreground mb-1">{label}</h3>
             {description && <p className="text-xs text-muted-foreground">{description}</p>}
           </div>
           {renderUploadArea()}
-        </div>
-      )}
-    </div>
-  );
+        </div>}
+    </div>;
 };
