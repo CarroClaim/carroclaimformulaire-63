@@ -143,8 +143,8 @@ class FormSubmissionService {
       damagePhotosFar: this.extractPhotoUrls(formData.photos.damagePhotosFar)
     };
 
-    // Génération de l'ID unique
-    const submissionId = `claim_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    // L'ID sera généré automatiquement par Supabase (UUID)
+    // const submissionId = `claim_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     // Collecte des métadonnées
     const metadata = {
@@ -155,7 +155,7 @@ class FormSubmissionService {
     };
 
     return {
-      id: submissionId,
+      id: '', // L'ID sera généré par Supabase
       requestType: formData.requestType as 'quote' | 'appointment',
       selectedDamages: formData.selectedDamages,
       photoUrls,
@@ -176,10 +176,10 @@ class FormSubmissionService {
   private async saveToDatabase(submissionData: SubmissionData): Promise<string> {
     try {
       // Insertion de la demande principale dans la table 'requests'
+      // On ne spécifie pas l'ID, Supabase génèrera automatiquement un UUID
       const { data: requestData, error: requestError } = await supabase
         .from('requests')
         .insert([{
-          id: submissionData.id,
           first_name: submissionData.contact.firstName,
           last_name: submissionData.contact.lastName,
           email: submissionData.contact.email,
@@ -200,14 +200,20 @@ class FormSubmissionService {
         throw new Error(`Erreur sauvegarde request: ${requestError.message}`);
       }
 
+      if (!requestData?.id) {
+        throw new Error('ID de la demande non récupéré après insertion');
+      }
+
+      const generatedRequestId = requestData.id;
+
       // Sauvegarde des dommages sélectionnés
-      await this.saveDamages(submissionData.id, submissionData.selectedDamages);
+      await this.saveDamages(generatedRequestId, submissionData.selectedDamages);
 
       // Sauvegarde des URLs des photos
-      await this.savePhotoUrls(submissionData.id, submissionData.photoUrls);
+      await this.savePhotoUrls(generatedRequestId, submissionData.photoUrls);
 
       console.log('Données sauvegardées avec succès:', requestData);
-      return submissionData.id;
+      return generatedRequestId;
 
     } catch (error) {
       console.error('Erreur sauvegarde base de données:', error);
