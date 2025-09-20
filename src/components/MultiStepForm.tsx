@@ -559,7 +559,13 @@ const MultiStepFormContent: React.FC = () => {
     </div>;
 };
 
-// Composant principal avec Provider
+// Temporary simple export for debugging
+export const MultiStepForm: React.FC = () => {
+  return <div>MultiStepForm Loading...</div>;
+};
+
+// Original complex component (commented out temporarily)
+/*
 export const MultiStepForm: React.FC = () => {
   return (
     <FormProvider>
@@ -569,3 +575,4 @@ export const MultiStepForm: React.FC = () => {
     </FormProvider>
   );
 };
+*/
