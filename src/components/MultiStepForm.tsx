@@ -559,9 +559,13 @@ const MultiStepFormContent: React.FC = () => {
     </div>;
 };
 
-// Temporary simple export for debugging
+// Test with FormProvider only (no services)
 export const MultiStepForm: React.FC = () => {
-  return <div>MultiStepForm Loading...</div>;
+  return (
+    <div data-theme="corporate" className="min-h-screen">
+      <div>FormProvider Test</div>
+    </div>
+  );
 };
 
 // Original complex component (commented out temporarily)
