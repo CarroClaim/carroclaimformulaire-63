@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { AlertCircle, Calendar, Camera, Car, CheckCircle, ChevronLeft, ChevronRight, Clock, FileText, Image, Mail, MapPin, Phone, Settings, User, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { FormProvider, useFormContext } from '@/context/FormContext';
@@ -22,6 +22,7 @@ import { saveAs } from 'file-saver';
 // Composant interne utilisant le contexte
 const MultiStepFormContent: React.FC = () => {
   const { toast } = useToast();
+  const carSelectorRef = useRef<any>(null);
   const {
     currentStep,
     formData,
@@ -109,14 +110,12 @@ const MultiStepFormContent: React.FC = () => {
   const exportReportPDF = async () => {
     try {
       // Référence au composant de sélection des dommages
-      const carSelectorElement = document.querySelector('[data-car-selector]') as any;
-      
-      if (!carSelectorElement?.exportPNG) {
+      if (!carSelectorRef.current?.exportPNG) {
         throw new Error('Composant de sélection des dommages non trouvé');
       }
 
       // Génération du PNG via l'API du composant
-      const pngBlob = await carSelectorElement.exportPNG({ scale: 2, background: '#ffffff' });
+      const pngBlob = await carSelectorRef.current.exportPNG({ scale: 2, background: '#ffffff' });
       const pngArrayBuffer = await pngBlob.arrayBuffer();
 
       // Création du document PDF
@@ -313,7 +312,7 @@ const MultiStepFormContent: React.FC = () => {
             </div>
 
             <CarDamageSelector 
-              data-car-selector="true"
+              ref={carSelectorRef}
               selectedAreas={formData.selectedDamages} 
               onAreaSelect={handleDamageSelect} 
             />
