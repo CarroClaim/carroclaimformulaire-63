@@ -559,12 +559,14 @@ const MultiStepFormContent: React.FC = () => {
     </div>;
 };
 
-// Test with FormProvider only (no services)
+// Test with FormProvider (but no MultiStepFormContent)
 export const MultiStepForm: React.FC = () => {
   return (
-    <div data-theme="corporate" className="min-h-screen">
-      <div>FormProvider Test</div>
-    </div>
+    <FormProvider>
+      <div data-theme="corporate" className="min-h-screen">
+        <div>FormProvider works!</div>
+      </div>
+    </FormProvider>
   );
 };
 
