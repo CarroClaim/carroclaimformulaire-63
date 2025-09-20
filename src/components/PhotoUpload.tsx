@@ -6,6 +6,7 @@ import carRearLeft from '../assets/car-rear-left.png';
 import carFrontLeft from '../assets/car-front-left.png';
 import carRearRight from '../assets/car-rear-right.png';
 import carFrontRight from '../assets/car-front-right.png';
+import damageExampleRearRight from '../assets/damage-example-rear-right.jpg';
 interface PhotoUploadProps {
   label: string;
   description?: string;
@@ -319,10 +320,12 @@ const DamageExampleGuide = () => {
             <h5 className="text-xs font-semibold text-foreground mb-1">Photo rapprochée</h5>
           </div>
           <div className="aspect-[4/3] bg-muted flex items-center justify-center">
-            <div className="text-center">
-              <Camera className="w-6 h-6 text-primary mx-auto mb-1" />
-              <p className="text-xs text-muted-foreground">Détail du dommage</p>
-            </div>
+            <img 
+              src={damageExampleRearRight} 
+              alt="Exemple de dommage arrière droit" 
+              className="object-cover" 
+              style={{ width: '136px', height: '125px' }} 
+            />
           </div>
         </div>
 
