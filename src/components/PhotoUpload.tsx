@@ -296,7 +296,7 @@ export const PhotoUpload: React.FC<PhotoUploadProps> = ({
                   </div>
                   <div className="aspect-[4/3] bg-muted flex items-center justify-center">
                     <div className="text-center p-2">
-                      <img src={angle.image} alt={angle.name} className="w-20 h-16 object-contain mx-auto filter drop-shadow-sm" />
+                      <img src={angle.image} alt={angle.name} className="object-contain mx-auto filter drop-shadow-sm" style={{ width: '136px', height: '125px' }} />
                     </div>
                   </div>
                 </div>
