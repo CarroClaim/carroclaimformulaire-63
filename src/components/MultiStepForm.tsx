@@ -2,6 +2,8 @@ import React, { useRef } from 'react';
 import { AlertCircle, Calendar, Camera, Car, CheckCircle, ChevronLeft, ChevronRight, Clock, FileText, Image, Mail, MapPin, Phone, Settings, User, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { FormProvider, useFormContext } from '@/context/FormContext';
+import { useTranslation } from '@/contexts/LanguageContext';
+import { LanguageSelector } from '@/components/LanguageSelector';
 import CarDamageSelector from '@/components/CarDamageSelector';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import { StepProgress } from '@/components/StepProgress';
