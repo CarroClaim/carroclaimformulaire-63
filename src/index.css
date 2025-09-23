@@ -153,7 +153,12 @@ All colors MUST be HSL.
 @media print {
   @page {
     size: A4;
-    margin: 1.5cm;
+    margin: 15mm;
+  }
+  
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
   
   /* Hide everything by default */
@@ -174,6 +179,61 @@ All colors MUST be HSL.
     width: 100%;
     background: white !important;
     color: black !important;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+  
+  /* Optimize headings for A4 */
+  .print-only h1 {
+    font-size: 16px !important;
+    margin: 10px 0 !important;
+  }
+  
+  .print-only h2 {
+    font-size: 14px !important;
+    margin: 8px 0 !important;
+  }
+  
+  .print-only h3 {
+    font-size: 12px !important;
+    margin: 6px 0 !important;
+  }
+  
+  /* Grid layout for print */
+  .print-only .grid {
+    display: block !important;
+  }
+  
+  .print-only .grid > div {
+    margin-bottom: 8px !important;
+    page-break-inside: avoid;
+  }
+  
+  /* Photo optimization for A4 */
+  .print-only .photo-grid {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 3mm !important;
+    margin: 5mm 0 !important;
+  }
+  
+  .print-only .photo-item {
+    width: 48% !important;
+    max-width: 80mm !important;
+  }
+  
+  .print-only .photo-item img {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 50mm !important;
+    object-fit: contain !important;
+  }
+  
+  /* SVG optimization */
+  .print-only svg {
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: 80mm !important;
   }
   
   /* Force SVG visibility and color accuracy */
@@ -195,6 +255,15 @@ All colors MUST be HSL.
   button,
   .no-print {
     display: none !important;
+  }
+  
+  /* Page breaks */
+  .page-break {
+    page-break-before: always;
+  }
+  
+  .avoid-break {
+    page-break-inside: avoid;
   }
 }
 

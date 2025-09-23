@@ -253,7 +253,7 @@ export const RequestDetails: React.FC<RequestDetailsProps> = ({
               <div className="bg-gradient-to-br from-white to-gray-50 rounded-lg p-8 shadow-lg border border-border max-w-3xl w-full">
                   <div className="relative">
                     <CarDamageSelector
-                      selectedAreas={request.damages.map(d => mapDBToUI(d.name))}
+                      selectedAreas={request.damages.map(d => mapDBToUI(d.name)).filter(name => name)}
                       onAreaSelect={() => {}} // Read-only mode
                     />
                   {request.damages.length > 0 && (

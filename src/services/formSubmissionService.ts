@@ -200,7 +200,8 @@ class FormSubmissionService {
           preferred_time: submissionData.preferredTime,
           status: 'pending',
           request_type: submissionData.requestType,
-          damage_screenshot: submissionData.damageScreenshotUrl
+          damage_screenshot: submissionData.damageScreenshotUrl,
+          user_id: null // Public form submission, no authenticated user
         }])
         .select()
         .single();

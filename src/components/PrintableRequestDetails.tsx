@@ -198,7 +198,7 @@ export const PrintableRequestDetails: React.FC<PrintableRequestDetailsProps> = (
           <div className="border-2 border-gray-300 rounded-lg p-6 bg-gray-50" style={{maxWidth: '500px', width: '100%'}}>
             <div className="w-full">
               <CarDamageSelector
-                selectedAreas={request.damages.map(d => mapDBToUI(d.name))}
+                selectedAreas={request.damages.map(d => mapDBToUI(d.name)).filter(name => name)}
                 onAreaSelect={() => {}} // Read-only mode
               />
             </div>
