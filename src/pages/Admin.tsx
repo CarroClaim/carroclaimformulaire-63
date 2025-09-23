@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Eye, Calendar, User, Mail, Phone, PlayCircle, CheckCircle, Archive, Trash2, Download } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { RequestProgress } from '@/components/RequestProgress';
-import { PhotoViewer } from '@/components/PhotoViewer';
-import { zipDownloadService } from '@/services/zipDownloadService';
+import { AdminLayout } from '@/components/AdminLayout';
 import StatisticsDashboard from '@/components/StatisticsDashboard';
-import RequestsTab from '@/components/RequestsTab';
+import { RequestsList } from '@/components/RequestsList';
+import { RequestDetails } from '@/components/RequestDetails';
+import { zipDownloadService } from '@/services/zipDownloadService';
+import { 
+  Play, 
+  Check, 
+  Archive, 
+  Trash2
+} from 'lucide-react';
 
 interface RequestSnapshot {
   id: string;
@@ -20,10 +26,10 @@ interface RequestSnapshot {
   status: string;
   request_type: 'quote' | 'appointment';
   created_at: string;
-  snapshot_url: string | null;
+  snapshot_url?: string;
 }
 
-interface RequestDetail {
+interface AdminRequestDetail {
   id: string;
   first_name: string;
   last_name: string;
@@ -33,40 +39,40 @@ interface RequestDetail {
   city: string;
   postal_code: string;
   status: string;
-  request_type: 'quote' | 'appointment';
+  request_type: string;
   description?: string;
   preferred_date?: string;
   preferred_time?: string;
   damage_screenshot?: string;
   created_at: string;
+  updated_at: string;
   photos: Array<{
     id: string;
     photo_type: string;
     public_url: string;
     file_name: string;
   }>;
-  request_damages: Array<{
-    damage_parts: {
-      name: string;
-      description?: string;
-    };
+  damages: Array<{
+    name: string;
+    description?: string;
   }>;
 }
 
 const Admin: React.FC = () => {
-  const [requests, setRequests] = useState<RequestSnapshot[]>([]);
-  const [selectedRequest, setSelectedRequest] = useState<RequestDetail | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [authLoading, setAuthLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState('statistics');
+  const [requests, setRequests] = useState<RequestSnapshot[]>([]);
+  const [selectedRequest, setSelectedRequest] = useState<AdminRequestDetail | null>(null);
+  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('pending');
+  const [loading, setLoading] = useState(true);
+  const [requestDetailLoading, setRequestDetailLoading] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
-  const [photoViewerOpen, setPhotoViewerOpen] = useState(false);
-  const [photoViewerIndex, setPhotoViewerIndex] = useState(0);
   const [downloadingZip, setDownloadingZip] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(0);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
   const authenticate = async (username: string, password: string) => {
@@ -82,7 +88,6 @@ const Admin: React.FC = () => {
       if (response.ok) {
         setIsAuthenticated(true);
         localStorage.setItem('adminAuth', basicAuth);
-        loadRequests(basicAuth);
         return true;
       } else {
         throw new Error('Authentication failed');
@@ -133,6 +138,47 @@ const Admin: React.FC = () => {
     }
   };
 
+  const loadRequestDetail = async (requestId: string) => {
+    if (!isAuthenticated) return;
+    
+    setRequestDetailLoading(true);
+    setSelectedRequestId(requestId);
+    try {
+      const auth = localStorage.getItem('adminAuth');
+      if (!auth) return;
+
+      const response = await fetch(`https://buvkkggimmpxgwquakuw.supabase.co/functions/v1/admin-auth?id=${requestId}`, {
+        headers: {
+          'Authorization': `Basic ${auth}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch request detail');
+      }
+
+      const data = await response.json();
+      // Transform the data to match our AdminRequestDetail interface
+      const transformedData: AdminRequestDetail = {
+        ...data,
+        damages: data.request_damages?.map((rd: any) => ({
+          name: rd.damage_parts.name,
+          description: rd.damage_parts.description
+        })) || []
+      };
+      setSelectedRequest(transformedData);
+    } catch (error) {
+      console.error('Error loading request detail:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger les détails de la demande.",
+        variant: "destructive",
+      });
+    } finally {
+      setRequestDetailLoading(false);
+    }
+  };
+
   const updateRequestStatus = async (requestId: string, newStatus: string) => {
     setUpdatingStatus(requestId);
     try {
@@ -154,6 +200,11 @@ const Admin: React.FC = () => {
 
       // Refresh the requests list
       await loadRequests(auth, activeTab);
+
+      // Update selected request if it's the same one
+      if (selectedRequest && selectedRequest.id === requestId) {
+        setSelectedRequest({ ...selectedRequest, status: newStatus });
+      }
       
       toast({
         title: "Statut mis à jour",
@@ -169,29 +220,6 @@ const Admin: React.FC = () => {
       });
     } finally {
       setUpdatingStatus(null);
-    }
-  };
-
-  const loadRequestDetail = async (requestId: string) => {
-    try {
-      const auth = localStorage.getItem('adminAuth');
-      if (!auth) return;
-
-      const response = await fetch(`https://buvkkggimmpxgwquakuw.supabase.co/functions/v1/admin-auth?id=${requestId}`, {
-        headers: {
-          'Authorization': `Basic ${auth}`
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch request detail');
-      }
-
-      const data = await response.json();
-      setSelectedRequest(data);
-    } catch (error) {
-      console.error('Error loading request detail:', error);
-      setError('Erreur lors du chargement du détail');
     }
   };
 
@@ -211,396 +239,28 @@ const Admin: React.FC = () => {
     setIsAuthenticated(false);
     localStorage.removeItem('adminAuth');
     setCredentials({ username: '', password: '' });
+    setActiveSection('dashboard');
   };
 
-  useEffect(() => {
-    const savedAuth = localStorage.getItem('adminAuth');
-    if (savedAuth) {
-      loadRequests(savedAuth);
-    } else {
-      setLoading(false);
+  const handleSectionChange = (section: string) => {
+    setActiveSection(section);
+    if (section === 'requests') {
+      loadRequests(undefined, activeTab);
     }
-  }, []);
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending': return 'bg-yellow-500';
-      case 'processing': return 'bg-blue-500';
-      case 'completed': return 'bg-green-500';
-      case 'archived': return 'bg-gray-500';
-      case 'deleted': return 'bg-red-500';
-      default: return 'bg-gray-500';
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'pending': return 'En attente';
-      case 'processing': return 'En cours de traitement';
-      case 'completed': return 'Traité';
-      case 'archived': return 'Archivé';
-      case 'deleted': return 'Supprimé';
-      default: return status;
-    }
+    // Clear selected request when changing sections
+    setSelectedRequest(null);
+    setSelectedRequestId(null);
   };
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
-    if (value !== 'statistics') {
-      loadRequests(undefined, value);
-    }
+    loadRequests(undefined, value);
+    // Clear selected request when changing tabs
+    setSelectedRequest(null);
+    setSelectedRequestId(null);
   };
 
-  const getStatusActions = (request: RequestSnapshot) => {
-    const actions = [];
-    
-    switch (request.status) {
-      case 'pending':
-        actions.push(
-          <Button
-            key="processing"
-            size="sm"
-            variant="outline"
-            onClick={() => updateRequestStatus(request.id, 'processing')}
-            disabled={updatingStatus === request.id}
-            className="flex items-center gap-1"
-          >
-            <PlayCircle className="h-3 w-3" />
-            En cours
-          </Button>
-        );
-        break;
-        
-      case 'processing':
-        actions.push(
-          <Button
-            key="completed"
-            size="sm"
-            variant="outline"
-            onClick={() => updateRequestStatus(request.id, 'completed')}
-            disabled={updatingStatus === request.id}
-            className="flex items-center gap-1"
-          >
-            <CheckCircle className="h-3 w-3" />
-            Traité
-          </Button>
-        );
-        break;
-        
-      case 'completed':
-        actions.push(
-          <Button
-            key="archived"
-            size="sm"
-            variant="outline"
-            onClick={() => updateRequestStatus(request.id, 'archived')}
-            disabled={updatingStatus === request.id}
-            className="flex items-center gap-1"
-          >
-            <Archive className="h-3 w-3" />
-            Archiver
-          </Button>
-        );
-        break;
-    }
-
-    // Add delete option for non-deleted requests
-    if (request.status !== 'deleted') {
-      actions.push(
-        <Button
-          key="delete"
-          size="sm"
-          variant="destructive"
-          onClick={() => updateRequestStatus(request.id, 'deleted')}
-          disabled={updatingStatus === request.id}
-          className="flex items-center gap-1"
-        >
-          <Trash2 className="h-3 w-3" />
-          Supprimer
-        </Button>
-      );
-    }
-
-    return actions;
-  };
-
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>Administration</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <label htmlFor="username" className="block text-sm font-medium mb-1">
-                  Utilisateur
-                </label>
-                <input
-                  id="username"
-                  type="text"
-                  value={credentials.username}
-                  onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
-                  className="w-full px-3 py-2 border rounded-md"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium mb-1">
-                  Mot de passe
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  value={credentials.password}
-                  onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
-                  className="w-full px-3 py-2 border rounded-md"
-                  required
-                />
-              </div>
-              {error && (
-                <div className="text-red-600 text-sm">{error}</div>
-              )}
-              <Button type="submit" className="w-full" disabled={authLoading}>
-                {authLoading ? 'Connexion...' : 'Se connecter'}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div>Chargement des demandes...</div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Administration des demandes</h1>
-          <Button variant="outline" onClick={handleLogout}>
-            Déconnexion
-          </Button>
-        </div>
-
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
-          </div>
-        )}
-
-        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
-            <TabsTrigger value="statistics">Statistiques</TabsTrigger>
-            <TabsTrigger value="all">Toutes</TabsTrigger>
-            <TabsTrigger value="pending">En attente</TabsTrigger>
-            <TabsTrigger value="processing">En cours</TabsTrigger>
-            <TabsTrigger value="completed">Traitées</TabsTrigger>
-            <TabsTrigger value="archived">Archivées</TabsTrigger>
-            <TabsTrigger value="deleted">Supprimées</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="statistics" className="space-y-4">
-            <StatisticsDashboard />
-          </TabsContent>
-
-          <TabsContent value="all" className="space-y-4">
-            <RequestsTab
-              requests={requests}
-              activeTab={activeTab}
-              loadRequestDetail={loadRequestDetail}
-              getStatusColor={getStatusColor}
-              getStatusLabel={getStatusLabel}
-              getStatusActions={getStatusActions}
-            />
-          </TabsContent>
-
-          <TabsContent value="pending" className="space-y-4">
-            <RequestsTab
-              requests={requests}
-              activeTab={activeTab}
-              loadRequestDetail={loadRequestDetail}
-              getStatusColor={getStatusColor}
-              getStatusLabel={getStatusLabel}
-              getStatusActions={getStatusActions}
-            />
-          </TabsContent>
-
-          <TabsContent value="processing" className="space-y-4">
-            <RequestsTab
-              requests={requests}
-              activeTab={activeTab}
-              loadRequestDetail={loadRequestDetail}
-              getStatusColor={getStatusColor}
-              getStatusLabel={getStatusLabel}
-              getStatusActions={getStatusActions}
-            />
-          </TabsContent>
-
-          <TabsContent value="completed" className="space-y-4">
-            <RequestsTab
-              requests={requests}
-              activeTab={activeTab}
-              loadRequestDetail={loadRequestDetail}
-              getStatusColor={getStatusColor}
-              getStatusLabel={getStatusLabel}
-              getStatusActions={getStatusActions}
-            />
-          </TabsContent>
-
-          <TabsContent value="archived" className="space-y-4">
-            <RequestsTab
-              requests={requests}
-              activeTab={activeTab}
-              loadRequestDetail={loadRequestDetail}
-              getStatusColor={getStatusColor}
-              getStatusLabel={getStatusLabel}
-              getStatusActions={getStatusActions}
-            />
-          </TabsContent>
-
-          <TabsContent value="deleted" className="space-y-4">
-            <RequestsTab
-              requests={requests}
-              activeTab={activeTab}
-              loadRequestDetail={loadRequestDetail}
-              getStatusColor={getStatusColor}
-              getStatusLabel={getStatusLabel}
-              getStatusActions={getStatusActions}
-            />
-          </TabsContent>
-        </Tabs>
-      </div>
-
-      <Dialog open={!!selectedRequest} onOpenChange={() => setSelectedRequest(null)}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              Détails de la demande - {selectedRequest?.first_name} {selectedRequest?.last_name}
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div className="sr-only" id="dialog-description">
-            Détails complets de la demande incluant les informations client, photos et dégâts rapportés.
-          </div>
-          
-          {selectedRequest && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <h3 className="font-semibold">Informations client</h3>
-                  <div className="text-sm space-y-1">
-                    <div><strong>Nom :</strong> {selectedRequest.first_name} {selectedRequest.last_name}</div>
-                    <div><strong>Email :</strong> {selectedRequest.email}</div>
-                    <div><strong>Téléphone :</strong> {selectedRequest.phone}</div>
-                    <div><strong>Adresse :</strong> {selectedRequest.address}, {selectedRequest.city} {selectedRequest.postal_code}</div>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <h3 className="font-semibold">Détails de la demande</h3>
-                  <div className="text-sm space-y-1">
-                    <div><strong>Type :</strong> {selectedRequest.request_type === 'quote' ? 'Devis' : 'Rendez-vous'}</div>
-                    <div><strong>Statut :</strong> <Badge className={getStatusColor(selectedRequest.status)}>{getStatusLabel(selectedRequest.status)}</Badge></div>
-                    <div><strong>Date de soumission :</strong> {new Date(selectedRequest.created_at).toLocaleString('fr-FR')}</div>
-                    {selectedRequest.preferred_date && <div><strong>Date préférée :</strong> {selectedRequest.preferred_date}</div>}
-                    {selectedRequest.preferred_time && <div><strong>Heure préférée :</strong> {selectedRequest.preferred_time}</div>}
-                  </div>
-                </div>
-              </div>
-
-              {selectedRequest.description && (
-                <div>
-                  <h3 className="font-semibold mb-2">Description</h3>
-                  <p className="text-sm bg-muted p-3 rounded-md">{selectedRequest.description}</p>
-                </div>
-              )}
-
-              {selectedRequest.damage_screenshot && (
-                <div>
-                  <h3 className="font-semibold mb-2">Schéma des dommages</h3>
-                  <div className="border rounded-md p-2 bg-white">
-                    <img
-                      src={selectedRequest.damage_screenshot}
-                      alt="Schéma des dommages sélectionnés"
-                      className="w-full max-w-xs h-auto mx-auto rounded-md"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {selectedRequest.request_damages && selectedRequest.request_damages.length > 0 && (
-                <div>
-                  <h3 className="font-semibold mb-2">Dommages rapportés</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedRequest.request_damages.map((damage, index) => (
-                      <Badge key={index} variant="secondary">
-                        {damage.damage_parts.name}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {selectedRequest.photos && selectedRequest.photos.length > 0 && (
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-semibold">Photos ({selectedRequest.photos.length})</h3>
-                    <Button
-                      onClick={handleDownloadZip}
-                      disabled={downloadingZip}
-                      size="sm"
-                      className="flex items-center gap-2"
-                    >
-                      <Download className="h-4 w-4" />
-                      {downloadingZip ? `${Math.round(downloadProgress)}%` : 'Télécharger ZIP'}
-                    </Button>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {selectedRequest.photos.map((photo, index) => (
-                      <div key={photo.id} className="space-y-2">
-                        <img
-                          src={photo.public_url}
-                          alt={photo.file_name}
-                          className="w-full h-32 object-cover rounded-md border cursor-pointer hover:opacity-80 transition-opacity"
-                          onClick={() => {
-                            setPhotoViewerIndex(index);
-                            setPhotoViewerOpen(true);
-                          }}
-                        />
-                        <p className="text-xs text-muted-foreground text-center">
-                          {photo.photo_type}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Photo Viewer */}
-      {selectedRequest?.photos && (
-        <PhotoViewer
-          photos={selectedRequest.photos}
-          initialIndex={photoViewerIndex}
-          isOpen={photoViewerOpen}
-          onClose={() => setPhotoViewerOpen(false)}
-        />
-      )}
-    </div>
-  );
-
-  async function handleDownloadZip() {
+  const handleDownloadZip = async () => {
     if (!selectedRequest?.photos || selectedRequest.photos.length === 0) {
       toast({
         title: "Erreur",
@@ -636,7 +296,232 @@ const Admin: React.FC = () => {
       setDownloadingZip(false);
       setDownloadProgress(0);
     }
+  };
+
+  useEffect(() => {
+    const savedAuth = localStorage.getItem('adminAuth');
+    if (savedAuth) {
+      setIsAuthenticated(true);
+      setLoading(false);
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isAuthenticated && activeSection === 'requests') {
+      loadRequests(undefined, activeTab);
+    }
+  }, [isAuthenticated, activeSection, activeTab]);
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending': return 'bg-yellow-500 text-yellow-50';
+      case 'processing': return 'bg-blue-500 text-blue-50';
+      case 'completed': return 'bg-green-500 text-green-50';
+      case 'archived': return 'bg-gray-500 text-gray-50';
+      case 'deleted': return 'bg-red-500 text-red-50';
+      default: return 'bg-gray-500 text-gray-50';
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'pending': return 'En attente';
+      case 'processing': return 'En cours';
+      case 'completed': return 'Traité';
+      case 'archived': return 'Archivé';
+      case 'deleted': return 'Supprimé';
+      default: return status;
+    }
+  };
+
+  const getStatusActions = (request: AdminRequestDetail) => {
+    const actions = [];
+    
+    if (request.status === 'pending') {
+      actions.push(
+        <Button
+          key="start"
+          size="sm"
+          onClick={() => updateRequestStatus(request.id, 'processing')}
+          disabled={updatingStatus === request.id}
+          className="bg-blue-600 hover:bg-blue-700"
+        >
+          <Play className="h-4 w-4 mr-1" />
+          Commencer
+        </Button>
+      );
+    }
+    
+    if (request.status === 'processing') {
+      actions.push(
+        <Button
+          key="complete"
+          size="sm"
+          onClick={() => updateRequestStatus(request.id, 'completed')}
+          disabled={updatingStatus === request.id}
+          className="bg-green-600 hover:bg-green-700"
+        >
+          <Check className="h-4 w-4 mr-1" />
+          Terminer
+        </Button>
+      );
+    }
+    
+    if (request.status === 'completed') {
+      actions.push(
+        <Button
+          key="archive"
+          size="sm"
+          onClick={() => updateRequestStatus(request.id, 'archived')}
+          disabled={updatingStatus === request.id}
+          className="bg-gray-600 hover:bg-gray-700"
+        >
+          <Archive className="h-4 w-4 mr-1" />
+          Archiver
+        </Button>
+      );
+    }
+
+    // Add delete option for non-deleted requests
+    if (request.status !== 'deleted') {
+      actions.push(
+        <Button
+          key="delete"
+          size="sm"
+          variant="destructive"
+          onClick={() => updateRequestStatus(request.id, 'deleted')}
+          disabled={updatingStatus === request.id}
+        >
+          <Trash2 className="h-4 w-4 mr-1" />
+          Supprimer
+        </Button>
+      );
+    }
+    
+    return actions;
+  };
+
+  // Filter requests by status
+  const currentRequests = requests.filter(r => {
+    if (activeTab === 'pending') return r.status === 'pending';
+    if (activeTab === 'processing') return r.status === 'processing';
+    if (activeTab === 'completed') return r.status === 'completed';
+    if (activeTab === 'archived') return r.status === 'archived';
+    if (activeTab === 'deleted') return r.status === 'deleted';
+    return true;
+  });
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-muted/20">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>Connexion Administrateur</CardTitle>
+            <CardDescription>
+              Connectez-vous pour accéder au portail d'administration
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="username">Nom d'utilisateur</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  value={credentials.username}
+                  onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Mot de passe</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={credentials.password}
+                  onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
+                  required
+                />
+              </div>
+              {error && (
+                <div className="text-destructive text-sm">{error}</div>
+              )}
+              <Button type="submit" className="w-full" disabled={authLoading}>
+                {authLoading ? 'Connexion...' : 'Se connecter'}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
+
+  return (
+    <AdminLayout 
+      activeSection={activeSection} 
+      onSectionChange={handleSectionChange}
+    >
+      {activeSection === 'dashboard' && (
+        <div className="flex-1 p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold">Tableau de bord</h1>
+            <Button variant="outline" onClick={handleLogout}>
+              Déconnexion
+            </Button>
+          </div>
+          <StatisticsDashboard />
+        </div>
+      )}
+
+      {activeSection === 'requests' && (
+        <>
+          {/* Requests tabs header */}
+          <div className="border-b bg-background p-4">
+            <div className="flex justify-between items-center mb-4">
+              <h1 className="text-2xl font-bold">Gestion des demandes</h1>
+              <Button variant="outline" onClick={handleLogout}>
+                Déconnexion
+              </Button>
+            </div>
+            
+            <Tabs value={activeTab} onValueChange={handleTabChange}>
+              <TabsList className="grid w-full grid-cols-6">
+                <TabsTrigger value="all">Toutes</TabsTrigger>
+                <TabsTrigger value="pending">En attente</TabsTrigger>
+                <TabsTrigger value="processing">En cours</TabsTrigger>
+                <TabsTrigger value="completed">Traitées</TabsTrigger>
+                <TabsTrigger value="archived">Archivées</TabsTrigger>
+                <TabsTrigger value="deleted">Supprimées</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+
+          {/* Email-like interface */}
+          <div className="flex flex-1">
+            <RequestsList
+              requests={currentRequests}
+              selectedRequestId={selectedRequestId}
+              onRequestSelect={loadRequestDetail}
+              getStatusColor={getStatusColor}
+              getStatusLabel={getStatusLabel}
+              loading={loading}
+            />
+            
+            <RequestDetails
+              request={selectedRequest}
+              loading={requestDetailLoading}
+              getStatusColor={getStatusColor}
+              getStatusLabel={getStatusLabel}
+              getStatusActions={getStatusActions}
+              onDownloadZip={handleDownloadZip}
+            />
+          </div>
+        </>
+      )}
+    </AdminLayout>
+  );
 };
 
 export default Admin;
