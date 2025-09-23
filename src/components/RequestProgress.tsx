@@ -21,12 +21,12 @@ export const RequestProgress: React.FC<RequestProgressProps> = ({ status }) => {
   const currentStep = getCurrentStepIndex();
 
   return (
-    <div className="w-full py-2">
-      <div className="flex justify-between items-center relative px-2">
+    <div className="w-full py-1">
+      <div className="flex justify-between items-center relative px-1">
         {/* Progress Line */}
-        <div className="absolute top-[12px] left-6 right-6 h-0.5 bg-muted">
+        <div className="absolute top-[10px] left-4 right-4 h-0.5 bg-muted">
           <div 
-            className="h-full bg-gradient-primary transition-all duration-500 ease-out" 
+            className="h-full bg-primary transition-all duration-300 ease-out" 
             style={{ width: `${(currentStep / (statusSteps.length - 1)) * 100}%` }}
           />
         </div>
@@ -39,23 +39,23 @@ export const RequestProgress: React.FC<RequestProgressProps> = ({ status }) => {
           return (
             <div key={step.id} className="flex flex-col items-center justify-center relative z-10 min-w-0">
               <div className={`
-                w-6 h-6 rounded-full flex items-center justify-center border-2 transition-all duration-300
+                w-5 h-5 rounded-full flex items-center justify-center border transition-all duration-300
                 ${isCompleted 
-                  ? 'bg-primary border-primary text-primary-foreground shadow-primary' 
+                  ? 'bg-primary border-primary text-primary-foreground' 
                   : isCurrent 
-                    ? 'bg-primary border-primary text-primary-foreground shadow-primary animate-pulse' 
+                    ? 'bg-primary border-primary text-primary-foreground' 
                     : 'bg-background border-muted-foreground/30 text-muted-foreground'
                 }
               `}>
                 {isCompleted ? (
-                  <CheckCircle className="w-3 h-3" />
+                  <CheckCircle className="w-2.5 h-2.5" />
                 ) : (
-                  <step.icon className="w-3 h-3" />
+                  <step.icon className="w-2.5 h-2.5" />
                 )}
               </div>
-              <div className="mt-1 text-center px-0.5 max-w-[50px]">
+              <div className="mt-0.5 text-center px-0.5 max-w-[45px]">
                 <p className={`
-                  text-[7px] font-medium transition-colors duration-300 leading-tight break-words
+                  text-[6px] font-medium transition-colors duration-300 leading-tight break-words
                   ${isCurrent ? 'text-primary' : isCompleted ? 'text-foreground' : 'text-muted-foreground'}
                 `}>
                   {step.title}

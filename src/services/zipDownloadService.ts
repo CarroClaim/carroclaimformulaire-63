@@ -6,11 +6,35 @@ interface PhotoForZip {
   photo_type: string;
   public_url: string;
   file_name: string;
+  file_path?: string;
 }
 
 export class ZipDownloadService {
-  private async downloadFile(url: string): Promise<ArrayBuffer> {
-    const response = await fetch(url);
+  private async downloadFile(photo: PhotoForZip): Promise<ArrayBuffer> {
+    try {
+      // Try to get the file from Supabase Storage using file_path if available
+      if (photo.file_path) {
+        const { data, error } = await supabase.storage
+          .from('claim-photos')
+          .download(photo.file_path);
+
+        if (error) {
+          console.error(`Storage error for ${photo.file_name}:`, error);
+          throw error;
+        }
+
+        if (!data) {
+          throw new Error('No data returned from storage');
+        }
+
+        return await data.arrayBuffer();
+      }
+    } catch (error) {
+      console.error(`Failed to download from storage, trying public URL for ${photo.file_name}:`, error);
+    }
+    
+    // Fallback to public URL
+    const response = await fetch(photo.public_url);
     if (!response.ok) {
       throw new Error(`Failed to download file: ${response.statusText}`);
     }
@@ -70,13 +94,15 @@ export class ZipDownloadService {
         const photo = typePhotos[i];
         
         try {
-          const arrayBuffer = await this.downloadFile(photo.public_url);
+          console.log(`Downloading ${photo.file_name} from path: ${photo.file_path || 'public URL'}`);
+          const arrayBuffer = await this.downloadFile(photo);
           const prefix = this.getPhotoTypePrefix(photoType);
           const extension = this.getFileExtension(photo.file_name);
           const fileName = typePhotos.length === 1 
             ? `${prefix}.${extension}`
             : `${prefix}_${i + 1}.${extension}`;
           
+          console.log(`Adding ${fileName} to ZIP (${arrayBuffer.byteLength} bytes)`);
           folder.file(fileName, arrayBuffer);
           
           downloadedCount++;

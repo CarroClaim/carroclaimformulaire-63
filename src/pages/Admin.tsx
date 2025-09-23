@@ -531,7 +531,7 @@ const Admin: React.FC = () => {
                     <img
                       src={selectedRequest.damage_screenshot}
                       alt="Schéma des dommages sélectionnés"
-                      className="w-full max-w-md h-auto mx-auto rounded-md"
+                      className="w-full max-w-xs h-auto mx-auto rounded-md"
                     />
                   </div>
                 </div>
