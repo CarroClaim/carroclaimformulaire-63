@@ -80,8 +80,16 @@ export const mapUIToDB = (uiName: string): string => {
 
 /**
  * Convertit un nom de base de données vers le nom d'affichage UI
+ * Gère les cas d'ambiguïté pour les anciens mappings
  */
 export const mapDBToUI = (dbName: string): string => {
+  // Cas spécial pour l'ancien mapping ambigü de vitre_laterale
+  if (dbName === 'vitre_laterale') {
+    // Retourner le premier mapping trouvé comme fallback
+    // TODO: À terme, migrer toutes les données vers les nouveaux identifiants spécifiques
+    return 'Vitre avant gauche'; // Fallback, mais pas idéal
+  }
+  
   return DB_TO_UI_MAPPING[dbName] || dbName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 };
 

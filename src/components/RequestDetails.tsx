@@ -274,20 +274,28 @@ export const RequestDetails: React.FC<RequestDetailsProps> = ({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* SVG Car Damage Visualization */}
-            <div className="flex justify-center">
-              <div className="bg-gradient-to-br from-white to-gray-50 rounded-lg p-8 shadow-lg border border-border max-w-3xl w-full">
-                  <div className="relative">
-                    <CarDamageSelector
-                      selectedAreas={request.damages.map(d => mapDBToUI(d.name)).filter(name => name)}
-                      onAreaSelect={() => {}} // Read-only mode
-                    />
-                  {request.damages.length > 0 && (
-                    <div className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground text-xs font-bold px-2 py-1 rounded-full">
-                      {request.damages.length}
-                    </div>
-                  )}
-                </div>
+             {/* SVG Car Damage Visualization */}
+             <div className="flex justify-center">
+               <div className="bg-gradient-to-br from-white to-gray-50 rounded-lg p-8 shadow-lg border border-border max-w-3xl w-full">
+                   <div className="relative">
+                     <CarDamageSelector
+                       selectedAreas={request.damages.map(d => mapDBToUI(d.name)).filter(name => name)}
+                       onAreaSelect={() => {}} // Read-only mode
+                     />
+                   {request.damages.length > 0 && (
+                     <div className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground text-xs font-bold px-2 py-1 rounded-full">
+                       {request.damages.length}
+                     </div>
+                   )}
+                 </div>
+                 
+                 {/* Debug information - temporaire */}
+                 <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs">
+                   <strong>Debug:</strong><br />
+                   DB names: {JSON.stringify(request.damages.map(d => d.name))}<br />
+                   UI names: {JSON.stringify(request.damages.map(d => mapDBToUI(d.name)))}<br />
+                   Filtered: {JSON.stringify(request.damages.map(d => mapDBToUI(d.name)).filter(name => name))}
+                 </div>
                 <div className="mt-6 text-center">
                   {request.damages.length > 0 ? (
                     <div className="inline-flex items-center space-x-2 bg-destructive/10 text-destructive px-4 py-2 rounded-full">
