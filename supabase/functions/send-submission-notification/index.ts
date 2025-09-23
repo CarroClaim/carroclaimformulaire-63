@@ -99,7 +99,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const emailResponse = await resend.emails.send({
       from: "Notifications <onboarding@resend.dev>",
-      to: ["admin@example.com"], // Remplace par l'email de l'admin
+      to: ["notifications@lovableproject.com"], // Email pour recevoir les notifications
       subject: emailSubject,
       html: emailBody,
     });

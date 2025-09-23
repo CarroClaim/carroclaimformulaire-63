@@ -58,7 +58,7 @@ const Admin: React.FC = () => {
     const basicAuth = btoa(`${username}:${password}`);
     
     try {
-      const response = await fetch('/admin-auth', {
+      const response = await fetch('https://buvkkggimmpxgwquakuw.supabase.co/functions/v1/admin-auth', {
         headers: {
           'Authorization': `Basic ${basicAuth}`
         }
@@ -87,7 +87,7 @@ const Admin: React.FC = () => {
         return;
       }
 
-      const response = await fetch('/admin-auth', {
+      const response = await fetch('https://buvkkggimmpxgwquakuw.supabase.co/functions/v1/admin-auth', {
         headers: {
           'Authorization': `Basic ${auth}`
         }
@@ -119,7 +119,7 @@ const Admin: React.FC = () => {
       const auth = localStorage.getItem('adminAuth');
       if (!auth) return;
 
-      const response = await fetch(`/admin-auth/requests?id=${requestId}`, {
+      const response = await fetch(`https://buvkkggimmpxgwquakuw.supabase.co/functions/v1/admin-auth?id=${requestId}`, {
         headers: {
           'Authorization': `Basic ${auth}`
         }
