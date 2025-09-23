@@ -241,11 +241,20 @@ class FormSubmissionService {
       return;
     }
 
-    console.log('Sauvegarde des dommages pour la demande:', requestId, 'Dommages UI:', selectedDamages);
+    console.log('=== DEBUG SAUVEGARDE DOMMAGES ===');
+    console.log('Demande ID:', requestId);
+    console.log('Dommages UI sélectionnés:', selectedDamages);
 
     // Convertir les noms UI vers les noms de base de données
     const dbDamageNames = mapUIArrayToDB(selectedDamages);
     console.log('Noms convertis pour la base:', dbDamageNames);
+    
+    // Vérifier que la conversion a bien fonctionné
+    if (dbDamageNames.length !== selectedDamages.length) {
+      console.warn('⚠️ Nombre de dommages différent après conversion!');
+      console.log('Avant conversion:', selectedDamages.length, 'éléments');
+      console.log('Après conversion:', dbDamageNames.length, 'éléments');
+    }
 
     // Récupérer TOUS les damage_parts disponibles pour debug
     const allParts = await this.getAvailableDamageParts();
