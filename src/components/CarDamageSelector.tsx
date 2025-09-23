@@ -18,11 +18,12 @@ const CarDamageSelector = forwardRef<CarDamageSelectorHandle, Props>(
     const getPartStyle = (partName: string) => {
       const isSelected = selectedAreas.includes(partName);
       return {
-        fill: isSelected ? "#0ea5e9" : "#d9d9d9",
-        stroke: isSelected ? "#0284c7" : "#b0b0b0",
-        strokeWidth: 2,
+        fill: isSelected ? "#dc2626" : "#e5e7eb",
+        stroke: isSelected ? "#b91c1c" : "#9ca3af",
+        strokeWidth: isSelected ? 3 : 2,
         cursor: "pointer",
-        transition: "all 0.3s ease"
+        transition: "all 0.3s ease",
+        filter: isSelected ? "drop-shadow(0 2px 4px rgba(220, 38, 38, 0.3))" : "none"
       } as React.CSSProperties;
     };
 
@@ -70,12 +71,12 @@ const CarDamageSelector = forwardRef<CarDamageSelectorHandle, Props>(
     }));
     return (
       <div className="space-y-4">
-        <div className="rounded-lg p-3 sm:p-6 flex justify-center bg-white">
+        <div className="rounded-lg p-4 sm:p-6 flex justify-center bg-white">
           <svg
             ref={svgRef}
             width="418" height="558" viewBox="0 0 418 558"
             xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-auto max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl bg-white rounded"
+            className="w-full h-auto max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl bg-white rounded shadow-sm"
             aria-labelledby="car-map-title car-map-desc" role="img"
           >
             <title id="car-map-title">Carte interactive des zones de carrosserie</title>

@@ -238,13 +238,13 @@ export const RequestDetails: React.FC<RequestDetailsProps> = ({
             <CardContent className="space-y-6">
               {/* SVG Car Damage Visualization */}
               <div className="flex justify-center">
-                <div className="bg-white rounded-lg p-4 shadow-sm border max-w-md">
+                <div className="bg-white rounded-lg p-6 shadow-sm border max-w-2xl w-full">
                   <CarDamageSelector
                     selectedAreas={request.damages.map(d => d.name)}
                     onAreaSelect={() => {}} // Read-only mode
                   />
-                  <div className="mt-2 text-xs text-muted-foreground text-center">
-                    Zones endommagées en surbrillance
+                  <div className="mt-4 text-sm text-muted-foreground text-center font-medium">
+                    Zones endommagées en surbrillance ({request.damages.length} zone{request.damages.length > 1 ? 's' : ''})
                   </div>
                 </div>
               </div>
@@ -278,7 +278,7 @@ export const RequestDetails: React.FC<RequestDetailsProps> = ({
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
                 {request.photos.map((photo, index) => (
                   <div
                     key={photo.id}
@@ -288,13 +288,13 @@ export const RequestDetails: React.FC<RequestDetailsProps> = ({
                     <img
                       src={photo.public_url}
                       alt={photo.file_name}
-                      className="w-full h-24 object-cover rounded-lg group-hover:opacity-80 transition-opacity"
+                      className="w-full h-40 object-cover rounded-lg group-hover:opacity-90 transition-all duration-300 shadow-sm group-hover:shadow-lg"
                     />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                      <Camera className="h-6 w-6 text-white" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-lg flex items-center justify-center">
+                      <Camera className="h-8 w-8 text-white" />
                     </div>
-                    <div className="absolute bottom-1 left-1 right-1">
-                      <Badge variant="secondary" className="text-xs">
+                    <div className="absolute bottom-2 left-2 right-2">
+                      <Badge variant="secondary" className="text-xs font-medium bg-white/90 text-gray-900">
                         {photo.photo_type}
                       </Badge>
                     </div>
