@@ -14,13 +14,19 @@ const corsHeaders = {
 };
 
 function basicAuth(request: Request): boolean {
+  console.log('Auth attempt - adminUser:', adminUser, 'adminPass exists:', !!adminPass);
+  
   const auth = request.headers.get('authorization');
   if (!auth || !auth.startsWith('Basic ')) {
+    console.log('No basic auth header');
     return false;
   }
 
   const credentials = atob(auth.slice(6));
   const [username, password] = credentials.split(':');
+  
+  console.log('Received credentials - username:', username, 'password exists:', !!password);
+  console.log('Comparison result:', username === adminUser && password === adminPass);
   
   return username === adminUser && password === adminPass;
 }
