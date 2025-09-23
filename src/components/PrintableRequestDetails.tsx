@@ -68,20 +68,57 @@ export const PrintableRequestDetails: React.FC<PrintableRequestDetailsProps> = (
           @media print {
             @page {
               size: A4;
-              margin: 2cm;
+              margin: 1.5cm;
             }
             
-            body {
+            /* Hide everything except our printable content */
+            body * {
+              visibility: hidden;
+            }
+            
+            .print-only, .print-only * {
+              visibility: visible;
+            }
+            
+            .print-only {
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 100%;
+              background: white !important;
+              color: black !important;
+            }
+            
+            /* Ensure SVG prints correctly */
+            svg {
+              max-width: 100% !important;
+              height: auto !important;
               -webkit-print-color-adjust: exact;
               print-color-adjust: exact;
             }
             
-            .no-print {
+            /* Force red color for damaged areas in SVG */
+            svg path[style*="#dc2626"] {
+              fill: #dc2626 !important;
+              stroke: #b91c1c !important;
+              stroke-width: 2 !important;
+            }
+            
+            /* Hide buttons and interactive elements */
+            button {
               display: none !important;
             }
             
-            .print-only {
-              display: block !important;
+            /* Optimize text for print */
+            .print-text {
+              color: black !important;
+              background: transparent !important;
+            }
+            
+            /* Ensure proper spacing for print */
+            .car-damage-container {
+              page-break-inside: avoid;
+              margin: 1rem 0;
             }
           }
           
@@ -93,7 +130,7 @@ export const PrintableRequestDetails: React.FC<PrintableRequestDetailsProps> = (
         `}
       </style>
       
-      <div className="print-only bg-white text-black p-8">
+      <div className="print-only bg-white text-black p-6 print-text">
         {/* Header */}
         <div className="mb-8">
           <div className="flex justify-between items-start mb-4">
@@ -184,12 +221,14 @@ export const PrintableRequestDetails: React.FC<PrintableRequestDetailsProps> = (
           
           {/* Car SVG */}
           <div className="flex justify-center mb-4">
-            <div className="border rounded-lg p-4 bg-gray-50">
-              <CarDamageSelector
-                selectedAreas={request.damages.map(d => d.name)}
-                onAreaSelect={() => {}} // Read-only mode
-              />
-              <p className="text-xs text-center mt-2 text-gray-600">
+            <div className="border rounded-lg p-4 bg-gray-50 car-damage-container" style={{maxWidth: '400px'}}>
+              <div className="w-full" style={{transform: 'scale(0.9)', transformOrigin: 'center'}}>
+                <CarDamageSelector
+                  selectedAreas={request.damages.map(d => d.name)}
+                  onAreaSelect={() => {}} // Read-only mode
+                />
+              </div>
+              <p className="text-xs text-center mt-2 text-gray-600 print-text">
                 Zones endommagées en rouge ({request.damages.length} zone{request.damages.length > 1 ? 's' : ''})
               </p>
             </div>

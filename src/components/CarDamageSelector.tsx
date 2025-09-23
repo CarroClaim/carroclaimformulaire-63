@@ -25,9 +25,13 @@ const CarDamageSelector = forwardRef<CarDamageSelectorHandle, Props>(
         transition: "all 0.3s ease",
         filter: isSelected ? "drop-shadow(0 2px 4px rgba(220, 38, 38, 0.3))" : "none"
       } as React.CSSProperties;
-    };
+     };
+     
+     const getPartClass = (partName: string) => {
+       return selectedAreas.includes(partName) ? "damaged-area" : "";
+     };
 
-    // ---- Export PNG via canvg ----
+     // ---- Export PNG via canvg ----
     const exportPNG = async (opts?: { scale?: number; background?: string }) => {
       const svg = svgRef.current;
       if (!svg) throw new Error("SVG introuvable");
@@ -83,10 +87,10 @@ const CarDamageSelector = forwardRef<CarDamageSelectorHandle, Props>(
             <desc id="car-map-desc">Cliquez pour sélectionner les zones endommagées</desc>
           <g>
             {/* Portières */}
-            <path style={getPartStyle("Portière avant gauche")} d="m 37,195 11.5,-0.5 H 60 74 l 14.5,0.5 v 26 4 c 0,0 0.5,1.5 1,2.5 0.5,1 1,2 1.5,2 h 2 c 1,0 2.3284,1.024 3.5,2 l 4.5,4 3,78 L 90.5,311 74.5,310 56,309 H 38 Z" onClick={() => onAreaSelect("Portière avant gauche")} />
-            <path style={getPartStyle("Portière avant droite")} d="M 382,195.5 370.5,195 H 359 345 l -14.5,0.5 v 26 4 c 0,0 -0.5,1.5 -1,2.5 -0.5,1 -1,2 -1.5,2 h -2 c -1,0 -2.328,1.024 -3.5,2 l -4.5,4 -3,78 13.5,-2.5 16,-1 18.5,-1 h 18 z" onClick={() => onAreaSelect("Portière avant droite")} />
-            <path style={getPartStyle("Portière arrière gauche")} d="m 38,312.5 h 14 l 19.5,0.5 18.5,1 14.5,2.5 2.5,86 c 0,0 -3.305,1.635 -5.5,2.5 -2.2979,0.906 -3.6351,1.288 -6,2 -2.1317,0.642 -3.3088,1.106 -5.5,1.5 -2.5057,0.45 -6.5,0.5 -6.5,0.5 0,0 -1.1297,-4.441 -2.5,-7 -1.5118,-2.823 -2.9433,-4.045 -5,-6.5 -2.7503,-3.283 -4.2428,-5.22 -7.5,-8 -4.534,-3.87 -7.4523,-5.819 -13,-8 -6.0951,-2.396 -16.5,-3 -16.5,-3 z" onClick={() => onAreaSelect("Portière arrière gauche")} />
-            <path style={getPartStyle("Portière arrière droite")} d="m 381,312 h -14 l -19.5,0.5 -18.5,1 -14.5,2.5 -2.5,86 c 0,0 3.305,1.635 5.5,2.5 2.298,0.906 3.635,1.288 6,2 2.132,0.642 3.309,1.106 5.5,1.5 2.506,0.45 6.5,0.5 6.5,0.5 0,0 1.13,-4.441 2.5,-7 1.512,-2.823 2.943,-4.045 5,-6.5 2.75,-3.283 4.243,-5.22 7.5,-8 4.534,-3.87 7.452,-5.819 13,-8 6.095,-2.396 16.5,-3 16.5,-3 z" onClick={() => onAreaSelect("Portière arrière droite")} />
+            <path className={getPartClass("Portière avant gauche")} style={getPartStyle("Portière avant gauche")} d="m 37,195 11.5,-0.5 H 60 74 l 14.5,0.5 v 26 4 c 0,0 0.5,1.5 1,2.5 0.5,1 1,2 1.5,2 h 2 c 1,0 2.3284,1.024 3.5,2 l 4.5,4 3,78 L 90.5,311 74.5,310 56,309 H 38 Z" onClick={() => onAreaSelect("Portière avant gauche")} />
+            <path className={getPartClass("Portière avant droite")} style={getPartStyle("Portière avant droite")} d="M 382,195.5 370.5,195 H 359 345 l -14.5,0.5 v 26 4 c 0,0 -0.5,1.5 -1,2.5 -0.5,1 -1,2 -1.5,2 h -2 c -1,0 -2.328,1.024 -3.5,2 l -4.5,4 -3,78 13.5,-2.5 16,-1 18.5,-1 h 18 z" onClick={() => onAreaSelect("Portière avant droite")} />
+            <path className={getPartClass("Portière arrière gauche")} style={getPartStyle("Portière arrière gauche")} d="m 38,312.5 h 14 l 19.5,0.5 18.5,1 14.5,2.5 2.5,86 c 0,0 -3.305,1.635 -5.5,2.5 -2.2979,0.906 -3.6351,1.288 -6,2 -2.1317,0.642 -3.3088,1.106 -5.5,1.5 -2.5057,0.45 -6.5,0.5 -6.5,0.5 0,0 -1.1297,-4.441 -2.5,-7 -1.5118,-2.823 -2.9433,-4.045 -5,-6.5 -2.7503,-3.283 -4.2428,-5.22 -7.5,-8 -4.534,-3.87 -7.4523,-5.819 -13,-8 -6.0951,-2.396 -16.5,-3 -16.5,-3 z" onClick={() => onAreaSelect("Portière arrière gauche")} />
+            <path className={getPartClass("Portière arrière droite")} style={getPartStyle("Portière arrière droite")} d="m 381,312 h -14 l -19.5,0.5 -18.5,1 -14.5,2.5 -2.5,86 c 0,0 3.305,1.635 5.5,2.5 2.298,0.906 3.635,1.288 6,2 2.132,0.642 3.309,1.106 5.5,1.5 2.506,0.45 6.5,0.5 6.5,0.5 0,0 1.13,-4.441 2.5,-7 1.512,-2.823 2.943,-4.045 5,-6.5 2.75,-3.283 4.243,-5.22 7.5,-8 4.534,-3.87 7.452,-5.819 13,-8 6.095,-2.396 16.5,-3 16.5,-3 z" onClick={() => onAreaSelect("Portière arrière droite")} />
             
             {/* Rétroviseurs */}
             <path style={getPartStyle("Rétroviseur gauche")} d="m 98.5,230.5 c 5,3 11.5,15.5 10,-18 0,-9.665 -3.529,-17.5 -8.5,-17.5 -12.5,-2.5 -9.5,1.5 -10,18 0.2435,9.422 -3,12.5 8.5,17.5 z" onClick={() => onAreaSelect("Rétroviseur gauche")} />
