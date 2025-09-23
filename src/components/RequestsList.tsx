@@ -2,7 +2,8 @@ import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Search, Calendar, MapPin, Mail } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Search, Calendar, MapPin, Mail, Filter } from 'lucide-react';
 import { RequestProgress } from './RequestProgress';
 
 interface RequestSnapshot {
@@ -34,11 +35,16 @@ export const RequestsList: React.FC<RequestsListProps> = ({
   loading = false
 }) => {
   const [searchQuery, setSearchQuery] = React.useState('');
+  const [statusFilter, setStatusFilter] = React.useState('all');
 
-  const filteredRequests = requests.filter(request => 
-    `${request.first_name} ${request.last_name}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    request.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredRequests = requests.filter(request => {
+    const matchesSearch = `${request.first_name} ${request.last_name}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      request.email.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesStatus = statusFilter === 'all' || request.status === statusFilter;
+    
+    return matchesSearch && matchesStatus;
+  });
 
   const getInitials = (firstName: string, lastName: string) => {
     return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
@@ -80,7 +86,7 @@ export const RequestsList: React.FC<RequestsListProps> = ({
   return (
     <div className="w-80 border-r bg-muted/20 flex flex-col">
       {/* Search Header */}
-      <div className="p-4 border-b bg-background">
+      <div className="p-4 border-b bg-background space-y-3">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
@@ -90,6 +96,29 @@ export const RequestsList: React.FC<RequestsListProps> = ({
             className="pl-10"
           />
         </div>
+        
+        <div className="flex items-center space-x-2">
+          <Filter className="h-4 w-4 text-muted-foreground" />
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Filtrer par statut" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tous les statuts</SelectItem>
+              <SelectItem value="pending">En attente</SelectItem>
+              <SelectItem value="in_progress">En cours</SelectItem>
+              <SelectItem value="completed">Terminé</SelectItem>
+              <SelectItem value="archived">Archivé</SelectItem>
+              <SelectItem value="deleted">Supprimé</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        
+        {(searchQuery || statusFilter !== 'all') && (
+          <div className="text-xs text-muted-foreground">
+            {filteredRequests.length} demande{filteredRequests.length !== 1 ? 's' : ''} trouvée{filteredRequests.length !== 1 ? 's' : ''}
+          </div>
+        )}
       </div>
 
       {/* Requests List */}

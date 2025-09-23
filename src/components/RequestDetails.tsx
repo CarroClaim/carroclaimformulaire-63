@@ -6,10 +6,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Separator } from '@/components/ui/separator';
 import { RequestProgress } from './RequestProgress';
 import { PhotoViewer } from './PhotoViewer';
+import CarDamageSelector from './CarDamageSelector';
 import { 
   User, Mail, Phone, MapPin, Calendar, Clock, 
   FileText, Camera, Download, Edit, Archive, 
-  Check, Play, Trash2 
+  Check, Play, Trash2, Car
 } from 'lucide-react';
 
 interface AdminRequestDetail {
@@ -229,10 +230,28 @@ export const RequestDetails: React.FC<RequestDetailsProps> = ({
         {request.damages.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle>Dommages signalés</CardTitle>
+              <CardTitle className="flex items-center">
+                <Car className="h-5 w-5 mr-2" />
+                Dommages signalés ({request.damages.length})
+              </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-6">
+              {/* SVG Car Damage Visualization */}
+              <div className="flex justify-center">
+                <div className="bg-white rounded-lg p-4 shadow-sm border max-w-md">
+                  <CarDamageSelector
+                    selectedAreas={request.damages.map(d => d.name)}
+                    onAreaSelect={() => {}} // Read-only mode
+                  />
+                  <div className="mt-2 text-xs text-muted-foreground text-center">
+                    Zones endommagées en surbrillance
+                  </div>
+                </div>
+              </div>
+              
+              {/* Damage List */}
               <div className="space-y-2">
+                <h4 className="font-medium text-sm text-muted-foreground mb-3">Détail des dommages :</h4>
                 {request.damages.map((damage, index) => (
                   <div key={index} className="flex items-start space-x-3 p-3 bg-muted/50 rounded-lg">
                     <div className="w-2 h-2 bg-destructive rounded-full mt-2"></div>
