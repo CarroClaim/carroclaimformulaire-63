@@ -288,14 +288,6 @@ export const RequestDetails: React.FC<RequestDetailsProps> = ({
                      </div>
                    )}
                  </div>
-                 
-                 {/* Debug information - temporaire */}
-                 <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs">
-                   <strong>Debug:</strong><br />
-                   DB names: {JSON.stringify(request.damages.map(d => d.name))}<br />
-                   UI names: {JSON.stringify(request.damages.map(d => mapDBToUI(d.name)))}<br />
-                   Filtered: {JSON.stringify(request.damages.map(d => mapDBToUI(d.name)).filter(name => name))}
-                 </div>
                 <div className="mt-6 text-center">
                   {request.damages.length > 0 ? (
                     <div className="inline-flex items-center space-x-2 bg-destructive/10 text-destructive px-4 py-2 rounded-full">
