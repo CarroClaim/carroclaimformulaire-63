@@ -47,27 +47,27 @@ const MultiStepFormContent: React.FC = () => {
     icon: FileText
   }, {
     id: 'type',
-    title: t('form.steps.requestType.title'),
+    title: t('form.steps.type.title'),
     icon: Settings
   }, {
     id: 'damages',
-    title: 'Dommages',
+    title: t('form.steps.damages.title'),
     icon: Car
   }, {
     id: 'photos-docs',
-    title: 'Documents',
+    title: t('form.steps.photos.documents.title'),
     icon: Image
   }, {
     id: 'photos-vehicle',
-    title: 'Photos véhicule',
+    title: t('form.steps.photos.vehicle.title'),
     icon: Camera
   }, {
     id: 'contact',
-    title: 'Contact',
+    title: t('form.steps.contact.title'),
     icon: User
   }, {
     id: 'review',
-    title: 'Validation',
+    title: t('form.steps.review.title'),
     icon: CheckCircle
   }];
 
@@ -93,17 +93,17 @@ const MultiStepFormContent: React.FC = () => {
       console.log('Début de soumission du formulaire...');
       const success = await submitForm();
       if (success) {
-        toast({
-          title: "✅ Demande envoyée avec succès !",
-          description: "Nous vous contacterons dans les plus brefs délais.",
-          duration: 5000
-        });
+      toast({
+        title: t('form.messages.success.title'),
+        description: t('form.messages.success.description'),
+        duration: 5000
+      });
       }
     } catch (error) {
       console.error('Erreur lors de la soumission:', error);
       toast({
-        title: "❌ Erreur de soumission",
-        description: error instanceof Error ? error.message : "Une erreur s'est produite. Veuillez réessayer.",
+        title: t('form.messages.error.title'),
+        description: error instanceof Error ? error.message : t('form.messages.error.description'),
         variant: "destructive",
         duration: 5000
       });
@@ -124,8 +124,8 @@ const MultiStepFormContent: React.FC = () => {
       if (!carSelectorRef.current?.exportPNG) {
         console.error('Référence au composant CarDamageSelector manquante');
         toast({
-          title: "❌ Erreur",
-          description: "Le composant de sélection des dommages n'est pas disponible. Veuillez recharger la page.",
+          title: t('common.error'),
+          description: t('form.messages.pdfError.componentUnavailable'),
           variant: "destructive",
           duration: 5000
         });
@@ -144,17 +144,17 @@ const MultiStepFormContent: React.FC = () => {
 
       // Ajout du titre et des informations
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-      const title = "Rapport d'expertise – Dommages sélectionnés";
+      const title = t('form.pdf.title');
       page.drawText(title, { x: 40, y: ph - 60, size: 16, font, color: rgb(0,0,0) });
 
       // Informations du contact et de la demande
       const lines = [
-        `Nom: ${formData.contact.firstName || ''} ${formData.contact.lastName || ''}`.trim(),
-        `Email: ${formData.contact.email || '-'}`,
-        `Téléphone: ${formData.contact.phone || '-'}`,
-        `Type: ${formData.requestType === 'appointment' ? 'Prise de rendez-vous' : 'Demande de devis'}`,
-        formData.preferredDate ? `Date souhaitée: ${formData.preferredDate}${formData.preferredTime ? ` ${formData.preferredTime}` : ''}` : null,
-        `Zones: ${formData.selectedDamages.length > 0 ? formData.selectedDamages.join(', ') : 'Aucune'}`
+        `${t('form.pdf.name')}: ${formData.contact.firstName || ''} ${formData.contact.lastName || ''}`.trim(),
+        `${t('form.pdf.email')}: ${formData.contact.email || '-'}`,
+        `${t('form.pdf.phone')}: ${formData.contact.phone || '-'}`,
+        `${t('form.pdf.type')}: ${formData.requestType === 'appointment' ? t('form.requestType.appointment') : t('form.requestType.quote')}`,
+        formData.preferredDate ? `${t('form.pdf.preferredDate')}: ${formData.preferredDate}${formData.preferredTime ? ` ${formData.preferredTime}` : ''}` : null,
+        `${t('form.pdf.zones')}: ${formData.selectedDamages.length > 0 ? formData.selectedDamages.join(', ') : t('form.pdf.noZones')}`
       ].filter(Boolean) as string[];
 
       let y = ph - 90;
@@ -189,16 +189,16 @@ const MultiStepFormContent: React.FC = () => {
       saveAs(blob, `rapport-expertise-${Date.now()}.pdf`);
 
       toast({
-        title: "✅ Rapport PDF généré !",
-        description: "Le rapport a été téléchargé avec succès.",
+        title: t('form.messages.pdfSuccess.title'),
+        description: t('form.messages.pdfSuccess.description'),
         duration: 3000
       });
 
     } catch (e) {
       console.error(e);
       toast({
-        title: "❌ Erreur",
-        description: "Impossible de générer le rapport PDF.",
+        title: t('common.error'),
+        description: t('form.messages.pdfError.generation'),
         variant: "destructive",
         duration: 5000
       });
@@ -226,17 +226,17 @@ const MultiStepFormContent: React.FC = () => {
               <div className="relative inline-block">
                 <FileText className="w-12 h-12 sm:w-20 sm:h-20 text-primary mx-auto mb-4 sm:mb-6" />
               </div>
-              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Préparation de votre demande</h2>
-              <p className="text-sm sm:text-lg text-muted-foreground mb-4 sm:mb-8">Assurez-vous d'avoir ces éléments :</p>
+              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">{t('form.steps.preparation.heading')}</h2>
+              <p className="text-sm sm:text-lg text-muted-foreground mb-4 sm:mb-8">{t('form.steps.preparation.subtitle')}</p>
             </div>
 
             <div className="bg-card p-4 sm:p-6 rounded-2xl shadow-card border border-border">
               <div className="flex items-center mb-3 sm:mb-4">
                 <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-primary mr-3" />
-                <h3 className="text-base sm:text-lg font-semibold text-foreground">Documents requis</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-foreground">{t('form.steps.preparation.documents.title')}</h3>
               </div>
               <ul className="space-y-2 sm:space-y-3">
-                {["Photo de la carte grise", "Photo du compteur kilométrique", "4 photos des angles du véhicule", "Photos des dommages"].map((item, index) => <li key={index} className="flex items-start">
+                {(t('form.steps.preparation.documents.items', { returnObjects: true }) as string[]).map((item: string, index: number) => <li key={index} className="flex items-start">
                     <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 mt-0.5 text-success flex-shrink-0" />
                     <span className="text-sm sm:text-base text-foreground">{item}</span>
                   </li>)}
@@ -246,7 +246,7 @@ const MultiStepFormContent: React.FC = () => {
             <div className="text-center">
               <p className="text-xs sm:text-base text-muted-foreground">
                 <Clock className="w-3 h-3 sm:w-4 sm:h-4 inline mr-2" />
-                Temps estimé : 5-10 minutes
+                {t('form.steps.preparation.timeEstimate')}
               </p>
             </div>
           </div>;
@@ -257,8 +257,8 @@ const MultiStepFormContent: React.FC = () => {
               <div className="relative inline-block">
                 <Settings className="w-12 h-12 sm:w-20 sm:h-20 text-primary mx-auto mb-4 sm:mb-6" />
               </div>
-              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Type de demande</h2>
-              <p className="text-sm sm:text-lg text-muted-foreground mb-4 sm:mb-8">Choisissez le service souhaité :</p>
+              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">{t('form.steps.type.heading')}</h2>
+              <p className="text-sm sm:text-lg text-muted-foreground mb-4 sm:mb-8">{t('form.steps.type.subtitle')}</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-8">
@@ -268,12 +268,12 @@ const MultiStepFormContent: React.FC = () => {
                 `}>
                 <div className="text-center">
                   <FileText className="w-10 h-10 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-4 text-primary" />
-                  <h3 className="text-base sm:text-xl font-bold mb-1 sm:mb-3 text-foreground">Recevoir un devis</h3>
+                  <h3 className="text-base sm:text-xl font-bold mb-1 sm:mb-3 text-foreground">{t('form.steps.type.quote.title')}</h3>
                   <p className="text-xs sm:text-base text-muted-foreground mb-2 sm:mb-4">
-                    Obtenez une estimation basée sur vos photos
+                    {t('form.steps.type.quote.description')}
                   </p>
                   <ul className="text-xs sm:text-sm text-muted-foreground space-y-1 sm:space-y-2 text-left">
-                    {["Évaluation précise par nos experts", "Devis détaillé sous 48h", "Service gratuit et sans engagement"].map((item, index) => <li key={index} className="flex items-start">
+                    {(t('form.steps.type.quote.features', { returnObjects: true }) as string[]).map((item: string, index: number) => <li key={index} className="flex items-start">
                         <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-2 mt-0.5 text-success flex-shrink-0" />
                         <span className="text-xs sm:text-sm">{item}</span>
                       </li>)}
@@ -287,12 +287,12 @@ const MultiStepFormContent: React.FC = () => {
                 `}>
                 <div className="text-center">
                   <Camera className="w-10 h-10 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-4 text-primary" />
-                  <h3 className="text-base sm:text-xl font-bold mb-1 sm:mb-3 text-foreground">Transmettre photos pour réparation</h3>
+                  <h3 className="text-base sm:text-xl font-bold mb-1 sm:mb-3 text-foreground">{t('form.steps.type.appointment.title')}</h3>
                   <p className="text-xs sm:text-base text-muted-foreground mb-2 sm:mb-4">
-                    Planifiez une intervention directe
+                    {t('form.steps.type.appointment.description')}
                   </p>
                   <ul className="text-xs sm:text-sm text-muted-foreground space-y-1 sm:space-y-2 text-left">
-                    {["Préparation via vos photos", "Rendez-vous selon vos disponibilités", "Expertise complète sur place"].map((item, index) => <li key={index} className="flex items-start">
+                    {(t('form.steps.type.appointment.features', { returnObjects: true }) as string[]).map((item: string, index: number) => <li key={index} className="flex items-start">
                         <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-2 mt-0.5 text-success flex-shrink-0" />
                         <span className="text-xs sm:text-sm">{item}</span>
                       </li>)}
@@ -304,16 +304,16 @@ const MultiStepFormContent: React.FC = () => {
             {formData.requestType === 'appointment' && <div className="grid md:grid-cols-2 gap-4 sm:gap-6 bg-card p-4 sm:p-6 rounded-xl border border-border">
                 <div>
                   <label className="block text-sm font-semibold text-foreground mb-2">
-                    Date préférée
+                    {t('form.steps.type.preferredDate')}
                   </label>
                   <input type="date" value={formData.preferredDate} onChange={e => updateFormData('preferredDate', e.target.value)} className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200" min={new Date().toISOString().split('T')[0]} />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-foreground mb-2">
-                    Heure préférée
+                    {t('form.steps.type.preferredTime')}
                   </label>
                   <select value={formData.preferredTime} onChange={e => updateFormData('preferredTime', e.target.value)} className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200">
-                    <option value="">Sélectionnez une heure</option>
+                    <option value="">{t('form.steps.type.selectTime')}</option>
                     {["08:00", "09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"].map(time => <option key={time} value={time}>{time}</option>)}
                   </select>
                 </div>
@@ -326,8 +326,8 @@ const MultiStepFormContent: React.FC = () => {
               <div className="relative inline-block">
                 <Car className="w-12 h-12 sm:w-20 sm:h-20 text-primary mb-4 sm:mb-6" />
               </div>
-              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Dommages du véhicule</h2>
-              <p className="text-sm sm:text-lg text-muted-foreground">Cliquez sur les zones endommagées :</p>
+              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">{t('form.steps.damages.heading')}</h2>
+              <p className="text-sm sm:text-lg text-muted-foreground">{t('form.steps.damages.subtitle')}</p>
             </div>
 
             <CarDamageSelector 
@@ -338,9 +338,9 @@ const MultiStepFormContent: React.FC = () => {
 
             <div>
               <label className="block text-sm font-semibold text-foreground mb-3">
-                Description des dommages (optionnel)
+                {t('form.steps.damages.description')}
               </label>
-              <textarea value={formData.description} onChange={e => updateFormData('description', e.target.value)} rows={4} className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 resize-none" placeholder="Décrivez les circonstances de l'incident et les dommages observés..." />
+              <textarea value={formData.description} onChange={e => updateFormData('description', e.target.value)} rows={4} className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 resize-none" placeholder={t('form.steps.damages.placeholder')} />
             </div>
           </div>;
       case 3:
@@ -353,14 +353,14 @@ const MultiStepFormContent: React.FC = () => {
                   <span className="text-xs font-bold text-accent-foreground">4</span>
                 </div>
               </div>
-              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Documents officiels</h2>
-              <p className="text-sm sm:text-lg text-muted-foreground">Ajoutez les photos de vos documents :</p>
+              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">{t('form.steps.photos.documents.heading')}</h2>
+              <p className="text-sm sm:text-lg text-muted-foreground">{t('form.steps.photos.documents.subtitle')}</p>
             </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
               <PhotoUpload 
-                label="CARTE GRISE" 
-                description="Document d'immatriculation" 
+                label={t('form.steps.photos.documents.registration.label')} 
+                description={t('form.steps.photos.documents.registration.description')} 
                 photos={formData.photos.registration} 
                 onPhotosChange={photos => updatePhotos('registration', photos)} 
                 maxFiles={1} 
@@ -369,8 +369,8 @@ const MultiStepFormContent: React.FC = () => {
               />
 
               <PhotoUpload 
-                label="COMPTEUR OFFICIEL" 
-                description="Kilométrage du véhicule" 
+                label={t('form.steps.photos.documents.mileage.label')} 
+                description={t('form.steps.photos.documents.mileage.description')} 
                 photos={formData.photos.mileage} 
                 onPhotosChange={photos => updatePhotos('mileage', photos)} 
                 maxFiles={1} 
@@ -390,14 +390,14 @@ const MultiStepFormContent: React.FC = () => {
                   <span className="text-xs font-bold text-accent-foreground">5</span>
                 </div>
               </div>
-              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Photos du véhicule</h2>
-              <p className="text-sm sm:text-lg text-muted-foreground">Prenez les photos de votre véhicule :</p>
+              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">{t('form.steps.photos.vehicle.heading')}</h2>
+              <p className="text-sm sm:text-lg text-muted-foreground">{t('form.steps.photos.vehicle.subtitle')}</p>
             </div>
 
             <div className="space-y-4 sm:space-y-8">
-              <PhotoUpload label="4 angles du véhicule" description="1 photo de chaque angle : avant, arrière, gauche, droite" photos={formData.photos.vehicleAngles} onPhotosChange={photos => updatePhotos('vehicleAngles', photos)} maxFiles={4} showGuide={true} />
+              <PhotoUpload label={t('form.steps.photos.vehicle.angles.label')} description={t('form.steps.photos.vehicle.angles.description')} photos={formData.photos.vehicleAngles} onPhotosChange={photos => updatePhotos('vehicleAngles', photos)} maxFiles={4} showGuide={true} />
 
-              <PhotoUpload label="Photos des dommages" description="Photos détaillées de chaque zone endommagée (rapprochées et éloignées)" photos={[...formData.photos.damagePhotosClose, ...formData.photos.damagePhotosFar]} onPhotosChange={photos => {
+              <PhotoUpload label={t('form.steps.photos.vehicle.damages.label')} description={t('form.steps.photos.vehicle.damages.description')} photos={[...formData.photos.damagePhotosClose, ...formData.photos.damagePhotosFar]} onPhotosChange={photos => {
               const half = Math.ceil(photos.length / 2);
               updatePhotos('damagePhotosClose', photos.slice(0, half));
               updatePhotos('damagePhotosFar', photos.slice(half));
@@ -415,21 +415,21 @@ const MultiStepFormContent: React.FC = () => {
                   <span className="text-xs font-bold text-accent-foreground">6</span>
                 </div>
               </div>
-              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Informations de contact</h2>
-              <p className="text-sm sm:text-lg text-muted-foreground">Renseignez vos coordonnées :</p>
+              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">{t('form.steps.contact.heading')}</h2>
+              <p className="text-sm sm:text-lg text-muted-foreground">{t('form.steps.contact.subtitle')}</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label className="block text-sm font-semibold text-foreground mb-2">
-                  Prénom *
+                  {t('form.steps.contact.firstName')} *
                 </label>
                 <input type="text" required value={formData.contact.firstName} onChange={e => updateContact('firstName', e.target.value)} className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200" />
               </div>
 
               <div>
                 <label className="block text-sm font-semibold text-foreground mb-2">
-                  Nom *
+                  {t('form.steps.contact.lastName')} *
                 </label>
                 <input type="text" required value={formData.contact.lastName} onChange={e => updateContact('lastName', e.target.value)} className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200" />
               </div>
@@ -437,7 +437,7 @@ const MultiStepFormContent: React.FC = () => {
               <div className="my-0 py-0 px-0 mx-[8px]">
                 <label className="block text-sm font-semibold text-foreground mb-2 flex items-center">
                   <Mail className="w-4 h-4 mr-2" />
-                  Email *
+                  {t('form.steps.contact.email')} *
                 </label>
                 <input type="email" required value={formData.contact.email} onChange={e => updateContact('email', e.target.value)} className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200" />
               </div>
@@ -445,7 +445,7 @@ const MultiStepFormContent: React.FC = () => {
               <div>
                 <label className="block text-sm font-semibold text-foreground mb-2 flex items-center">
                   <Phone className="w-4 h-4 mr-2" />
-                  Téléphone *
+                  {t('form.steps.contact.phone')} *
                 </label>
                 <input type="tel" required value={formData.contact.phone} onChange={e => updateContact('phone', e.target.value)} className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200" />
               </div>
@@ -453,21 +453,21 @@ const MultiStepFormContent: React.FC = () => {
               <div className="md:col-span-2">
                 <label className="block text-sm font-semibold text-foreground mb-2 flex items-center">
                   <MapPin className="w-4 h-4 mr-2" />
-                  Adresse
+                  {t('form.steps.contact.address')}
                 </label>
                 <input type="text" value={formData.contact.address} onChange={e => updateContact('address', e.target.value)} className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200" />
               </div>
 
               <div>
                 <label className="block text-sm font-semibold text-foreground mb-2">
-                  Ville
+                  {t('form.steps.contact.city')}
                 </label>
                 <input type="text" value={formData.contact.city} onChange={e => updateContact('city', e.target.value)} className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200" />
               </div>
 
               <div>
                 <label className="block text-sm font-semibold text-foreground mb-2">
-                  Code postal
+                  {t('form.steps.contact.postalCode')}
                 </label>
                 <input type="text" value={formData.contact.postalCode} onChange={e => updateContact('postalCode', e.target.value)} className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200" />
               </div>
@@ -483,23 +483,23 @@ const MultiStepFormContent: React.FC = () => {
                   <span className="text-xs font-bold text-accent-foreground">7</span>
                 </div>
               </div>
-              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">Récapitulatif de votre demande</h2>
-              <p className="text-sm sm:text-lg text-muted-foreground">Vérifiez vos informations avant envoi :</p>
+              <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-2 sm:mb-4">{t('form.steps.review.heading')}</h2>
+              <p className="text-sm sm:text-lg text-muted-foreground">{t('form.steps.review.subtitle')}</p>
             </div>
 
             <div className="space-y-4 sm:space-y-6">
               <div className="bg-gradient-card p-4 sm:p-6 rounded-2xl shadow-card border border-border/50">
-                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">Type de demande</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">{t('form.review.requestType')}</h3>
                 <p className="text-sm sm:text-base text-muted-foreground">
-                  {formData.requestType === 'quote' ? 'Demande de devis' : 'Prise de rendez-vous'}
+                  {formData.requestType === 'quote' ? t('form.requestType.quote') : t('form.requestType.appointment')}
                 </p>
                 {formData.requestType === 'appointment' && formData.preferredDate && <p className="text-xs sm:text-sm text-muted-foreground mt-2">
-                    Date souhaitée : {formData.preferredDate} {formData.preferredTime && `à ${formData.preferredTime}`}
+                    {t('form.review.preferredDate')}: {formData.preferredDate} {formData.preferredTime && `${t('form.review.at')} ${formData.preferredTime}`}
                   </p>}
               </div>
 
               <div className="bg-gradient-card p-4 sm:p-6 rounded-2xl shadow-card border border-border/50">
-                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">Contact</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">{t('form.review.contact')}</h3>
                 <p className="text-sm sm:text-base text-muted-foreground">
                   {formData.contact.firstName} {formData.contact.lastName}
                 </p>
@@ -508,23 +508,23 @@ const MultiStepFormContent: React.FC = () => {
               </div>
 
               <div className="bg-gradient-card p-4 sm:p-6 rounded-2xl shadow-card border border-border/50">
-                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">Dommages sélectionnés</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">{t('form.review.selectedDamages')}</h3>
                 <p className="text-sm sm:text-base text-muted-foreground">
-                  {formData.selectedDamages.length > 0 ? `${formData.selectedDamages.length} zone(s) sélectionnée(s)` : 'Aucune zone spécifique sélectionnée'}
+                  {formData.selectedDamages.length > 0 ? t('form.review.damagesCount', { count: formData.selectedDamages.length }) : t('form.review.noDamages')}
                 </p>
               </div>
 
               <div className="bg-gradient-card p-4 sm:p-6 rounded-2xl shadow-card border border-border/50">
-                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">Photos ajoutées</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-3">{t('form.review.photosAdded')}</h3>
                 <div className="grid grid-cols-2 gap-4 text-xs sm:text-sm">
                   <div>
                     <p className="text-muted-foreground">
-                      Documents : {formData.photos.registration.length + formData.photos.mileage.length} photo(s)
+                      {t('form.review.documents')}: {formData.photos.registration.length + formData.photos.mileage.length} {t('form.review.photos')}
                     </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">
-                      Véhicule : {formData.photos.vehicleAngles.length + formData.photos.damagePhotosClose.length + formData.photos.damagePhotosFar.length} photo(s)
+                      {t('form.review.vehicle')}: {formData.photos.vehicleAngles.length + formData.photos.damagePhotosClose.length + formData.photos.damagePhotosFar.length} {t('form.review.photos')}
                     </p>
                   </div>
                 </div>
@@ -540,19 +540,19 @@ const MultiStepFormContent: React.FC = () => {
                 disabled={false}
               >
                 <FileText className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                Exporter le rapport PDF
+                {t('form.steps.review.exportPdf')}
               </Button>
 
               <Button onClick={handleSubmit} variant="accent" size="lg" className="px-8 sm:px-12" disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Envoi en cours...
+                    {t('form.steps.review.submitting')}
                   </>
                 ) : (
                   <>
                     <Send className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                    Envoyer ma demande
+                    {t('form.steps.review.submit')}
                   </>
                 )}
               </Button>
