@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Eye, Calendar, User, Mail, Phone } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ArrowLeft, Eye, Calendar, User, Mail, Phone, PlayCircle, CheckCircle, Archive, Trash2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useToast } from '@/hooks/use-toast';
 
 interface RequestSnapshot {
   id: string;
@@ -54,6 +56,9 @@ const Admin: React.FC = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('all');
+  const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const authenticate = async (username: string, password: string) => {
     const basicAuth = btoa(`${username}:${password}`);
@@ -79,7 +84,7 @@ const Admin: React.FC = () => {
     }
   };
 
-  const loadRequests = async (authHeader?: string) => {
+  const loadRequests = async (authHeader?: string, status?: string) => {
     setLoading(true);
     try {
       const auth = authHeader || localStorage.getItem('adminAuth');
@@ -88,7 +93,11 @@ const Admin: React.FC = () => {
         return;
       }
 
-      const response = await fetch('https://buvkkggimmpxgwquakuw.supabase.co/functions/v1/admin-auth', {
+      const url = status && status !== 'all' 
+        ? `https://buvkkggimmpxgwquakuw.supabase.co/functions/v1/admin-auth?status=${status}`
+        : 'https://buvkkggimmpxgwquakuw.supabase.co/functions/v1/admin-auth';
+
+      const response = await fetch(url, {
         headers: {
           'Authorization': `Basic ${auth}`
         }
@@ -112,6 +121,45 @@ const Admin: React.FC = () => {
       setError('Erreur lors du chargement des demandes');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const updateRequestStatus = async (requestId: string, newStatus: string) => {
+    setUpdatingStatus(requestId);
+    try {
+      const auth = localStorage.getItem('adminAuth');
+      if (!auth) return;
+
+      const response = await fetch(`https://buvkkggimmpxgwquakuw.supabase.co/functions/v1/admin-auth?id=${requestId}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Basic ${auth}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update status');
+      }
+
+      // Refresh the requests list
+      await loadRequests(auth, activeTab);
+      
+      toast({
+        title: "Statut mis à jour",
+        description: `Le statut a été changé vers "${getStatusLabel(newStatus)}"`,
+      });
+
+    } catch (error) {
+      console.error('Error updating status:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de mettre à jour le statut",
+        variant: "destructive",
+      });
+    } finally {
+      setUpdatingStatus(null);
     }
   };
 
@@ -170,7 +218,8 @@ const Admin: React.FC = () => {
       case 'pending': return 'bg-yellow-500';
       case 'processing': return 'bg-blue-500';
       case 'completed': return 'bg-green-500';
-      case 'failed': return 'bg-red-500';
+      case 'archived': return 'bg-gray-500';
+      case 'deleted': return 'bg-red-500';
       default: return 'bg-gray-500';
     }
   };
@@ -178,11 +227,90 @@ const Admin: React.FC = () => {
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'pending': return 'En attente';
-      case 'processing': return 'En cours';
-      case 'completed': return 'Terminé';
-      case 'failed': return 'Échec';
+      case 'processing': return 'En cours de traitement';
+      case 'completed': return 'Traité';
+      case 'archived': return 'Archivé';
+      case 'deleted': return 'Supprimé';
       default: return status;
     }
+  };
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    loadRequests(undefined, value);
+  };
+
+  const getStatusActions = (request: RequestSnapshot) => {
+    const actions = [];
+    
+    switch (request.status) {
+      case 'pending':
+        actions.push(
+          <Button
+            key="processing"
+            size="sm"
+            variant="outline"
+            onClick={() => updateRequestStatus(request.id, 'processing')}
+            disabled={updatingStatus === request.id}
+            className="flex items-center gap-1"
+          >
+            <PlayCircle className="h-3 w-3" />
+            En cours
+          </Button>
+        );
+        break;
+        
+      case 'processing':
+        actions.push(
+          <Button
+            key="completed"
+            size="sm"
+            variant="outline"
+            onClick={() => updateRequestStatus(request.id, 'completed')}
+            disabled={updatingStatus === request.id}
+            className="flex items-center gap-1"
+          >
+            <CheckCircle className="h-3 w-3" />
+            Traité
+          </Button>
+        );
+        break;
+        
+      case 'completed':
+        actions.push(
+          <Button
+            key="archived"
+            size="sm"
+            variant="outline"
+            onClick={() => updateRequestStatus(request.id, 'archived')}
+            disabled={updatingStatus === request.id}
+            className="flex items-center gap-1"
+          >
+            <Archive className="h-3 w-3" />
+            Archiver
+          </Button>
+        );
+        break;
+    }
+
+    // Add delete option for non-deleted requests
+    if (request.status !== 'deleted') {
+      actions.push(
+        <Button
+          key="delete"
+          size="sm"
+          variant="destructive"
+          onClick={() => updateRequestStatus(request.id, 'deleted')}
+          disabled={updatingStatus === request.id}
+          className="flex items-center gap-1"
+        >
+          <Trash2 className="h-3 w-3" />
+          Supprimer
+        </Button>
+      );
+    }
+
+    return actions;
   };
 
   if (!isAuthenticated) {
@@ -257,62 +385,87 @@ const Admin: React.FC = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {requests.map((request) => (
-            <Card key={request.id} className="cursor-pointer hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <CardTitle className="text-lg">
-                    {request.first_name} {request.last_name}
-                  </CardTitle>
-                  <Badge className={getStatusColor(request.status)}>
-                    {getStatusLabel(request.status)}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center text-sm text-muted-foreground">
-                    <Mail className="h-4 w-4 mr-2" />
-                    {request.email}
-                  </div>
-                  <div className="flex items-center text-sm text-muted-foreground">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    {new Date(request.created_at).toLocaleDateString('fr-FR')}
-                  </div>
-                  <Badge variant="secondary">
-                    {request.request_type === 'quote' ? 'Devis' : 'Rendez-vous'}
-                  </Badge>
-                </div>
-                
-                {request.snapshot_url && (
-                  <div className="mb-4">
-                    <img
-                      src={request.snapshot_url}
-                      alt="Aperçu des dommages"
-                      className="w-full h-32 object-cover rounded-md"
-                    />
-                  </div>
-                )}
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="all">Toutes</TabsTrigger>
+            <TabsTrigger value="pending">En attente</TabsTrigger>
+            <TabsTrigger value="processing">En cours</TabsTrigger>
+            <TabsTrigger value="completed">Traitées</TabsTrigger>
+            <TabsTrigger value="archived">Archivées</TabsTrigger>
+            <TabsTrigger value="deleted">Supprimées</TabsTrigger>
+          </TabsList>
 
-                <Button
-                  onClick={() => loadRequestDetail(request.id)}
-                  className="w-full"
-                  variant="outline"
-                >
-                  <Eye className="h-4 w-4 mr-2" />
-                  Voir les détails
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+          <TabsContent value={activeTab} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {requests.map((request) => (
+                <Card key={request.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader className="pb-3">
+                    <div className="flex justify-between items-start">
+                      <CardTitle className="text-lg">
+                        {request.first_name} {request.last_name}
+                      </CardTitle>
+                      <Badge className={getStatusColor(request.status)}>
+                        {getStatusLabel(request.status)}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2 mb-4">
+                      <div className="flex items-center text-sm text-muted-foreground">
+                        <Mail className="h-4 w-4 mr-2" />
+                        {request.email}
+                      </div>
+                      <div className="flex items-center text-sm text-muted-foreground">
+                        <Calendar className="h-4 w-4 mr-2" />
+                        {new Date(request.created_at).toLocaleDateString('fr-FR')}
+                      </div>
+                      <Badge variant="secondary">
+                        {request.request_type === 'quote' ? 'Devis' : 'Rendez-vous'}
+                      </Badge>
+                    </div>
+                    
+                    {request.snapshot_url && (
+                      <div className="mb-4">
+                        <img
+                          src={request.snapshot_url}
+                          alt="Aperçu des dommages"
+                          className="w-full h-32 object-cover rounded-md"
+                        />
+                      </div>
+                    )}
 
-        {requests.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">Aucune demande trouvée</p>
-          </div>
-        )}
+                    <div className="space-y-2">
+                      <Button
+                        onClick={() => loadRequestDetail(request.id)}
+                        className="w-full"
+                        variant="outline"
+                        size="sm"
+                      >
+                        <Eye className="h-4 w-4 mr-2" />
+                        Voir les détails
+                      </Button>
+
+                      <div className="flex gap-2 flex-wrap">
+                        {getStatusActions(request)}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {requests.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">
+                  {activeTab === 'all' 
+                    ? 'Aucune demande trouvée' 
+                    : `Aucune demande ${getStatusLabel(activeTab).toLowerCase()}`
+                  }
+                </p>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
 
       <Dialog open={!!selectedRequest} onOpenChange={() => setSelectedRequest(null)}>

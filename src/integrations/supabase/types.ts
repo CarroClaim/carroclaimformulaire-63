@@ -214,6 +214,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      update_request_status: {
+        Args: { new_status: string; request_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       photo_type:

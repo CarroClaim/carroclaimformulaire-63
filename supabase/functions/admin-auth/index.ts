@@ -52,8 +52,37 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const url = new URL(req.url);
-    const path = url.pathname;
     const requestId = url.searchParams.get('id');
+    const statusFilter = url.searchParams.get('status');
+
+    // Handle status update requests
+    if (req.method === 'PATCH' && requestId) {
+      const { status } = await req.json();
+      
+      if (!['pending', 'processing', 'completed', 'archived', 'deleted'].includes(status)) {
+        return new Response(JSON.stringify({ error: 'Invalid status' }), {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        });
+      }
+
+      const { error: updateError } = await supabase.rpc('update_request_status', {
+        request_id: requestId,
+        new_status: status
+      });
+
+      if (updateError) {
+        console.error('Error updating request status:', updateError);
+        return new Response(JSON.stringify({ error: 'Failed to update status' }), {
+          status: 500,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        });
+      }
+
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
 
     if (requestId) {
       // Get specific request with details
@@ -90,8 +119,8 @@ const handler = async (req: Request): Promise<Response> => {
       });
 
     } else {
-      // Get all requests list with damage_screenshot
-      const { data: requests, error } = await supabase
+      // Build query with optional status filter
+      let query = supabase
         .from('requests')
         .select(`
           id,
@@ -105,6 +134,13 @@ const handler = async (req: Request): Promise<Response> => {
           photos(id, file_path, photo_type)
         `)
         .order('created_at', { ascending: false });
+
+      // Apply status filter if provided
+      if (statusFilter && statusFilter !== 'all') {
+        query = query.eq('status', statusFilter);
+      }
+
+      const { data: requests, error } = await query;
 
       if (error) {
         throw new Error(`Failed to fetch requests: ${error.message}`);
