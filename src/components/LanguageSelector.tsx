@@ -1,5 +1,6 @@
 import React from 'react';
 import { Globe } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,9 +11,22 @@ import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/contexts/LanguageContext';
 
 export const LanguageSelector: React.FC = () => {
-  const { currentLanguage, setLanguage, languages } = useTranslation();
+  const { currentLanguage, languages } = useTranslation();
+  const navigate = useNavigate();
+  const { lang } = useParams();
   
   const currentLang = languages.find(lang => lang.code === currentLanguage);
+
+  const handleLanguageChange = (newLang: string) => {
+    const currentPath = window.location.pathname;
+    const isAdmin = currentPath.includes('/admin');
+    
+    if (isAdmin) {
+      navigate(`/${newLang}/admin`);
+    } else {
+      navigate(`/${newLang}`);
+    }
+  };
 
   return (
     <DropdownMenu>
@@ -27,7 +41,7 @@ export const LanguageSelector: React.FC = () => {
         {languages.map((language) => (
           <DropdownMenuItem
             key={language.code}
-            onClick={() => setLanguage(language.code)}
+            onClick={() => handleLanguageChange(language.code)}
             className={`cursor-pointer hover:bg-accent hover:text-accent-foreground ${
               currentLanguage === language.code ? 'bg-accent text-accent-foreground' : ''
             }`}

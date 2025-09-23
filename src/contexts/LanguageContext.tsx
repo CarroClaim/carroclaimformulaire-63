@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 
 export type Language = {
   code: string;
@@ -39,14 +38,8 @@ const detectBrowserLanguage = (): string => {
 const translationCache: Record<string, Record<string, any>> = {};
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const navigate = useNavigate();
-  const { lang } = useParams();
-  
   const [currentLanguage, setCurrentLanguage] = useState<string>(() => {
-    // Priorité : URL > localStorage > navigateur > défaut
-    if (lang && supportedLanguages.find(l => l.code === lang)) {
-      return lang;
-    }
+    // Priorité : localStorage > navigateur > défaut
     const stored = localStorage.getItem('preferred-language');
     return stored || detectBrowserLanguage();
   });
@@ -84,49 +77,13 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     loadTranslations();
   }, [currentLanguage]);
 
-  // Sauvegarde de la préférence et navigation
+  // Sauvegarde de la préférence
   const setLanguage = (newLang: string) => {
     if (supportedLanguages.find(language => language.code === newLang)) {
       setCurrentLanguage(newLang);
       localStorage.setItem('preferred-language', newLang);
-      
-      // Mettre à jour l'URL avec la nouvelle langue
-      const currentPath = window.location.pathname;
-      const isAdmin = currentPath.includes('/admin');
-      
-      if (isAdmin) {
-        navigate(`/${newLang}/admin`);
-      } else {
-        navigate(`/${newLang}`);
-      }
     }
   };
-
-  // Effet pour synchroniser l'URL avec les changements de langue
-  useEffect(() => {
-    const currentPath = window.location.pathname;
-    const pathSegments = currentPath.split('/').filter(Boolean);
-    const isAdmin = currentPath.includes('/admin');
-    
-    // Si pas de langue dans l'URL ou mauvaise langue, rediriger
-    if (!lang || lang !== currentLanguage) {
-      if (pathSegments.length === 0 || pathSegments[0] === 'admin') {
-        // Cas où on est sur "/" ou "/admin" sans préfixe de langue
-        if (isAdmin) {
-          navigate(`/${currentLanguage}/admin`, { replace: true });
-        } else {
-          navigate(`/${currentLanguage}`, { replace: true });
-        }
-      } else if (!supportedLanguages.find(l => l.code === pathSegments[0])) {
-        // Cas où le premier segment n'est pas une langue valide
-        if (isAdmin) {
-          navigate(`/${currentLanguage}/admin`, { replace: true });
-        } else {
-          navigate(`/${currentLanguage}`, { replace: true });
-        }
-      }
-    }
-  }, [currentLanguage, lang, navigate]);
 
   // Fonction de traduction avec interpolation de variables
   const t = (key: string, params?: Record<string, string | number>): string => {
