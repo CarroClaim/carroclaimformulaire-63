@@ -323,12 +323,13 @@ class FormSubmissionService {
   private async sendNotifications(submissionId: string, formData: FormData): Promise<void> {
     try {
       // Appel de la fonction Edge pour envoi d'emails
-      const { error } = await supabase.functions.invoke('send-submission-notifications', {
+      const { error } = await supabase.functions.invoke('send-submission-notification', {
         body: {
           submissionId,
           contact: formData.contact,
           requestType: formData.requestType,
-          damageCount: formData.selectedDamages.length
+          damageCount: formData.selectedDamages.length,
+          description: formData.description
         }
       });
 
