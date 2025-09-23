@@ -529,8 +529,11 @@ class FormSubmissionService {
    * Utilise la même logique que le composant CarDamageSelector
    */
   private async svgToPng(svgContent: string): Promise<Blob> {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
+        // Import canvg dynamically
+        const { Canvg } = await import('canvg');
+        
         // Créer un canvas pour le rendu
         const canvas = document.createElement('canvas');
         canvas.width = 418 * 2; // 2x pour meilleure qualité
@@ -546,25 +549,21 @@ class FormSubmissionService {
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Créer une image à partir du SVG
-        const img = new Image();
-        img.onload = () => {
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          canvas.toBlob((blob) => {
-            if (blob) {
-              resolve(blob);
-            } else {
-              reject(new Error('Échec conversion PNG'));
-            }
-          }, 'image/png', 0.92);
-        };
-        img.onerror = () => reject(new Error('Erreur chargement SVG'));
-
-        // Encoder le SVG en base64 pour l'image
-        const svgBlob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
-        const url = URL.createObjectURL(svgBlob);
-        img.src = url;
+        // Utiliser canvg pour rendre le SVG directement sur le canvas
+        const canvgInstance = Canvg.fromString(ctx, svgContent);
+        
+        await canvgInstance.render();
+        
+        canvas.toBlob((blob) => {
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error('Échec conversion PNG'));
+          }
+        }, 'image/png', 0.92);
+        
       } catch (error) {
+        console.error('Erreur conversion SVG vers PNG:', error);
         reject(error);
       }
     });
