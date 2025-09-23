@@ -17,18 +17,18 @@ const DAMAGE_NAME_MAPPING = {
   "Rétroviseur gauche": "retroviseur_gauche",
   "Rétroviseur droite": "retroviseur_droit",
   
-  // Vitres
-  "Vitre avant gauche": "vitre_laterale",
-  "Vitre avant droite": "vitre_laterale", 
-  "Vitre arrière gauche": "vitre_laterale",
-  "Vitre arrière droite": "vitre_laterale",
+  // Vitres - chaque vitre a maintenant son propre identifiant unique
+  "Vitre avant gauche": "vitre_avant_gauche",
+  "Vitre avant droite": "vitre_avant_droite", 
+  "Vitre arrière gauche": "vitre_arriere_gauche",
+  "Vitre arrière droite": "vitre_arriere_droite",
   "Pare-brise": "pare_brise",
-  "Lunette arrière": "vitre_laterale",
-  "Vitre de toit": "toit",
+  "Lunette arrière": "lunette_arriere",
+  "Vitre de toit": "vitre_toit",
   
-  // Custodes
-  "Custode arrière gauche": "vitre_laterale",
-  "Custode arrière droite": "vitre_laterale",
+  // Custodes - identifiants uniques
+  "Custode arrière gauche": "custode_arriere_gauche",
+  "Custode arrière droite": "custode_arriere_droite",
   
   // Ailes
   "Aile avant gauche": "aile_avant_gauche",
