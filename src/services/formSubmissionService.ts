@@ -489,7 +489,6 @@ class FormSubmissionService {
   </g>
 </svg>`;
   }
-  }
 
   /**
    * Convertit le contenu SVG en image PNG
