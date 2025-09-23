@@ -3,7 +3,7 @@ import { AlertCircle, Calendar, Camera, Car, CheckCircle, ChevronLeft, ChevronRi
 import { Button } from '@/components/ui/button';
 import { FormProvider, useFormContext } from '@/context/FormContext';
 import { useTranslation } from '@/contexts/LanguageContext';
-import { LanguageSelector } from '@/components/LanguageSelector';
+import { Header } from '@/components/Header';
 import CarDamageSelector from '@/components/CarDamageSelector';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import { StepProgress } from '@/components/StepProgress';
@@ -24,6 +24,7 @@ import { saveAs } from 'file-saver';
 // Composant interne utilisant le contexte
 const MultiStepFormContent: React.FC = () => {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const carSelectorRef = useRef<any>(null);
   const {
     currentStep,
@@ -39,14 +40,14 @@ const MultiStepFormContent: React.FC = () => {
     isLoading,
     validationErrors
   } = useFormContext();
-  // Définition des étapes avec icônes
+  // Définition des étapes avec icônes et traductions
   const steps: Step[] = [{
     id: 'preparation',
-    title: 'Préparation',
+    title: t('form.steps.preparation.title'),
     icon: FileText
   }, {
     id: 'type',
-    title: 'Type de demande',
+    title: t('form.steps.requestType.title'),
     icon: Settings
   }, {
     id: 'damages',
@@ -562,14 +563,10 @@ const MultiStepFormContent: React.FC = () => {
     }
   };
   return <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
+      <Header />
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-card/80 backdrop-blur-sm rounded-3xl shadow-elegant border border-border/50 overflow-hidden">
-          {/* Header */}
-          <div className="bg-gradient-hero p-8 text-center mx-0 px-[24px] py-[9px] bg-blue-950 rounded-lg">
-            <h1 className="font-bold text-white mb-2 py-0 text-lg">Demande d'expertise automobile</h1>
-            <p className="text-white/90 text-xs">Transmettez vos photos pour obtenir un devis ou prendre rendez-vous</p>
-          </div>
-
+          
           {/* Progress */}
           <div className="px-[11px] bg-slate-100">
             <StepProgress steps={steps} currentStep={currentStep} />
@@ -584,7 +581,7 @@ const MultiStepFormContent: React.FC = () => {
           <div className="flex justify-between items-center p-3 sm:p-4 bg-muted/30 border-t border-border/50">
             <Button onClick={prevStep} variant="outline" disabled={currentStep === 0} className="text-xs sm:text-sm px-3 py-2 min-w-0">
               <ChevronLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-              Précédent
+              {t('common.previous')}
             </Button>
             
             <div className="text-xs sm:text-sm text-muted-foreground">
@@ -592,7 +589,7 @@ const MultiStepFormContent: React.FC = () => {
             </div>
 
             {currentStep < steps.length - 1 ? <Button onClick={nextStep} disabled={!canProceedToNextStep()} className="text-xs sm:text-sm px-3 py-2 min-w-0">
-                Suivant
+                {t('common.next')}
                 <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
               </Button> : <div className="min-w-0" />}
           </div>

@@ -23,13 +23,13 @@ export const LanguageSelector: React.FC = () => {
           <span className="text-base">{currentLang?.flag}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-40">
+      <DropdownMenuContent align="end" className="w-40 bg-background border border-border shadow-lg">
         {languages.map((language) => (
           <DropdownMenuItem
             key={language.code}
             onClick={() => setLanguage(language.code)}
-            className={`cursor-pointer ${
-              currentLanguage === language.code ? 'bg-accent' : ''
+            className={`cursor-pointer hover:bg-accent hover:text-accent-foreground ${
+              currentLanguage === language.code ? 'bg-accent text-accent-foreground' : ''
             }`}
           >
             <span className="mr-2 text-base">{language.flag}</span>
