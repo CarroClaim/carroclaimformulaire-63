@@ -443,14 +443,12 @@ const Admin: React.FC = () => {
     <AdminLayout 
       activeSection={activeSection} 
       onSectionChange={handleSectionChange}
+      onLogout={handleLogout}
     >
       {activeSection === 'dashboard' && (
         <div className="flex-1 p-6">
-          <div className="flex justify-between items-center mb-6">
+          <div className="mb-6">
             <h1 className="text-2xl font-bold">Tableau de bord</h1>
-            <Button variant="outline" onClick={handleLogout}>
-              Déconnexion
-            </Button>
           </div>
           <StatisticsDashboard />
         </div>
@@ -458,16 +456,6 @@ const Admin: React.FC = () => {
 
       {activeSection === 'requests' && (
         <>
-          {/* Requests tabs header */}
-          <div className="border-b bg-background p-4">
-            <div className="flex justify-between items-center mb-4">
-              <h1 className="text-2xl font-bold">Gestion des demandes</h1>
-              <Button variant="outline" onClick={handleLogout}>
-                Déconnexion
-              </Button>
-            </div>
-            
-          </div>
 
           {/* Email-like interface */}
           <div className="flex flex-1">
