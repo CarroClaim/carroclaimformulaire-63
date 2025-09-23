@@ -90,7 +90,7 @@ const handler = async (req: Request): Promise<Response> => {
       });
 
     } else {
-      // Get all requests list
+      // Get all requests list with damage_screenshot
       const { data: requests, error } = await supabase
         .from('requests')
         .select(`
@@ -101,6 +101,7 @@ const handler = async (req: Request): Promise<Response> => {
           status,
           request_type,
           created_at,
+          damage_screenshot,
           photos(id, file_path, photo_type)
         `)
         .order('created_at', { ascending: false });
@@ -109,17 +110,27 @@ const handler = async (req: Request): Promise<Response> => {
         throw new Error(`Failed to fetch requests: ${error.message}`);
       }
 
-      // Add snapshot URL for each request (first damage photo)
+      // Add snapshot URL for each request (from damage_screenshot field or first photo)
       const requestsWithSnapshots = requests?.map(request => {
-        const snapshotPhoto = request.photos?.find((photo: any) => 
-          photo.photo_type === 'damage_photos'
-        );
+        let snapshotUrl = null;
+        
+        // Préférer le damage_screenshot si disponible
+        if (request.damage_screenshot) {
+          snapshotUrl = request.damage_screenshot;
+        } else {
+          // Sinon, utiliser la première photo de damage_photos
+          const snapshotPhoto = request.photos?.find((photo: any) => 
+            photo.photo_type === 'damage_photos'
+          );
+          
+          if (snapshotPhoto) {
+            snapshotUrl = `${supabaseUrl}/storage/v1/object/public/claim-photos/${snapshotPhoto.file_path}`;
+          }
+        }
         
         return {
           ...request,
-          snapshot_url: snapshotPhoto ? 
-            `${supabaseUrl}/storage/v1/object/public/claim-photos/${snapshotPhoto.file_path}` : 
-            null
+          snapshot_url: snapshotUrl
         };
       }) || [];
 

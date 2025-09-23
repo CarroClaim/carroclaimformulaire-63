@@ -286,10 +286,15 @@ class FormSubmissionService {
           photoType = 'vehicle_angles';
         }
 
+        // Extraire le path du fichier depuis l'URL publique
+        // URL format: https://domain/storage/v1/object/public/claim-photos/path
+        const urlParts = url.split('/claim-photos/');
+        const filePath = urlParts.length > 1 ? urlParts[1] : `${category}/${Date.now()}_${index + 1}.jpg`;
+
         photoRecords.push({
           request_id: requestId,
           photo_type: photoType,
-          file_path: url,
+          file_path: filePath, // Stocker le chemin du fichier, pas l'URL complète
           file_name: `${category}_${index + 1}`,
           mime_type: 'image/jpeg',
           file_size: 0 // Sera mis à jour si nécessaire
@@ -305,6 +310,8 @@ class FormSubmissionService {
       if (error) {
         throw new Error(`Erreur sauvegarde photos: ${error.message}`);
       }
+      
+      console.log(`Sauvegardé ${photoRecords.length} photos en base de données`);
     }
   }
 

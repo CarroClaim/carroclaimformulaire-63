@@ -30,6 +30,7 @@ interface RequestDetail {
   description?: string;
   preferred_date?: string;
   preferred_time?: string;
+  damage_screenshot?: string;
   created_at: string;
   photos: Array<{
     id: string;
@@ -355,6 +356,19 @@ const Admin: React.FC = () => {
                 <div>
                   <h3 className="font-semibold mb-2">Description</h3>
                   <p className="text-sm bg-muted p-3 rounded-md">{selectedRequest.description}</p>
+                </div>
+              )}
+
+              {selectedRequest.damage_screenshot && (
+                <div>
+                  <h3 className="font-semibold mb-2">Schéma des dommages</h3>
+                  <div className="border rounded-md p-2 bg-white">
+                    <img
+                      src={selectedRequest.damage_screenshot}
+                      alt="Schéma des dommages sélectionnés"
+                      className="w-full max-w-md h-auto mx-auto rounded-md"
+                    />
+                  </div>
                 </div>
               )}
 
