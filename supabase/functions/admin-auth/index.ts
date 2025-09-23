@@ -14,29 +14,23 @@ const corsHeaders = {
 };
 
 function basicAuth(request: Request): boolean {
-  console.log('=== DEBUG AUTH ===');
-  console.log('adminUser from env:', adminUser);
-  console.log('adminPass from env (exists):', !!adminPass);
+  console.log('=== AUTH DEBUG ===');
+  console.log('adminUser:', adminUser);
+  console.log('adminPass exists:', !!adminPass);
   
   const auth = request.headers.get('authorization');
-  console.log('Auth header:', auth);
-  
   if (!auth || !auth.startsWith('Basic ')) {
-    console.log('No valid basic auth header');
+    console.log('No basic auth header');
     return false;
   }
 
   const credentials = atob(auth.slice(6));
   const [username, password] = credentials.split(':');
   
-  console.log('Decoded username:', username);
-  console.log('Decoded password exists:', !!password);
-  console.log('Username match:', username === adminUser);
-  console.log('Password match:', password === adminPass);
+  console.log('Username:', username, 'matches:', username === adminUser);
+  console.log('Password matches:', password === adminPass);
   
-  // Temporairement, acceptons n'importe quel utilisateur pour déboguer
-  console.log('=== TEMP: Allowing any auth for debug ===');
-  return true; // Temporaire pour déboguer
+  return username === adminUser && password === adminPass;
 }
 
 const handler = async (req: Request): Promise<Response> => {

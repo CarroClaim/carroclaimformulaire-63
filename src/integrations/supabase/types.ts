@@ -76,6 +76,33 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          created_at: string | null
+          first_name: string | null
+          id: string
+          last_name: string | null
+          role: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          first_name?: string | null
+          id: string
+          last_name?: string | null
+          role?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          role?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       request_damages: {
         Row: {
           created_at: string
@@ -115,12 +142,15 @@ export type Database = {
       requests: {
         Row: {
           address: string
+          archived_at: string | null
           city: string
           created_at: string
+          damage_screenshot: string | null
           description: string | null
           email: string
           first_name: string
           id: string
+          is_archived: boolean | null
           last_name: string
           phone: string
           postal_code: string
@@ -133,12 +163,15 @@ export type Database = {
         }
         Insert: {
           address: string
+          archived_at?: string | null
           city: string
           created_at?: string
+          damage_screenshot?: string | null
           description?: string | null
           email: string
           first_name: string
           id?: string
+          is_archived?: boolean | null
           last_name: string
           phone: string
           postal_code: string
@@ -151,12 +184,15 @@ export type Database = {
         }
         Update: {
           address?: string
+          archived_at?: string | null
           city?: string
           created_at?: string
+          damage_screenshot?: string | null
           description?: string | null
           email?: string
           first_name?: string
           id?: string
+          is_archived?: boolean | null
           last_name?: string
           phone?: string
           postal_code?: string
@@ -174,7 +210,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       photo_type:
