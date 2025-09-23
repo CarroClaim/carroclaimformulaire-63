@@ -7,10 +7,11 @@ import { Separator } from '@/components/ui/separator';
 import { RequestProgress } from './RequestProgress';
 import { PhotoViewer } from './PhotoViewer';
 import CarDamageSelector from './CarDamageSelector';
+import { PrintableRequestDetails } from './PrintableRequestDetails';
 import { 
   User, Mail, Phone, MapPin, Calendar, Clock, 
   FileText, Camera, Download, Edit, Archive, 
-  Check, Play, Trash2, Car
+  Check, Play, Trash2, Car, Printer
 } from 'lucide-react';
 
 interface AdminRequestDetail {
@@ -115,8 +116,12 @@ export const RequestDetails: React.FC<RequestDetailsProps> = ({
     return dateFormatted;
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
-    <div className="flex-1 overflow-y-auto">
+    <div className="flex-1 overflow-y-auto no-print">
       {/* Header */}
       <div className="border-b bg-background p-6">
         <div className="flex items-start justify-between">
@@ -156,6 +161,10 @@ export const RequestDetails: React.FC<RequestDetailsProps> = ({
                 ZIP
               </Button>
             )}
+            <Button variant="outline" onClick={handlePrint}>
+              <Printer className="h-4 w-4 mr-2" />
+              Imprimer
+            </Button>
           </div>
         </div>
       </div>
@@ -312,6 +321,13 @@ export const RequestDetails: React.FC<RequestDetailsProps> = ({
         initialIndex={selectedPhotoIndex}
         isOpen={photoViewerOpen}
         onClose={() => setPhotoViewerOpen(false)}
+      />
+
+      {/* Printable version - hidden on screen, visible when printing */}
+      <PrintableRequestDetails
+        request={request}
+        getStatusColor={getStatusColor}
+        getStatusLabel={getStatusLabel}
       />
     </div>
   );
