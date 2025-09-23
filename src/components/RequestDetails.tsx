@@ -247,13 +247,23 @@ export const RequestDetails: React.FC<RequestDetailsProps> = ({
             <CardContent className="space-y-6">
               {/* SVG Car Damage Visualization */}
               <div className="flex justify-center">
-                <div className="bg-white rounded-lg p-6 shadow-sm border max-w-2xl w-full">
-                  <CarDamageSelector
-                    selectedAreas={request.damages.map(d => d.name)}
-                    onAreaSelect={() => {}} // Read-only mode
-                  />
-                  <div className="mt-4 text-sm text-muted-foreground text-center font-medium">
-                    Zones endommagées en surbrillance ({request.damages.length} zone{request.damages.length > 1 ? 's' : ''})
+                <div className="bg-gradient-to-br from-white to-gray-50 rounded-lg p-8 shadow-lg border border-border max-w-3xl w-full">
+                  <div className="relative">
+                    <CarDamageSelector
+                      selectedAreas={request.damages.map(d => d.name)}
+                      onAreaSelect={() => {}} // Read-only mode
+                    />
+                    <div className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground text-xs font-bold px-2 py-1 rounded-full">
+                      {request.damages.length}
+                    </div>
+                  </div>
+                  <div className="mt-6 text-center">
+                    <div className="inline-flex items-center space-x-2 bg-destructive/10 text-destructive px-4 py-2 rounded-full">
+                      <div className="w-3 h-3 bg-destructive rounded-full"></div>
+                      <span className="text-sm font-medium">
+                        Zones endommagées ({request.damages.length} zone{request.damages.length > 1 ? 's' : ''})
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>

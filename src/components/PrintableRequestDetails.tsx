@@ -62,7 +62,7 @@ export const PrintableRequestDetails: React.FC<PrintableRequestDetailsProps> = (
   };
 
   return (
-    <>
+    <div className="print-only bg-white text-black p-6 space-y-6">
       <style>
         {`
           @media print {
@@ -71,66 +71,37 @@ export const PrintableRequestDetails: React.FC<PrintableRequestDetailsProps> = (
               margin: 1.5cm;
             }
             
-            /* Hide everything except our printable content */
-            body * {
-              visibility: hidden;
-            }
-            
-            .print-only, .print-only * {
-              visibility: visible;
-            }
-            
-            .print-only {
-              position: absolute;
-              left: 0;
-              top: 0;
-              width: 100%;
-              background: white !important;
-              color: black !important;
-            }
-            
-            /* Ensure SVG prints correctly */
+            /* Force SVG color accuracy */
             svg {
-              max-width: 100% !important;
-              height: auto !important;
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+              color-adjust: exact !important;
             }
             
-            /* Force red color for damaged areas in SVG */
+            /* Ensure damaged areas show in red */
+            svg path[fill="#dc2626"],
             svg path[style*="#dc2626"] {
               fill: #dc2626 !important;
               stroke: #b91c1c !important;
               stroke-width: 2 !important;
             }
             
-            /* Hide buttons and interactive elements */
-            button {
-              display: none !important;
+            /* Photo styling for print */
+            .print-photo {
+              max-width: 100%;
+              max-height: 150px;
+              object-fit: cover;
+              border: 1px solid #ccc;
             }
             
-            /* Optimize text for print */
-            .print-text {
-              color: black !important;
-              background: transparent !important;
-            }
-            
-            /* Ensure proper spacing for print */
-            .car-damage-container {
-              page-break-inside: avoid;
-              margin: 1rem 0;
-            }
-          }
-          
-          @media screen {
-            .print-only {
-              display: none !important;
+            .page-break {
+              page-break-before: always;
             }
           }
         `}
       </style>
       
-      <div className="print-only bg-white text-black p-6 print-text">
+      
         {/* Header */}
         <div className="mb-8">
           <div className="flex justify-between items-start mb-4">
@@ -220,17 +191,19 @@ export const PrintableRequestDetails: React.FC<PrintableRequestDetailsProps> = (
           </h2>
           
           {/* Car SVG */}
-          <div className="flex justify-center mb-4">
-            <div className="border rounded-lg p-4 bg-gray-50 car-damage-container" style={{maxWidth: '400px'}}>
-              <div className="w-full" style={{transform: 'scale(0.9)', transformOrigin: 'center'}}>
+          <div className="flex justify-center mb-6">
+            <div className="border-2 border-gray-300 rounded-lg p-6 bg-gray-50" style={{maxWidth: '500px', width: '100%'}}>
+              <div className="w-full">
                 <CarDamageSelector
                   selectedAreas={request.damages.map(d => d.name)}
                   onAreaSelect={() => {}} // Read-only mode
                 />
               </div>
-              <p className="text-xs text-center mt-2 text-gray-600 print-text">
-                Zones endommagées en rouge ({request.damages.length} zone{request.damages.length > 1 ? 's' : ''})
-              </p>
+              <div className="text-center mt-4 p-2 bg-red-50 border border-red-200 rounded">
+                <p className="text-sm font-semibold text-red-700">
+                  Zones endommagées en rouge ({request.damages.length} zone{request.damages.length > 1 ? 's' : ''})
+                </p>
+              </div>
             </div>
           </div>
           
@@ -254,18 +227,39 @@ export const PrintableRequestDetails: React.FC<PrintableRequestDetailsProps> = (
         </div>
       )}
 
-      {/* Photos Summary */}
+      {/* Photos */}
       {request.photos.length > 0 && (
         <div className="mb-6">
           <h2 className="text-lg font-semibold mb-3 border-b pb-1">
-            Photos jointes
+            Photos jointes ({request.photos.length})
           </h2>
-          <p className="text-sm text-gray-600">
-            {request.photos.length} photo{request.photos.length > 1 ? 's' : ''} fournie{request.photos.length > 1 ? 's' : ''}
-          </p>
-          <div className="text-xs text-gray-500 mt-1">
-            Types : {[...new Set(request.photos.map(p => p.photo_type))].join(', ')}
+          
+          {/* First 4 photos displayed */}
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            {request.photos.slice(0, 4).map((photo, index) => (
+              <div key={photo.id} className="text-center">
+                <img
+                  src={photo.public_url}
+                  alt={photo.file_name}
+                  className="print-photo w-full rounded border"
+                />
+                <p className="text-xs text-gray-600 mt-1 font-medium">
+                  {photo.photo_type}
+                </p>
+              </div>
+            ))}
           </div>
+          
+          {/* Additional photos summary if more than 4 */}
+          {request.photos.length > 4 && (
+            <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded border">
+              <p className="font-medium">Photos supplémentaires :</p>
+              <p className="text-xs">
+                {request.photos.length - 4} photo{request.photos.length - 4 > 1 ? 's' : ''} supplémentaire{request.photos.length - 4 > 1 ? 's' : ''} - 
+                Types : {[...new Set(request.photos.slice(4).map(p => p.photo_type))].join(', ')}
+              </p>
+            </div>
+          )}
         </div>
       )}
 
@@ -273,7 +267,6 @@ export const PrintableRequestDetails: React.FC<PrintableRequestDetailsProps> = (
       <div className="mt-8 pt-4 border-t text-xs text-gray-500">
         <p>Document généré automatiquement le {new Date().toLocaleString('fr-FR')}</p>
       </div>
-      </div>
-    </>
+    </div>
   );
 };

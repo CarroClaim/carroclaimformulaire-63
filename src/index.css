@@ -148,3 +148,58 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* Print Styles */
+@media print {
+  @page {
+    size: A4;
+    margin: 1.5cm;
+  }
+  
+  /* Hide everything by default */
+  body * {
+    visibility: hidden;
+  }
+  
+  /* Only show printable content */
+  .print-only,
+  .print-only * {
+    visibility: visible;
+  }
+  
+  .print-only {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: white !important;
+    color: black !important;
+  }
+  
+  /* Force SVG visibility and color accuracy */
+  svg {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+  
+  /* Ensure damaged areas show in red */
+  svg path[fill="#dc2626"],
+  svg path[style*="#dc2626"] {
+    fill: #dc2626 !important;
+    stroke: #b91c1c !important;
+    stroke-width: 2 !important;
+  }
+  
+  /* Hide interactive elements */
+  button,
+  .no-print {
+    display: none !important;
+  }
+}
+
+@media screen {
+  .print-only {
+    display: none !important;
+  }
+}
