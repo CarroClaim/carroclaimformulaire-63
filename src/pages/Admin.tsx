@@ -9,6 +9,8 @@ import { useToast } from '@/hooks/use-toast';
 import { RequestProgress } from '@/components/RequestProgress';
 import { PhotoViewer } from '@/components/PhotoViewer';
 import { zipDownloadService } from '@/services/zipDownloadService';
+import StatisticsDashboard from '@/components/StatisticsDashboard';
+import RequestsTab from '@/components/RequestsTab';
 
 interface RequestSnapshot {
   id: string;
@@ -59,7 +61,7 @@ const Admin: React.FC = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState('statistics');
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
   const [photoViewerOpen, setPhotoViewerOpen] = useState(false);
   const [photoViewerIndex, setPhotoViewerIndex] = useState(0);
@@ -244,7 +246,9 @@ const Admin: React.FC = () => {
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
-    loadRequests(undefined, value);
+    if (value !== 'statistics') {
+      loadRequests(undefined, value);
+    }
   };
 
   const getStatusActions = (request: RequestSnapshot) => {
@@ -393,7 +397,8 @@ const Admin: React.FC = () => {
         )}
 
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
+            <TabsTrigger value="statistics">Statistiques</TabsTrigger>
             <TabsTrigger value="all">Toutes</TabsTrigger>
             <TabsTrigger value="pending">En attente</TabsTrigger>
             <TabsTrigger value="processing">En cours</TabsTrigger>
@@ -402,80 +407,74 @@ const Admin: React.FC = () => {
             <TabsTrigger value="deleted">Supprimées</TabsTrigger>
           </TabsList>
 
-          <TabsContent value={activeTab} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {requests.map((request) => (
-                <Card key={request.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader className="pb-3">
-                    <div className="flex justify-between items-start">
-                      <CardTitle className="text-lg">
-                        {request.first_name} {request.last_name}
-                      </CardTitle>
-                      <Badge className={getStatusColor(request.status)}>
-                        {getStatusLabel(request.status)}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-center text-sm text-muted-foreground">
-                        <Mail className="h-4 w-4 mr-2" />
-                        {request.email}
-                      </div>
-                      <div className="flex items-center text-sm text-muted-foreground">
-                        <Calendar className="h-4 w-4 mr-2" />
-                        {new Date(request.created_at).toLocaleDateString('fr-FR')}
-                      </div>
-                      <Badge variant="secondary">
-                        {request.request_type === 'quote' ? 'Devis' : 'Rendez-vous'}
-                      </Badge>
-                    </div>
-                    
-                    {/* Progress tracking */}
-                    <div className="mb-4">
-                      <RequestProgress status={request.status} />
-                    </div>
-                    
-                    {request.snapshot_url && (
-                      <div className="mb-4">
-                        <img
-                          src={request.snapshot_url}
-                          alt="Aperçu des dommages"
-                          className="w-full h-32 object-cover rounded-md"
-                        />
-                      </div>
-                    )}
+          <TabsContent value="statistics" className="space-y-4">
+            <StatisticsDashboard />
+          </TabsContent>
 
-                    <div className="space-y-2">
-                      <Button
-                        onClick={() => loadRequestDetail(request.id)}
-                        className="w-full"
-                        variant="outline"
-                        size="sm"
-                      >
-                        <Eye className="h-4 w-4 mr-2" />
-                        Voir les détails
-                      </Button>
+          <TabsContent value="all" className="space-y-4">
+            <RequestsTab
+              requests={requests}
+              activeTab={activeTab}
+              loadRequestDetail={loadRequestDetail}
+              getStatusColor={getStatusColor}
+              getStatusLabel={getStatusLabel}
+              getStatusActions={getStatusActions}
+            />
+          </TabsContent>
 
-                      <div className="flex gap-2 flex-wrap">
-                        {getStatusActions(request)}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+          <TabsContent value="pending" className="space-y-4">
+            <RequestsTab
+              requests={requests}
+              activeTab={activeTab}
+              loadRequestDetail={loadRequestDetail}
+              getStatusColor={getStatusColor}
+              getStatusLabel={getStatusLabel}
+              getStatusActions={getStatusActions}
+            />
+          </TabsContent>
 
-            {requests.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground">
-                  {activeTab === 'all' 
-                    ? 'Aucune demande trouvée' 
-                    : `Aucune demande ${getStatusLabel(activeTab).toLowerCase()}`
-                  }
-                </p>
-              </div>
-            )}
+          <TabsContent value="processing" className="space-y-4">
+            <RequestsTab
+              requests={requests}
+              activeTab={activeTab}
+              loadRequestDetail={loadRequestDetail}
+              getStatusColor={getStatusColor}
+              getStatusLabel={getStatusLabel}
+              getStatusActions={getStatusActions}
+            />
+          </TabsContent>
+
+          <TabsContent value="completed" className="space-y-4">
+            <RequestsTab
+              requests={requests}
+              activeTab={activeTab}
+              loadRequestDetail={loadRequestDetail}
+              getStatusColor={getStatusColor}
+              getStatusLabel={getStatusLabel}
+              getStatusActions={getStatusActions}
+            />
+          </TabsContent>
+
+          <TabsContent value="archived" className="space-y-4">
+            <RequestsTab
+              requests={requests}
+              activeTab={activeTab}
+              loadRequestDetail={loadRequestDetail}
+              getStatusColor={getStatusColor}
+              getStatusLabel={getStatusLabel}
+              getStatusActions={getStatusActions}
+            />
+          </TabsContent>
+
+          <TabsContent value="deleted" className="space-y-4">
+            <RequestsTab
+              requests={requests}
+              activeTab={activeTab}
+              loadRequestDetail={loadRequestDetail}
+              getStatusColor={getStatusColor}
+              getStatusLabel={getStatusLabel}
+              getStatusActions={getStatusActions}
+            />
           </TabsContent>
         </Tabs>
       </div>
