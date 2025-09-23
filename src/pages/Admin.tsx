@@ -322,6 +322,10 @@ const Admin: React.FC = () => {
             </DialogTitle>
           </DialogHeader>
           
+          <div className="sr-only" id="dialog-description">
+            Détails complets de la demande incluant les informations client, photos et dégâts rapportés.
+          </div>
+          
           {selectedRequest && (
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
