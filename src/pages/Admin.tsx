@@ -11,6 +11,7 @@ import StatisticsDashboard from '@/components/StatisticsDashboard';
 import { RequestsList } from '@/components/RequestsList';
 import { RequestDetails } from '@/components/RequestDetails';
 import { zipDownloadService } from '@/services/zipDownloadService';
+import { mapDBToUI } from '@/lib/damageMapping';
 import { 
   Play, 
   Check, 
@@ -160,7 +161,7 @@ const Admin: React.FC = () => {
       const transformedData: AdminRequestDetail = {
         ...data,
         damages: data.request_damages?.map((rd: any) => ({
-          name: rd.damage_parts.name,
+          name: mapDBToUI(rd.damage_parts.name), // Convert DB name to UI name for display
           description: rd.damage_parts.description
         })) || []
       };

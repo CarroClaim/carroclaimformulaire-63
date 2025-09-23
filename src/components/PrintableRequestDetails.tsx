@@ -2,6 +2,7 @@ import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CarDamageSelector from './CarDamageSelector';
+import { mapDBToUI } from '@/lib/damageMapping';
 import { 
   User, Mail, Phone, MapPin, Calendar, Clock, 
   FileText, Car
@@ -182,32 +183,45 @@ export const PrintableRequestDetails: React.FC<PrintableRequestDetailsProps> = (
         </div>
       )}
 
-      {/* Damages with Car Diagram */}
-      {request.damages.length > 0 && (
-        <div className="mb-6 page-break-inside-avoid">
-          <h2 className="text-lg font-semibold mb-3 border-b pb-1 flex items-center">
-            <Car className="h-5 w-5 mr-2" />
-            Dommages signalés ({request.damages.length})
-          </h2>
-          
-          {/* Car SVG */}
-          <div className="flex justify-center mb-6">
-            <div className="border-2 border-gray-300 rounded-lg p-6 bg-gray-50" style={{maxWidth: '500px', width: '100%'}}>
-              <div className="w-full">
-                <CarDamageSelector
-                  selectedAreas={request.damages.map(d => d.name)}
-                  onAreaSelect={() => {}} // Read-only mode
-                />
-              </div>
-              <div className="text-center mt-4 p-2 bg-red-50 border border-red-200 rounded">
-                <p className="text-sm font-semibold text-red-700">
-                  Zones endommagées en rouge ({request.damages.length} zone{request.damages.length > 1 ? 's' : ''})
-                </p>
-              </div>
+      {/* Damages with Car Diagram - Always show */}
+      <div className="mb-6 page-break-inside-avoid">
+        <h2 className="text-lg font-semibold mb-3 border-b pb-1 flex items-center">
+          <Car className="h-5 w-5 mr-2" />
+          {request.damages.length > 0 
+            ? `Dommages signalés (${request.damages.length})`
+            : 'Aucun dommage signalé'
+          }
+        </h2>
+        
+        {/* Car SVG */}
+        <div className="flex justify-center mb-6">
+          <div className="border-2 border-gray-300 rounded-lg p-6 bg-gray-50" style={{maxWidth: '500px', width: '100%'}}>
+            <div className="w-full">
+              <CarDamageSelector
+                selectedAreas={request.damages.map(d => mapDBToUI(d.name))}
+                onAreaSelect={() => {}} // Read-only mode
+              />
+            </div>
+            <div className="text-center mt-4 p-2 border rounded">
+              {request.damages.length > 0 ? (
+                <div className="bg-red-50 border-red-200">
+                  <p className="text-sm font-semibold text-red-700">
+                    Zones endommagées en rouge ({request.damages.length} zone{request.damages.length > 1 ? 's' : ''})
+                  </p>
+                </div>
+              ) : (
+                <div className="bg-green-50 border-green-200">
+                  <p className="text-sm font-semibold text-green-700">
+                    Véhicule sans dommage visible
+                  </p>
+                </div>
+              )}
             </div>
           </div>
-          
-          {/* Damage List */}
+        </div>
+        
+        {/* Damage List */}
+        {request.damages.length > 0 && (
           <div>
             <h3 className="font-medium text-sm mb-2">Détail des dommages :</h3>
             <div className="space-y-2">
@@ -224,8 +238,8 @@ export const PrintableRequestDetails: React.FC<PrintableRequestDetailsProps> = (
               ))}
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Photos */}
       {request.photos.length > 0 && (

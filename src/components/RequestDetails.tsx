@@ -8,6 +8,7 @@ import { RequestProgress } from './RequestProgress';
 import { PhotoViewer } from './PhotoViewer';
 import CarDamageSelector from './CarDamageSelector';
 import { PrintableRequestDetails } from './PrintableRequestDetails';
+import { mapDBToUI } from '@/lib/damageMapping';
 import { 
   User, Mail, Phone, MapPin, Calendar, Clock, 
   FileText, Camera, Download, Edit, Archive, 
@@ -235,40 +236,54 @@ export const RequestDetails: React.FC<RequestDetailsProps> = ({
           </Card>
         )}
 
-        {/* Damages */}
-        {request.damages.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Car className="h-5 w-5 mr-2" />
-                Dommages signalés ({request.damages.length})
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* SVG Car Damage Visualization */}
-              <div className="flex justify-center">
-                <div className="bg-gradient-to-br from-white to-gray-50 rounded-lg p-8 shadow-lg border border-border max-w-3xl w-full">
+        {/* Damages - Always show section, even if empty */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Car className="h-5 w-5 mr-2" />
+              {request.damages.length > 0 
+                ? `Dommages signalés (${request.damages.length})` 
+                : 'Aucun dommage signalé'
+              }
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* SVG Car Damage Visualization */}
+            <div className="flex justify-center">
+              <div className="bg-gradient-to-br from-white to-gray-50 rounded-lg p-8 shadow-lg border border-border max-w-3xl w-full">
                   <div className="relative">
                     <CarDamageSelector
-                      selectedAreas={request.damages.map(d => d.name)}
+                      selectedAreas={request.damages.map(d => mapDBToUI(d.name))}
                       onAreaSelect={() => {}} // Read-only mode
                     />
+                  {request.damages.length > 0 && (
                     <div className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground text-xs font-bold px-2 py-1 rounded-full">
                       {request.damages.length}
                     </div>
-                  </div>
-                  <div className="mt-6 text-center">
+                  )}
+                </div>
+                <div className="mt-6 text-center">
+                  {request.damages.length > 0 ? (
                     <div className="inline-flex items-center space-x-2 bg-destructive/10 text-destructive px-4 py-2 rounded-full">
                       <div className="w-3 h-3 bg-destructive rounded-full"></div>
                       <span className="text-sm font-medium">
                         Zones endommagées ({request.damages.length} zone{request.damages.length > 1 ? 's' : ''})
                       </span>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="inline-flex items-center space-x-2 bg-green-50 text-green-700 px-4 py-2 rounded-full">
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      <span className="text-sm font-medium">
+                        Véhicule sans dommage visible
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
-              
-              {/* Damage List */}
+            </div>
+            
+            {/* Damage List */}
+            {request.damages.length > 0 && (
               <div className="space-y-2">
                 <h4 className="font-medium text-sm text-muted-foreground mb-3">Détail des dommages :</h4>
                 {request.damages.map((damage, index) => (
@@ -283,9 +298,9 @@ export const RequestDetails: React.FC<RequestDetailsProps> = ({
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
-        )}
+            )}
+          </CardContent>
+        </Card>
 
         {/* Photos */}
         {request.photos.length > 0 && (

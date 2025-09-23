@@ -12,6 +12,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { FormData } from '@/types/form';
 import { photoUploadService } from './photoUploadService';
+import { mapUIArrayToDB } from '@/lib/damageMapping';
 
 // Interface pour les données de soumission enrichies
 interface SubmissionData {
@@ -234,28 +235,39 @@ class FormSubmissionService {
    * Utilise la table 'request_damages' pour lier les dommages à la demande
    */
   private async saveDamages(requestId: string, selectedDamages: string[]): Promise<void> {
-    if (selectedDamages.length === 0) return;
+    if (selectedDamages.length === 0) {
+      console.log('Aucun dommage sélectionné pour la demande:', requestId);
+      return;
+    }
+
+    console.log('Sauvegarde des dommages pour la demande:', requestId, 'Dommages UI:', selectedDamages);
+
+    // Convertir les noms UI vers les noms de base de données
+    const dbDamageNames = mapUIArrayToDB(selectedDamages);
+    console.log('Noms convertis pour la base:', dbDamageNames);
 
     // D'abord, récupérer les IDs des damage_parts correspondants
     const { data: damageParts, error: damagePartsError } = await supabase
       .from('damage_parts')
       .select('id, name')
-      .in('name', selectedDamages);
+      .in('name', dbDamageNames);
 
     if (damagePartsError) {
-      console.warn('Erreur récupération damage parts:', damagePartsError);
-      return; // Ne pas faire échouer la soumission pour ça
+      console.error('Erreur récupération damage parts:', damagePartsError);
+      throw new Error(`Échec récupération des parties de dommage: ${damagePartsError.message}`);
     }
 
     if (!damageParts || damageParts.length === 0) {
-      console.warn('Aucune damage part trouvée pour les dommages sélectionnés');
-      return;
+      console.error('Aucune damage part trouvée pour les dommages sélectionnés:', dbDamageNames);
+      console.log('Dommages disponibles en base:', await this.getAvailableDamageParts());
+      throw new Error('Aucune partie de dommage trouvée en base de données');
     }
+
+    console.log('Parties de dommage trouvées:', damageParts);
 
     const damageRecords = damageParts.map(damagePart => ({
       request_id: requestId,
-      damage_part_id: damagePart.id,
-      created_at: new Date().toISOString()
+      damage_part_id: damagePart.id
     }));
 
     const { error } = await supabase
@@ -264,7 +276,26 @@ class FormSubmissionService {
 
     if (error) {
       console.error('Erreur sauvegarde dommages:', error);
-      // Ne pas faire échouer la soumission pour les dommages
+      throw new Error(`Échec de la sauvegarde des dommages: ${error.message}`);
+    }
+
+    console.log(`Sauvegardé ${damageRecords.length} dommages pour la demande ${requestId}`);
+  }
+
+  /**
+   * HELPER: Récupère toutes les parties de dommage disponibles en base (pour debug)
+   */
+  private async getAvailableDamageParts(): Promise<string[]> {
+    try {
+      const { data, error } = await supabase
+        .from('damage_parts')
+        .select('name')
+        .order('name');
+      
+      if (error) return [];
+      return data.map(d => d.name);
+    } catch {
+      return [];
     }
   }
 
