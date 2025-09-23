@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import { useToast } from '@/hooks/use-toast';
 import { AdminLayout } from '@/components/AdminLayout';
 import StatisticsDashboard from '@/components/StatisticsDashboard';
@@ -66,7 +66,7 @@ const Admin: React.FC = () => {
   const [selectedRequest, setSelectedRequest] = useState<AdminRequestDetail | null>(null);
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState('dashboard');
-  const [activeTab, setActiveTab] = useState('pending');
+  
   const [loading, setLoading] = useState(true);
   const [requestDetailLoading, setRequestDetailLoading] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
@@ -98,7 +98,7 @@ const Admin: React.FC = () => {
     }
   };
 
-  const loadRequests = async (authHeader?: string, status?: string) => {
+  const loadRequests = async (authHeader?: string) => {
     setLoading(true);
     try {
       const auth = authHeader || localStorage.getItem('adminAuth');
@@ -107,9 +107,7 @@ const Admin: React.FC = () => {
         return;
       }
 
-      const url = status && status !== 'all' 
-        ? `https://buvkkggimmpxgwquakuw.supabase.co/functions/v1/admin-auth?status=${status}`
-        : 'https://buvkkggimmpxgwquakuw.supabase.co/functions/v1/admin-auth';
+      const url = 'https://buvkkggimmpxgwquakuw.supabase.co/functions/v1/admin-auth';
 
       const response = await fetch(url, {
         headers: {
@@ -199,7 +197,7 @@ const Admin: React.FC = () => {
       }
 
       // Refresh the requests list
-      await loadRequests(auth, activeTab);
+      await loadRequests(auth);
 
       // Update selected request if it's the same one
       if (selectedRequest && selectedRequest.id === requestId) {
@@ -245,17 +243,9 @@ const Admin: React.FC = () => {
   const handleSectionChange = (section: string) => {
     setActiveSection(section);
     if (section === 'requests') {
-      loadRequests(undefined, activeTab);
+      loadRequests();
     }
     // Clear selected request when changing sections
-    setSelectedRequest(null);
-    setSelectedRequestId(null);
-  };
-
-  const handleTabChange = (value: string) => {
-    setActiveTab(value);
-    loadRequests(undefined, value);
-    // Clear selected request when changing tabs
     setSelectedRequest(null);
     setSelectedRequestId(null);
   };
@@ -310,9 +300,9 @@ const Admin: React.FC = () => {
 
   useEffect(() => {
     if (isAuthenticated && activeSection === 'requests') {
-      loadRequests(undefined, activeTab);
+      loadRequests();
     }
-  }, [isAuthenticated, activeSection, activeTab]);
+  }, [isAuthenticated, activeSection]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -403,15 +393,6 @@ const Admin: React.FC = () => {
     return actions;
   };
 
-  // Filter requests by status
-  const currentRequests = requests.filter(r => {
-    if (activeTab === 'pending') return r.status === 'pending';
-    if (activeTab === 'processing') return r.status === 'processing';
-    if (activeTab === 'completed') return r.status === 'completed';
-    if (activeTab === 'archived') return r.status === 'archived';
-    if (activeTab === 'deleted') return r.status === 'deleted';
-    return true;
-  });
 
   if (!isAuthenticated) {
     return (
@@ -486,22 +467,12 @@ const Admin: React.FC = () => {
               </Button>
             </div>
             
-            <Tabs value={activeTab} onValueChange={handleTabChange}>
-              <TabsList className="grid w-full grid-cols-6">
-                <TabsTrigger value="all">Toutes</TabsTrigger>
-                <TabsTrigger value="pending">En attente</TabsTrigger>
-                <TabsTrigger value="processing">En cours</TabsTrigger>
-                <TabsTrigger value="completed">Traitées</TabsTrigger>
-                <TabsTrigger value="archived">Archivées</TabsTrigger>
-                <TabsTrigger value="deleted">Supprimées</TabsTrigger>
-              </TabsList>
-            </Tabs>
           </div>
 
           {/* Email-like interface */}
           <div className="flex flex-1">
             <RequestsList
-              requests={currentRequests}
+              requests={requests}
               selectedRequestId={selectedRequestId}
               onRequestSelect={loadRequestDetail}
               getStatusColor={getStatusColor}
