@@ -274,6 +274,8 @@ class FormSubmissionService {
         let photoType: string = category;
         if (category === 'damagePhotosClose' || category === 'damagePhotosFar') {
           photoType = 'damage_photos';
+        } else if (category === 'vehicleAngles') {
+          photoType = 'vehicle_angles';
         }
 
         photoRecords.push({
