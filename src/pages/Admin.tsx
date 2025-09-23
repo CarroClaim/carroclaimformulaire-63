@@ -3,9 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Eye, Calendar, User, Mail, Phone, PlayCircle, CheckCircle, Archive, Trash2 } from 'lucide-react';
+import { ArrowLeft, Eye, Calendar, User, Mail, Phone, PlayCircle, CheckCircle, Archive, Trash2, Download } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
+import { RequestProgress } from '@/components/RequestProgress';
+import { PhotoViewer } from '@/components/PhotoViewer';
+import { zipDownloadService } from '@/services/zipDownloadService';
 
 interface RequestSnapshot {
   id: string;
@@ -58,6 +61,10 @@ const Admin: React.FC = () => {
   const [authLoading, setAuthLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
+  const [photoViewerOpen, setPhotoViewerOpen] = useState(false);
+  const [photoViewerIndex, setPhotoViewerIndex] = useState(0);
+  const [downloadingZip, setDownloadingZip] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(0);
   const { toast } = useToast();
 
   const authenticate = async (username: string, password: string) => {
@@ -424,6 +431,11 @@ const Admin: React.FC = () => {
                       </Badge>
                     </div>
                     
+                    {/* Progress tracking */}
+                    <div className="mb-4">
+                      <RequestProgress status={request.status} />
+                    </div>
+                    
                     {request.snapshot_url && (
                       <div className="mb-4">
                         <img
@@ -540,14 +552,29 @@ const Admin: React.FC = () => {
 
               {selectedRequest.photos && selectedRequest.photos.length > 0 && (
                 <div>
-                  <h3 className="font-semibold mb-2">Photos ({selectedRequest.photos.length})</h3>
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="font-semibold">Photos ({selectedRequest.photos.length})</h3>
+                    <Button
+                      onClick={handleDownloadZip}
+                      disabled={downloadingZip}
+                      size="sm"
+                      className="flex items-center gap-2"
+                    >
+                      <Download className="h-4 w-4" />
+                      {downloadingZip ? `${Math.round(downloadProgress)}%` : 'Télécharger ZIP'}
+                    </Button>
+                  </div>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {selectedRequest.photos.map((photo) => (
+                    {selectedRequest.photos.map((photo, index) => (
                       <div key={photo.id} className="space-y-2">
                         <img
                           src={photo.public_url}
                           alt={photo.file_name}
-                          className="w-full h-32 object-cover rounded-md border"
+                          className="w-full h-32 object-cover rounded-md border cursor-pointer hover:opacity-80 transition-opacity"
+                          onClick={() => {
+                            setPhotoViewerIndex(index);
+                            setPhotoViewerOpen(true);
+                          }}
                         />
                         <p className="text-xs text-muted-foreground text-center">
                           {photo.photo_type}
@@ -561,8 +588,56 @@ const Admin: React.FC = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Photo Viewer */}
+      {selectedRequest?.photos && (
+        <PhotoViewer
+          photos={selectedRequest.photos}
+          initialIndex={photoViewerIndex}
+          isOpen={photoViewerOpen}
+          onClose={() => setPhotoViewerOpen(false)}
+        />
+      )}
     </div>
   );
+
+  async function handleDownloadZip() {
+    if (!selectedRequest?.photos || selectedRequest.photos.length === 0) {
+      toast({
+        title: "Erreur",
+        description: "Aucune photo à télécharger",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setDownloadingZip(true);
+    setDownloadProgress(0);
+
+    try {
+      await zipDownloadService.createAndDownloadZip(
+        selectedRequest.photos,
+        selectedRequest.id,
+        `${selectedRequest.first_name}_${selectedRequest.last_name}`,
+        (progress) => setDownloadProgress(progress)
+      );
+
+      toast({
+        title: "Succès",
+        description: "Le fichier ZIP a été téléchargé avec succès",
+      });
+    } catch (error) {
+      console.error('Error downloading ZIP:', error);
+      toast({
+        title: "Erreur",
+        description: "Erreur lors du téléchargement du ZIP",
+        variant: "destructive",
+      });
+    } finally {
+      setDownloadingZip(false);
+      setDownloadProgress(0);
+    }
+  }
 };
 
 export default Admin;
