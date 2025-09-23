@@ -55,7 +55,7 @@ const handler = async (req: Request): Promise<Response> => {
     const path = url.pathname;
     const requestId = url.searchParams.get('id');
 
-    if (path.includes('/requests') && requestId) {
+    if (requestId) {
       // Get specific request with details
       const { data: request, error } = await supabase
         .from('requests')
