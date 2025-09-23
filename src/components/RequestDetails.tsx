@@ -172,54 +172,75 @@ export const RequestDetails: React.FC<RequestDetailsProps> = ({
 
       {/* Content */}
       <div className="p-6 space-y-6">
-        {/* Contact Information */}
+        {/* Contact Information - Enhanced */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">
               <User className="h-5 w-5 mr-2" />
-              Informations de contact
+              Informations complètes du client
             </CardTitle>
+            <CardDescription>
+              Toutes les informations de contact et détails de la demande
+            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex items-center space-x-2">
-                <Mail className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">{request.email}</span>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Personal Info */}
+              <div className="space-y-3">
+                <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">Contact</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <User className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-medium">{request.first_name} {request.last_name}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Mail className="h-4 w-4 text-primary" />
+                    <span className="text-sm">{request.email}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Phone className="h-4 w-4 text-primary" />
+                    <span className="text-sm">{request.phone}</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <Phone className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">{request.phone}</span>
+
+              {/* Address */}
+              <div className="space-y-3">
+                <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">Adresse</h4>
+                <div className="flex items-start space-x-2">
+                  <MapPin className="h-4 w-4 text-primary mt-0.5" />
+                  <div className="text-sm">
+                    <div className="font-medium">{request.address}</div>
+                    <div className="text-muted-foreground">{request.postal_code} {request.city}</div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="flex items-start space-x-2">
-              <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
-              <div className="text-sm">
-                <div>{request.address}</div>
-                <div>{request.postal_code} {request.city}</div>
+
+              {/* Request Details */}
+              <div className="space-y-3">
+                <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">Demande</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <FileText className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-medium capitalize">{request.request_type}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Calendar className="h-4 w-4 text-primary" />
+                    <span className="text-sm">Créé le {formatDateTime(request.created_at)}</span>
+                  </div>
+                  {(request.preferred_date || request.preferred_time) && (
+                    <div className="flex items-center space-x-2">
+                      <Clock className="h-4 w-4 text-primary" />
+                      <span className="text-sm">
+                        RDV: {formatDateTime(request.preferred_date, request.preferred_time)}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </CardContent>
         </Card>
-
-        {/* Appointment Details */}
-        {(request.preferred_date || request.preferred_time) && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Calendar className="h-5 w-5 mr-2" />
-                Rendez-vous souhaité
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center space-x-2">
-                <Clock className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">
-                  {formatDateTime(request.preferred_date, request.preferred_time)}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
         {/* Description */}
         {request.description && (
@@ -227,11 +248,16 @@ export const RequestDetails: React.FC<RequestDetailsProps> = ({
             <CardHeader>
               <CardTitle className="flex items-center">
                 <FileText className="h-5 w-5 mr-2" />
-                Description
+                Description détaillée de la demande
               </CardTitle>
+              <CardDescription>
+                Informations complémentaires fournies par le client
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm whitespace-pre-wrap">{request.description}</p>
+              <div className="bg-muted/50 rounded-lg p-4">
+                <p className="text-sm whitespace-pre-wrap leading-relaxed">{request.description}</p>
+              </div>
             </CardContent>
           </Card>
         )}
@@ -302,39 +328,85 @@ export const RequestDetails: React.FC<RequestDetailsProps> = ({
           </CardContent>
         </Card>
 
-        {/* Photos */}
+        {/* Photos - Enhanced Display */}
         {request.photos.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <Camera className="h-5 w-5 mr-2" />
-                Photos ({request.photos.length})
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Camera className="h-5 w-5 mr-2" />
+                  Photos transmises par le client ({request.photos.length})
+                </div>
+                <Badge variant="outline" className="text-xs">
+                  {request.photos.length} fichier{request.photos.length > 1 ? 's' : ''}
+                </Badge>
               </CardTitle>
+              <CardDescription>
+                Cliquez sur une photo pour l'agrandir et naviguer dans la galerie
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-                {request.photos.map((photo, index) => (
-                  <div
-                    key={photo.id}
-                    className="relative group cursor-pointer"
-                    onClick={() => handlePhotoClick(index)}
-                  >
-                    <img
-                      src={photo.public_url}
-                      alt={photo.file_name}
-                      className="w-full h-40 object-cover rounded-lg group-hover:opacity-90 transition-all duration-300 shadow-sm group-hover:shadow-lg"
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-lg flex items-center justify-center">
-                      <Camera className="h-8 w-8 text-white" />
-                    </div>
-                    <div className="absolute bottom-2 left-2 right-2">
-                      <Badge variant="secondary" className="text-xs font-medium bg-white/90 text-gray-900">
-                        {photo.photo_type}
+              {/* Photos organized by type */}
+              <div className="space-y-6">
+                {/* Group photos by type */}
+                {Object.entries(
+                  request.photos.reduce((acc, photo) => {
+                    if (!acc[photo.photo_type]) acc[photo.photo_type] = [];
+                    acc[photo.photo_type].push(photo);
+                    return acc;
+                  }, {} as Record<string, typeof request.photos>)
+                ).map(([photoType, photos]) => (
+                  <div key={photoType} className="space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <h4 className="font-medium text-sm capitalize">{photoType.replace('_', ' ')}</h4>
+                      <Badge variant="secondary" className="text-xs">
+                        {photos.length} photo{photos.length > 1 ? 's' : ''}
                       </Badge>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                      {photos.map((photo) => (
+                        <div
+                          key={photo.id}
+                          className="relative group cursor-pointer bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+                          onClick={() => handlePhotoClick(request.photos.findIndex(p => p.id === photo.id))}
+                        >
+                          <div className="aspect-square">
+                            <img
+                              src={photo.public_url}
+                              alt={photo.file_name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+                            <Camera className="h-6 w-6 text-white" />
+                          </div>
+                          <div className="absolute bottom-2 left-2 right-2">
+                            <Badge variant="secondary" className="text-xs font-medium bg-white/95 text-gray-900 truncate">
+                              {photo.file_name}
+                            </Badge>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 ))}
               </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* No Photos Message */}
+        {request.photos.length === 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Camera className="h-5 w-5 mr-2" />
+                Photos
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-center py-8">
+              <Camera className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">Aucune photo n'a été transmise avec cette demande</p>
             </CardContent>
           </Card>
         )}

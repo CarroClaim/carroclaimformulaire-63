@@ -247,7 +247,11 @@ class FormSubmissionService {
     const dbDamageNames = mapUIArrayToDB(selectedDamages);
     console.log('Noms convertis pour la base:', dbDamageNames);
 
-    // D'abord, récupérer les IDs des damage_parts correspondants
+    // Récupérer TOUS les damage_parts disponibles pour debug
+    const allParts = await this.getAvailableDamageParts();
+    console.log('Toutes les parties disponibles en base:', allParts);
+
+    // Récupérer les IDs des damage_parts correspondants
     const { data: damageParts, error: damagePartsError } = await supabase
       .from('damage_parts')
       .select('id, name')
@@ -258,14 +262,61 @@ class FormSubmissionService {
       throw new Error(`Échec récupération des parties de dommage: ${damagePartsError.message}`);
     }
 
+    console.log('Parties de dommage trouvées en base (correspondance exacte):', damageParts);
+
+    // Si aucune correspondance exacte, essayer une approche plus flexible
     if (!damageParts || damageParts.length === 0) {
-      console.error('Aucune damage part trouvée pour les dommages sélectionnés:', dbDamageNames);
-      console.log('Dommages disponibles en base:', await this.getAvailableDamageParts());
-      throw new Error('Aucune partie de dommage trouvée en base de données');
+      console.log('Aucune correspondance exacte, tentative de correspondance partielle...');
+      
+      // Récupérer toutes les parties et faire une correspondance plus flexible
+      const { data: allDamageParts, error: allError } = await supabase
+        .from('damage_parts')
+        .select('id, name');
+
+      if (allError || !allDamageParts) {
+        console.warn('Impossible de récupérer les parties de dommage, continuons sans sauvegarder les dommages');
+        return;
+      }
+
+      // Correspondance flexible basée sur les mots-clés
+      const matchedParts = allDamageParts.filter(part => 
+        dbDamageNames.some(selectedName => {
+          const normalizedSelected = selectedName.toLowerCase().replace(/[_\-\s]/g, '');
+          const normalizedPart = part.name.toLowerCase().replace(/[_\-\s]/g, '');
+          return normalizedSelected.includes(normalizedPart) || normalizedPart.includes(normalizedSelected);
+        })
+      );
+
+      if (matchedParts.length > 0) {
+        console.log('Correspondances partielles trouvées:', matchedParts);
+        const damageRecords = matchedParts.map(damagePart => ({
+          request_id: requestId,
+          damage_part_id: damagePart.id
+        }));
+
+        const { error } = await supabase
+          .from('request_damages')
+          .insert(damageRecords);
+
+        if (error) {
+          console.error('Erreur sauvegarde dommages (correspondance partielle):', error);
+          // Ne pas faire échouer la soumission, continuer
+          return;
+        }
+
+        console.log(`Sauvegardé ${damageRecords.length} dommages (correspondance partielle) pour la demande ${requestId}`);
+        return;
+      } else {
+        console.warn('Aucune correspondance trouvée même avec la méthode flexible');
+        console.log('Dommages sélectionnés:', selectedDamages);
+        console.log('Noms DB mappés:', dbDamageNames);
+        console.log('Parties disponibles:', allDamageParts.map(p => p.name));
+        // Ne pas faire échouer la soumission, continuer sans les dommages
+        return;
+      }
     }
 
-    console.log('Parties de dommage trouvées:', damageParts);
-
+    // Correspondance exacte trouvée
     const damageRecords = damageParts.map(damagePart => ({
       request_id: requestId,
       damage_part_id: damagePart.id
@@ -277,7 +328,8 @@ class FormSubmissionService {
 
     if (error) {
       console.error('Erreur sauvegarde dommages:', error);
-      throw new Error(`Échec de la sauvegarde des dommages: ${error.message}`);
+      // Ne pas faire échouer la soumission pour des problèmes de dommages
+      return;
     }
 
     console.log(`Sauvegardé ${damageRecords.length} dommages pour la demande ${requestId}`);

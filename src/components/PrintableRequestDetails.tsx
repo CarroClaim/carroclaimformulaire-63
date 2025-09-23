@@ -123,63 +123,74 @@ export const PrintableRequestDetails: React.FC<PrintableRequestDetailsProps> = (
           </div>
         </div>
 
-      {/* Client Information */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-3 border-b pb-1">
-          Informations client
+      {/* Client Information - Enhanced */}
+      <div className="mb-8">
+        <h2 className="text-lg font-semibold mb-4 border-b pb-2">
+          Informations complètes du client
         </h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-6">
+          {/* Personal Info */}
           <div>
-            <p className="font-medium">{request.first_name} {request.last_name}</p>
-            <p className="text-sm text-gray-600 flex items-center mt-1">
-              <Mail className="h-3 w-3 mr-1" />
-              {request.email}
-            </p>
-            <p className="text-sm text-gray-600 flex items-center mt-1">
-              <Phone className="h-3 w-3 mr-1" />
-              {request.phone}
-            </p>
+            <h4 className="font-medium text-sm text-gray-600 mb-2">CONTACT</h4>
+            <div className="space-y-1">
+              <p className="font-medium flex items-center">
+                <User className="h-3 w-3 mr-2" />
+                {request.first_name} {request.last_name}
+              </p>
+              <p className="text-sm flex items-center">
+                <Mail className="h-3 w-3 mr-2" />
+                {request.email}
+              </p>
+              <p className="text-sm flex items-center">
+                <Phone className="h-3 w-3 mr-2" />
+                {request.phone}
+              </p>
+            </div>
           </div>
+
+          {/* Address */}
           <div>
-            <p className="text-sm text-gray-600 flex items-start">
-              <MapPin className="h-3 w-3 mr-1 mt-0.5" />
+            <h4 className="font-medium text-sm text-gray-600 mb-2">ADRESSE</h4>
+            <p className="text-sm flex items-start">
+              <MapPin className="h-3 w-3 mr-2 mt-0.5" />
               <span>
-                {request.address}<br />
-                {request.postal_code} {request.city}
+                <div className="font-medium">{request.address}</div>
+                <div className="text-gray-600">{request.postal_code} {request.city}</div>
               </span>
             </p>
           </div>
+
+          {/* Request Details */}
+          <div>
+            <h4 className="font-medium text-sm text-gray-600 mb-2">DEMANDE</h4>
+            <div className="space-y-1">
+              <p className="text-sm flex items-center">
+                <FileText className="h-3 w-3 mr-2" />
+                <span className="font-medium capitalize">{request.request_type}</span>
+              </p>
+              <p className="text-sm flex items-center">
+                <Calendar className="h-3 w-3 mr-2" />
+                Créé le {formatDateTime(request.created_at)}
+              </p>
+              {(request.preferred_date || request.preferred_time) && (
+                <p className="text-sm flex items-center">
+                  <Clock className="h-3 w-3 mr-2" />
+                  RDV: {formatDateTime(request.preferred_date, request.preferred_time)}
+                </p>
+              )}
+            </div>
+          </div>
         </div>
       </div>
-
-      {/* Type de demande */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-3 border-b pb-1">
-          Type de demande
-        </h2>
-        <p className="capitalize font-medium">{request.request_type}</p>
-      </div>
-
-      {/* Rendez-vous */}
-      {(request.preferred_date || request.preferred_time) && (
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold mb-3 border-b pb-1">
-            Rendez-vous souhaité
-          </h2>
-          <p className="flex items-center">
-            <Calendar className="h-4 w-4 mr-2" />
-            {formatDateTime(request.preferred_date, request.preferred_time)}
-          </p>
-        </div>
-      )}
-
       {/* Description */}
       {request.description && (
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold mb-3 border-b pb-1">
-            Description
+        <div className="mb-8 page-break-inside-avoid">
+          <h2 className="text-lg font-semibold mb-4 border-b pb-2">
+            Description détaillée
           </h2>
-          <p className="text-sm whitespace-pre-wrap">{request.description}</p>
+          <div className="bg-gray-50 rounded p-4">
+            <p className="text-sm whitespace-pre-wrap leading-relaxed">{request.description}</p>
+          </div>
         </div>
       )}
 
@@ -241,42 +252,60 @@ export const PrintableRequestDetails: React.FC<PrintableRequestDetailsProps> = (
         )}
       </div>
 
-      {/* Photos */}
+      {/* Photos - Enhanced for Print */}
       {request.photos.length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold mb-3 border-b pb-1">
-            Photos jointes ({request.photos.length})
+        <div className="mb-8 page-break-inside-avoid">
+          <h2 className="text-lg font-semibold mb-4 border-b pb-2">
+            Photos transmises par le client ({request.photos.length})
           </h2>
           
-          {/* First 4 photos displayed */}
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            {request.photos.slice(0, 4).map((photo, index) => (
-              <div key={photo.id} className="text-center">
-                <img
-                  src={photo.public_url}
-                  alt={photo.file_name}
-                  className="print-photo w-full rounded border"
-                />
-                <p className="text-xs text-gray-600 mt-1 font-medium">
-                  {photo.photo_type}
-                </p>
+          {/* Photos organized by type for better printing */}
+          <div className="space-y-6">
+            {Object.entries(
+              request.photos.reduce((acc, photo) => {
+                if (!acc[photo.photo_type]) acc[photo.photo_type] = [];
+                acc[photo.photo_type].push(photo);
+                return acc;
+              }, {} as Record<string, typeof request.photos>)
+            ).map(([photoType, photos]) => (
+              <div key={photoType} className="space-y-3">
+                <h3 className="font-medium text-sm border-l-4 border-gray-300 pl-2 capitalize">
+                  {photoType.replace('_', ' ')} ({photos.length} photo{photos.length > 1 ? 's' : ''})
+                </h3>
+                <div className="photo-grid">
+                  {photos.slice(0, 4).map((photo) => (
+                    <div key={photo.id} className="photo-item">
+                      <img
+                        src={photo.public_url}
+                        alt={photo.file_name}
+                        className="w-full h-auto border rounded"
+                      />
+                      <p className="text-xs text-gray-600 mt-1 truncate">{photo.file_name}</p>
+                    </div>
+                  ))}
+                </div>
+                {photos.length > 4 && (
+                  <p className="text-xs text-gray-600 italic">
+                    + {photos.length - 4} autre{photos.length - 4 > 1 ? 's' : ''} photo{photos.length - 4 > 1 ? 's' : ''} de ce type
+                  </p>
+                )}
               </div>
             ))}
           </div>
-          
-          {/* Additional photos summary if more than 4 */}
-          {request.photos.length > 4 && (
-            <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded border">
-              <p className="font-medium">Photos supplémentaires :</p>
-              <p className="text-xs">
-                {request.photos.length - 4} photo{request.photos.length - 4 > 1 ? 's' : ''} supplémentaire{request.photos.length - 4 > 1 ? 's' : ''} - 
-                Types : {[...new Set(request.photos.slice(4).map(p => p.photo_type))].join(', ')}
-              </p>
-            </div>
-          )}
         </div>
       )}
 
+      {/* No Photos Message for Print */}
+      {request.photos.length === 0 && (
+        <div className="mb-8">
+          <h2 className="text-lg font-semibold mb-4 border-b pb-2">
+            Photos
+          </h2>
+          <div className="text-center py-6 border rounded bg-gray-50">
+            <p className="text-gray-600">Aucune photo n'a été transmise avec cette demande</p>
+          </div>
+        </div>
+      )}
       {/* Footer */}
       <div className="mt-8 pt-4 border-t text-xs text-gray-500">
         <p>Document généré automatiquement le {new Date().toLocaleString('fr-FR')}</p>
