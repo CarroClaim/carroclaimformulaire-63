@@ -236,10 +236,12 @@ const MultiStepFormContent: React.FC = () => {
                 <h3 className="text-base sm:text-lg font-semibold text-foreground">{t('form.steps.preparation.documents.title')}</h3>
               </div>
               <ul className="space-y-2 sm:space-y-3">
-                {(t('form.steps.preparation.documents.items', { returnObjects: true }) as string[]).map((item: string, index: number) => <li key={index} className="flex items-start">
+                {(t('form.steps.preparation.documents.items', { returnObjects: true }) as string[]).map((item: string, index: number) => (
+                  <li key={index} className="flex items-start">
                     <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 mt-0.5 text-success flex-shrink-0" />
                     <span className="text-sm sm:text-base text-foreground">{item}</span>
-                  </li>)}
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -273,10 +275,12 @@ const MultiStepFormContent: React.FC = () => {
                     {t('form.steps.type.quote.description')}
                   </p>
                   <ul className="text-xs sm:text-sm text-muted-foreground space-y-1 sm:space-y-2 text-left">
-                    {(t('form.steps.type.quote.features', { returnObjects: true }) as string[]).map((item: string, index: number) => <li key={index} className="flex items-start">
+                    {(t('form.steps.type.quote.features', { returnObjects: true }) as string[]).map((item: string, index: number) => (
+                      <li key={index} className="flex items-start">
                         <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-2 mt-0.5 text-success flex-shrink-0" />
                         <span className="text-xs sm:text-sm">{item}</span>
-                      </li>)}
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -292,10 +296,12 @@ const MultiStepFormContent: React.FC = () => {
                     {t('form.steps.type.appointment.description')}
                   </p>
                   <ul className="text-xs sm:text-sm text-muted-foreground space-y-1 sm:space-y-2 text-left">
-                    {(t('form.steps.type.appointment.features', { returnObjects: true }) as string[]).map((item: string, index: number) => <li key={index} className="flex items-start">
+                    {(t('form.steps.type.appointment.features', { returnObjects: true }) as string[]).map((item: string, index: number) => (
+                      <li key={index} className="flex items-start">
                         <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-2 mt-0.5 text-success flex-shrink-0" />
                         <span className="text-xs sm:text-sm">{item}</span>
-                      </li>)}
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>

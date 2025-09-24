@@ -19,7 +19,7 @@ export const supportedLanguages: Language[] = [
 interface LanguageContextType {
   currentLanguage: string;
   setLanguage: (lang: string) => void;
-  t: (key: string, params?: Record<string, string | number>) => string;
+  t: (key: string, params?: Record<string, string | number | boolean>) => any;
   languages: Language[];
 }
 
@@ -85,8 +85,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  // Fonction de traduction avec interpolation de variables
-  const t = (key: string, params?: Record<string, string | number>): string => {
+  // Fonction de traduction avec interpolation de variables et support des objets/arrays
+  const t = (key: string, params?: Record<string, string | number | boolean>): any => {
     const keys = key.split('.');
     let value: any = translations;
 
@@ -97,6 +97,11 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         console.warn(`Translation key not found: ${key} for language ${currentLanguage}`);
         return key; // Retourne la clé si traduction non trouvée
       }
+    }
+
+    // Si returnObjects est true, retourne la valeur telle quelle (array ou object)
+    if (params && params.returnObjects === true) {
+      return value;
     }
 
     if (typeof value !== 'string') {
