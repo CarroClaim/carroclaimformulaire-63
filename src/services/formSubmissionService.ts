@@ -12,7 +12,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { FormData } from '@/types/form';
 import { photoUploadService } from './photoUploadService';
-import { mapUIArrayToDB } from '@/lib/damageMapping';
+import { mapUIArrayToDB, mapDBToUI } from '@/lib/damageMapping';
 
 // Interface pour les données de soumission enrichies
 interface SubmissionData {
@@ -554,19 +554,27 @@ class FormSubmissionService {
 
   /**
    * Génère le contenu SVG pour le schéma des dommages
-   * Copie INTÉGRALE du composant CarDamageSelector pour un rendu identique
+   * Copie EXACTE du styling du composant CarDamageSelector pour un rendu identique
    */
   private createCarDamageSVG(selectedDamages: string[]): string {
     console.log('🚗 Génération SVG avec dommages sélectionnés:', selectedDamages);
+    console.log('📋 Type de noms reçus: UI names (déjà mappés depuis le formulaire)');
     
     const getPartStyle = (partName: string) => {
-      if (selectedDamages.includes(partName)) {
-        return 'fill: #FF0000; stroke: #CC0000; stroke-width: 2;';
+      const isSelected = selectedDamages.includes(partName);
+      if (isSelected) {
+        // Utiliser EXACTEMENT les mêmes couleurs que CarDamageSelector
+        return 'fill: #dc2626; stroke: #b91c1c; stroke-width: 3; filter: drop-shadow(0 2px 4px rgba(220, 38, 38, 0.3));';
       }
-      return 'fill: #E0E0E0; stroke: #808080; stroke-width: 1;';
+      return 'fill: #e5e7eb; stroke: #9ca3af; stroke-width: 2;';
     };
 
     return `<svg width="418" height="558" viewBox="0 0 418 558" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="dropShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(220, 38, 38, 0.3)"/>
+    </filter>
+  </defs>
   <rect width="418" height="558" fill="white"/>
   <g>
     <!-- Portières -->
@@ -658,7 +666,7 @@ class FormSubmissionService {
 
   /**
    * Convertit le contenu SVG en image PNG
-   * Méthode simplifiée et robuste avec logs de débogage
+   * Méthode améliorée avec meilleure qualité et résolution
    */
   private async svgToPng(svgContent: string): Promise<Blob> {
     console.log('🔄 Début conversion SVG vers PNG...');
@@ -666,28 +674,34 @@ class FormSubmissionService {
     return new Promise((resolve, reject) => {
       try {
         const canvas = document.createElement('canvas');
-        canvas.width = 418 * 2;
-        canvas.height = 558 * 2;
+        // Augmenter la résolution pour une meilleure qualité (3x au lieu de 2x)
+        canvas.width = 418 * 3;
+        canvas.height = 558 * 3;
         
         const ctx = canvas.getContext('2d');
         if (!ctx) {
           throw new Error('Impossible de créer le contexte canvas');
         }
 
+        // Fond blanc pour un meilleur contraste
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         const img = new Image();
         img.onload = () => {
+          // Dessiner l'image SVG sur le canvas avec anti-aliasing
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          
           canvas.toBlob((blob) => {
             if (blob) {
-              console.log('✅ Conversion PNG réussie');
+              console.log('✅ Conversion PNG réussie, taille:', blob.size, 'bytes');
               resolve(blob);
             } else {
               reject(new Error('Échec conversion PNG'));
             }
-          }, 'image/png', 0.92);
+          }, 'image/png', 0.95); // Qualité PNG améliorée
         };
         
         img.onerror = () => reject(new Error('Erreur chargement SVG'));
