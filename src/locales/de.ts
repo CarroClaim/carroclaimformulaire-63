@@ -1,6 +1,8 @@
 export default {
   // Navigation und allgemeine Benutzeroberfläche
   common: {
+    title: 'Expert Auto',
+    subtitle: 'Professionelle Kfz-Gutachten',
     back: 'Zurück',
     next: 'Weiter',
     previous: 'Vorherige',

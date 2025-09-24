@@ -1,6 +1,8 @@
 export default {
   // Navigazione e interfaccia generale
   common: {
+    title: 'Expert Auto',
+    subtitle: 'Perizie Automobilistiche Professionali',
     back: 'Indietro',
     next: 'Avanti',
     previous: 'Precedente',

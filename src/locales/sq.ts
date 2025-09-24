@@ -1,6 +1,8 @@
 export default {
   // Navigimi dhe ndërfaqja e përgjithshme
   common: {
+    title: 'Expert Auto',
+    subtitle: 'Ekspertiza Automobilistike Profesionale',
     back: 'Prapa',
     next: 'Përpara',
     previous: 'E mëparshme',
