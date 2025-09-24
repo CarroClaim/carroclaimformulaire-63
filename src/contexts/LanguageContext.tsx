@@ -87,6 +87,14 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // Fonction de traduction avec interpolation de variables et support des objets/arrays
   const t = (key: string, params?: Record<string, string | number | boolean>): any => {
+    // Si les traductions ne sont pas encore chargées, retourner des valeurs par défaut
+    if (!translations || Object.keys(translations).length === 0) {
+      if (params && params.returnObjects === true) {
+        return []; // Retourne un array vide pour éviter les erreurs .map
+      }
+      return key;
+    }
+
     const keys = key.split('.');
     let value: any = translations;
 
@@ -95,13 +103,24 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         value = value[k];
       } else {
         console.warn(`Translation key not found: ${key} for language ${currentLanguage}`);
+        // Si returnObjects est attendu, retourner un array vide au lieu de la clé
+        if (params && params.returnObjects === true) {
+          return [];
+        }
         return key; // Retourne la clé si traduction non trouvée
       }
     }
 
     // Si returnObjects est true, retourne la valeur telle quelle (array ou object)
     if (params && params.returnObjects === true) {
-      return value;
+      if (Array.isArray(value)) {
+        return value;
+      } else if (typeof value === 'object') {
+        return value;
+      } else {
+        console.warn(`Translation value is not an array or object for key: ${key}`);
+        return [];
+      }
     }
 
     if (typeof value !== 'string') {

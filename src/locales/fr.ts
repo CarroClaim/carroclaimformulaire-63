@@ -1,6 +1,8 @@
 export default {
   // Navigation et interface générale
   common: {
+    title: 'Expert Auto',
+    subtitle: 'Demande d\'expertise automobile',
     back: 'Retour',
     next: 'Suivant',
     previous: 'Précédent',
