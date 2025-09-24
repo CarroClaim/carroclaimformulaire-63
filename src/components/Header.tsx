@@ -1,5 +1,6 @@
 import React from 'react';
 import { LanguageSelector } from './LanguageSelector';
+import { LogoDisplay } from './LogoDisplay';
 import { useTranslation } from '@/contexts/LanguageContext';
 
 interface HeaderProps {
@@ -19,11 +20,17 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="w-full bg-background border-b border-border">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          {logoUrl && (
+          {logoUrl ? (
             <img 
               src={logoUrl} 
               alt={`${companyName} logo`}
               className="h-8 w-auto"
+            />
+          ) : (
+            <LogoDisplay 
+              type="header" 
+              className="h-8"
+              fallback={<div className="text-lg font-bold text-primary">{companyName}</div>}
             />
           )}
           <div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Camera, X, Car } from 'lucide-react';
+import { ExampleGallery } from './ExampleGallery';
 import carteGrisseExample from '../assets/carte-grise-suisse-example.jpg';
 import compteurExample from '../assets/compteur-kilometrique-example.jpg';
 import carRearLeft from '../assets/car-rear-left.png';
@@ -93,8 +94,7 @@ const DocumentExampleGuide = ({
         {/* Header row */}
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center">
-            <h4 className="text-xs font-semibold text-foreground mb-1">Exemples</h4>
-            <p className="text-xs text-muted-foreground">Document d'immatriculation</p>
+            <ExampleGallery category="carte-grise" maxItems={1} layout="single" />
           </div>
           <div className="text-center">
             <h4 className="text-xs font-semibold text-foreground mb-1">Télécharger photos</h4>
@@ -103,18 +103,8 @@ const DocumentExampleGuide = ({
         
         {/* Content row */}
         <div className="grid grid-cols-2 gap-4">
-          {/* Example column */}
-          <div className="bg-card rounded-lg border border-border overflow-hidden">
-            <div className="bg-muted flex items-center justify-center" style={{
-            width: '136px',
-            height: '125px'
-          }}>
-              <img src={carteGrisseExample} alt="Exemple de carte grise suisse" className="object-cover mx-auto" style={{
-              width: '136px',
-              height: '125px'
-            }} />
-            </div>
-          </div>
+          {/* Example column - now handled by ExampleGallery above */}
+          <div></div>
           
           {/* Upload column */}
           <div className="bg-card rounded-lg border border-border overflow-hidden">
@@ -152,8 +142,7 @@ const DocumentExampleGuide = ({
         {/* Header row */}
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center">
-            <h4 className="text-xs font-semibold text-foreground mb-1">Exemples</h4>
-            <p className="text-xs text-muted-foreground">Compteur kilométrique</p>
+            <ExampleGallery category="compteur" maxItems={1} layout="single" />
           </div>
           <div className="text-center">
             <h4 className="text-xs font-semibold text-foreground mb-1">Télécharger photos</h4>
@@ -162,18 +151,8 @@ const DocumentExampleGuide = ({
         
         {/* Content row */}
         <div className="grid grid-cols-2 gap-4">
-          {/* Example column */}
-          <div className="bg-card rounded-lg border border-border overflow-hidden">
-            <div className="bg-muted flex items-center justify-center" style={{
-            width: '136px',
-            height: '125px'
-          }}>
-              <img src={compteurExample} alt="Exemple de compteur analogique" className="object-cover" style={{
-              width: '136px',
-              height: '125px'
-            }} />
-            </div>
-          </div>
+          {/* Example column - now handled by ExampleGallery above */}
+          <div></div>
           
           {/* Upload column */}
           <div className="bg-card rounded-lg border border-border overflow-hidden">
@@ -310,57 +289,7 @@ const DocumentExampleGuide = ({
     </div>;
 };
 const DamageExampleGuide = () => {
-  return <div className="space-y-3">
-      <div className="text-center mb-2">
-        <h4 className="text-xs font-semibold text-foreground mb-1">Exemples</h4>
-        <p className="text-xs text-muted-foreground">Photos de dommages</p>
-      </div>
-      
-      <div className="grid grid-cols-1 gap-2">
-        {/* Exemple photo proche */}
-        <div className="bg-card rounded-lg border border-border overflow-hidden">
-          <div className="p-2 bg-muted/50">
-            <h5 className="text-xs font-semibold text-foreground mb-1">Photo rapprochée</h5>
-          </div>
-          <div className="aspect-[4/3] bg-muted flex items-center justify-center">
-            <img 
-              src={damageExampleRearRight} 
-              alt="Exemple de dommage arrière droit" 
-              className="object-cover" 
-              style={{ width: '136px', height: '125px' }} 
-            />
-          </div>
-        </div>
-
-        {/* Exemple photo éloignée */}
-        <div className="bg-card rounded-lg border border-border overflow-hidden">
-          <div className="p-2 bg-muted/50">
-            <h5 className="text-xs font-semibold text-foreground mb-1">Photo éloignée</h5>
-          </div>
-          <div className="aspect-[4/3] bg-muted flex items-center justify-center">
-            <img 
-              src={damageExampleWide} 
-              alt="Exemple de dommage vue éloignée" 
-              className="object-cover" 
-              style={{ width: '136px', height: '125px' }} 
-            />
-          </div>
-        </div>
-      </div>
-      
-      <div className="bg-info/10 border border-info/20 rounded-lg p-2">
-        <div className="flex items-start space-x-2">
-          <Camera className="w-3 h-3 text-info flex-shrink-0 mt-0.5" />
-          <div>
-            <p className="text-xs font-medium text-info">Conseils :</p>
-            <ul className="text-xs text-info/80 mt-1 space-y-0.5">
-              <li>• Photos nettes et bien éclairées</li>
-              <li>• Différents angles et distances</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>;
+  return <ExampleGallery category="damages" />;
 };
 export const PhotoUpload: React.FC<PhotoUploadProps> = ({
   label,
