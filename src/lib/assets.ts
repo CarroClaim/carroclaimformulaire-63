@@ -1,5 +1,9 @@
-// Système de gestion centralisé des assets
+// Système de gestion centralisé des assets (Legacy - Utilise maintenant assetDiscoveryService)
 // Permet d'ajouter facilement logos personnalisés et images d'exemples
+// DEPRECATED: Utilise maintenant useAssets() hook pour la découverte dynamique
+
+import { assetDiscoveryService } from '@/services/assetDiscoveryService';
+import { configurationService } from '@/services/configurationService';
 
 // Types pour la sécurité TypeScript
 interface AssetConfig {
@@ -125,20 +129,73 @@ export const EXAMPLES: Record<string, AssetConfig[]> = {
   ]
 };
 
-// Fonction utilitaire pour obtenir un asset
-export const getAsset = (category: keyof typeof EXAMPLES, index?: number): AssetConfig | AssetConfig[] => {
-  const assets = EXAMPLES[category];
-  if (!assets) return [];
-  
-  if (typeof index === 'number') {
-    return assets[index] || assets[0];
+// Fonctions utilitaires pour la rétrocompatibilité
+// DEPRECATED: Utilise useAssets() hook pour les nouveaux développements
+
+/**
+ * @deprecated Utilise useAssets({ category }) à la place
+ */
+export const getAsset = async (category: keyof typeof EXAMPLES, index?: number): Promise<AssetConfig | AssetConfig[]> => {
+  if (!configurationService.isFeatureEnabled('assetAutoDiscovery')) {
+    // Fallback vers l'ancienne méthode
+    const assets = EXAMPLES[category];
+    if (!assets) return [];
+    
+    if (typeof index === 'number') {
+      return assets[index] || assets[0];
+    }
+    
+    return assets;
   }
-  
-  return assets;
+
+  // Nouvelle méthode dynamique
+  try {
+    const discoveredAssets = await assetDiscoveryService.getAssetsByCategory(category);
+    
+    if (typeof index === 'number') {
+      return discoveredAssets[index] || discoveredAssets[0] || [];
+    }
+    
+    return discoveredAssets.map(asset => ({
+      src: asset.src,
+      alt: asset.alt,
+      title: asset.name,
+      type: asset.type
+    }));
+  } catch (error) {
+    console.warn('Failed to get dynamic assets, falling back to static config:', error);
+    const assets = EXAMPLES[category];
+    return assets || [];
+  }
 };
 
-// Fonction utilitaire pour obtenir un logo
-export const getLogo = (type: keyof typeof LOGOS = 'primary'): LogoConfig => {
+/**
+ * @deprecated Utilise useLogos() hook à la place
+ */
+export const getLogo = async (type: keyof typeof LOGOS = 'primary'): Promise<LogoConfig> => {
+  if (!configurationService.isFeatureEnabled('assetAutoDiscovery')) {
+    return LOGOS[type] || LOGOS.primary;
+  }
+
+  try {
+    const logoAssets = await assetDiscoveryService.getAssetsByCategory('logos');
+    const matchingLogo = logoAssets.find(logo => 
+      logo.id.includes(type) || logo.name.toLowerCase().includes(type)
+    );
+
+    if (matchingLogo) {
+      return {
+        src: matchingLogo.src,
+        alt: matchingLogo.alt,
+        type: matchingLogo.type,
+        width: 120, // Valeurs par défaut
+        height: 40
+      };
+    }
+  } catch (error) {
+    console.warn('Failed to get dynamic logo, falling back to static config:', error);
+  }
+
   return LOGOS[type] || LOGOS.primary;
 };
 
@@ -161,3 +218,6 @@ export const getAssetType = (src: string): 'image' | 'gif' | 'svg' => {
       return 'image';
   }
 };
+
+// Nouvelle API recommandée
+export * from '@/services/assetDiscoveryService';

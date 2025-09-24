@@ -1,6 +1,7 @@
 import React from 'react';
 import { AssetImage } from './AssetImage';
-import { getLogo, LOGOS } from '@/lib/assets';
+import { LOGOS } from '@/lib/assets';
+import { useLogos } from '@/hooks/useAssets';
 import { cn } from '@/lib/utils';
 
 interface LogoDisplayProps {
@@ -14,7 +15,28 @@ export const LogoDisplay: React.FC<LogoDisplayProps> = ({
   className,
   fallback
 }) => {
-  const logo = getLogo(type);
+  const { assets: logoAssets, loading } = useLogos();
+  
+  // Cherche le logo correspondant ou utilise la config statique
+  const matchingLogo = logoAssets.find(logo => 
+    logo.id.includes(type) || logo.name.toLowerCase().includes(type)
+  );
+  
+  const logo = matchingLogo ? {
+    src: matchingLogo.src,
+    alt: matchingLogo.alt,
+    width: 120,
+    height: 40,
+    type: matchingLogo.type
+  } : LOGOS[type] || LOGOS.primary;
+
+  if (loading) {
+    return (
+      <div className={cn("flex items-center animate-pulse", className)}>
+        <div className="w-[120px] h-[40px] bg-muted rounded" />
+      </div>
+    );
+  }
 
   return (
     <div className={cn("flex items-center", className)}>
