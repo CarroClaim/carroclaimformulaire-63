@@ -47,13 +47,20 @@ export class StatisticsService {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
     
+    console.log('Loading daily stats for days:', days, 'from date:', startDate.toISOString());
+    
     const { data, error } = await supabase
       .from('requests')
       .select('created_at, status')
       .gte('created_at', startDate.toISOString())
       .order('created_at', { ascending: true });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error loading daily stats:', error);
+      throw error;
+    }
+    
+    console.log('Loaded requests data:', data?.length, 'records');
 
     // Group by date and status
     const statsMap = new Map<string, RequestStats>();
@@ -140,12 +147,19 @@ export class StatisticsService {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
     
+    console.log('Loading period summary for days:', days, 'from date:', startDate.toISOString());
+    
     const { data, error } = await supabase
       .from('requests')
       .select('status')
       .gte('created_at', startDate.toISOString());
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error loading period summary:', error);
+      throw error;
+    }
+    
+    console.log('Period summary loaded records:', data?.length);
 
     const summary: PeriodSummary = {
       total: data?.length || 0,

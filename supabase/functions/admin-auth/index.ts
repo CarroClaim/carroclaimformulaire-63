@@ -113,6 +113,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     } else {
       // Build query with optional status filter
+      console.log('Admin fetching all requests with status filter:', statusFilter);
+      
       let query = supabase
         .from('requests')
         .select(`
@@ -134,6 +136,7 @@ const handler = async (req: Request): Promise<Response> => {
       }
 
       const { data: requests, error } = await query;
+      console.log('Admin loaded requests:', requests?.length, 'error:', error);
 
       if (error) {
         throw new Error(`Failed to fetch requests: ${error.message}`);
