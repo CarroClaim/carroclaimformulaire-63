@@ -1,254 +1,62 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 
-import { useToast } from '@/hooks/use-toast';
 import { AdminLayout } from '@/components/AdminLayout';
 import StatisticsDashboard from '@/components/StatisticsDashboard';
 import { RequestsList } from '@/components/RequestsList';
 import { RequestDetails } from '@/components/RequestDetails';
 import { zipDownloadService } from '@/services/zipDownloadService';
-import { mapDBToUI } from '@/lib/damageMapping';
-import { 
-  Play, 
-  Check, 
-  Archive, 
-  Trash2
-} from 'lucide-react';
-
-interface RequestSnapshot {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  status: string;
-  request_type: 'quote' | 'appointment';
-  created_at: string;
-  snapshot_url?: string;
-}
-
-interface AdminRequestDetail {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  postal_code: string;
-  status: string;
-  request_type: string;
-  description?: string;
-  preferred_date?: string;
-  preferred_time?: string;
-  damage_screenshot?: string;
-  created_at: string;
-  updated_at: string;
-  photos: Array<{
-    id: string;
-    photo_type: string;
-    public_url: string;
-    file_name: string;
-  }>;
-  damages: Array<{
-    name: string;
-    description?: string;
-  }>;
-}
+import { useAdminState } from '@/hooks/useAdminState';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
+import { getStatusColor, getStatusLabel, getStatusActions } from '@/utils/statusHelpers';
+import { useToast } from '@/hooks/use-toast';
 
 const Admin: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [credentials, setCredentials] = useState({ username: '', password: '' });
-  const [authLoading, setAuthLoading] = useState(false);
-  const [requests, setRequests] = useState<RequestSnapshot[]>([]);
-  const [selectedRequest, setSelectedRequest] = useState<AdminRequestDetail | null>(null);
-  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
-  const [activeSection, setActiveSection] = useState('dashboard');
-  
-  const [loading, setLoading] = useState(true);
-  const [requestDetailLoading, setRequestDetailLoading] = useState(false);
-  const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
+  // État des téléchargements (non géré par useAdminState car spécifique au composant)
   const [downloadingZip, setDownloadingZip] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(0);
-  const [error, setError] = useState<string | null>(null);
+  
+  // État d'authentification local (pour le formulaire de login)
+  const [credentials, setCredentials] = useState({ username: '', password: '' });
+  
   const { toast } = useToast();
+  const { error, clearError } = useErrorHandler();
+  
+  // Utiliser le hook centralisé pour l'état admin
+  const {
+    isAuthenticated,
+    authLoading,
+    requests,
+    selectedRequest,
+    selectedRequestId,
+    activeSection,
+    loading,
+    requestDetailLoading,
+    updatingStatus,
+    authenticate,
+    logout,
+    loadRequestDetail,
+    updateRequestStatus,
+    handleSectionChange
+  } = useAdminState();
 
-  const authenticate = async (username: string, password: string) => {
-    const basicAuth = btoa(`${username}:${password}`);
-    
-    try {
-      const response = await fetch('https://buvkkggimmpxgwquakuw.supabase.co/functions/v1/admin-auth', {
-        headers: {
-          'Authorization': `Basic ${basicAuth}`
-        }
-      });
-      
-      if (response.ok) {
-        setIsAuthenticated(true);
-        localStorage.setItem('adminAuth', basicAuth);
-        return true;
-      } else {
-        throw new Error('Authentication failed');
-      }
-    } catch (error) {
-      console.error('Auth error:', error);
-      throw error;
-    }
-  };
-
-  const loadRequests = async (authHeader?: string) => {
-    setLoading(true);
-    try {
-      const auth = authHeader || localStorage.getItem('adminAuth');
-      if (!auth) {
-        setIsAuthenticated(false);
-        return;
-      }
-
-      const url = 'https://buvkkggimmpxgwquakuw.supabase.co/functions/v1/admin-auth';
-
-      const response = await fetch(url, {
-        headers: {
-          'Authorization': `Basic ${auth}`
-        }
-      });
-
-      if (response.status === 401) {
-        setIsAuthenticated(false);
-        localStorage.removeItem('adminAuth');
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch requests');
-      }
-
-      const data = await response.json();
-      setRequests(data);
-      setIsAuthenticated(true);
-    } catch (error) {
-      console.error('Error loading requests:', error);
-      setError('Erreur lors du chargement des demandes');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadRequestDetail = async (requestId: string) => {
-    if (!isAuthenticated) return;
-    
-    setRequestDetailLoading(true);
-    setSelectedRequestId(requestId);
-    try {
-      const auth = localStorage.getItem('adminAuth');
-      if (!auth) return;
-
-      const response = await fetch(`https://buvkkggimmpxgwquakuw.supabase.co/functions/v1/admin-auth?id=${requestId}`, {
-        headers: {
-          'Authorization': `Basic ${auth}`
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch request detail');
-      }
-
-      const data = await response.json();
-      // Transform the data to match our AdminRequestDetail interface
-      const transformedData: AdminRequestDetail = {
-        ...data,
-        damages: data.request_damages?.map((rd: any) => ({
-          name: mapDBToUI(rd.damage_parts.name), // Convert DB name to UI name for display
-          description: rd.damage_parts.description
-        })) || []
-      };
-      setSelectedRequest(transformedData);
-    } catch (error) {
-      console.error('Error loading request detail:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de charger les détails de la demande.",
-        variant: "destructive",
-      });
-    } finally {
-      setRequestDetailLoading(false);
-    }
-  };
-
-  const updateRequestStatus = async (requestId: string, newStatus: string) => {
-    setUpdatingStatus(requestId);
-    try {
-      const auth = localStorage.getItem('adminAuth');
-      if (!auth) return;
-
-      const response = await fetch(`https://buvkkggimmpxgwquakuw.supabase.co/functions/v1/admin-auth?id=${requestId}`, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Basic ${auth}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status: newStatus })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update status');
-      }
-
-      // Refresh the requests list
-      await loadRequests(auth);
-
-      // Update selected request if it's the same one
-      if (selectedRequest && selectedRequest.id === requestId) {
-        setSelectedRequest({ ...selectedRequest, status: newStatus });
-      }
-      
-      toast({
-        title: "Statut mis à jour",
-        description: `Le statut a été changé vers "${getStatusLabel(newStatus)}"`,
-      });
-
-    } catch (error) {
-      console.error('Error updating status:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de mettre à jour le statut",
-        variant: "destructive",
-      });
-    } finally {
-      setUpdatingStatus(null);
-    }
-  };
-
+  // Gérer la connexion (utilise le service via le hook)
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setAuthLoading(true);
-    try {
-      await authenticate(credentials.username, credentials.password);
-    } catch (error) {
-      setError('Identifiants incorrects');
-    } finally {
-      setAuthLoading(false);
+    clearError();
+    const success = await authenticate(credentials);
+    if (!success) {
+      // L'erreur est déjà gérée par useErrorHandler dans useAdminState
     }
   };
 
+  // Gérer la déconnexion
   const handleLogout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem('adminAuth');
+    logout();
     setCredentials({ username: '', password: '' });
-    setActiveSection('dashboard');
-  };
-
-  const handleSectionChange = (section: string) => {
-    setActiveSection(section);
-    if (section === 'requests') {
-      loadRequests();
-    }
-    // Clear selected request when changing sections
-    setSelectedRequest(null);
-    setSelectedRequestId(null);
   };
 
   const handleDownloadZip = async () => {
@@ -289,109 +97,27 @@ const Admin: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const savedAuth = localStorage.getItem('adminAuth');
-    if (savedAuth) {
-      setIsAuthenticated(true);
-      setLoading(false);
-    } else {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isAuthenticated && activeSection === 'requests') {
-      loadRequests();
-    }
-  }, [isAuthenticated, activeSection]);
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending': return 'bg-yellow-500 text-yellow-50';
-      case 'processing': return 'bg-blue-500 text-blue-50';
-      case 'completed': return 'bg-green-500 text-green-50';
-      case 'archived': return 'bg-gray-500 text-gray-50';
-      case 'deleted': return 'bg-red-500 text-red-50';
-      default: return 'bg-gray-500 text-gray-50';
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'pending': return 'En attente';
-      case 'processing': return 'En cours';
-      case 'completed': return 'Traité';
-      case 'archived': return 'Archivé';
-      case 'deleted': return 'Supprimé';
-      default: return status;
-    }
-  };
-
-  const getStatusActions = (request: AdminRequestDetail) => {
-    const actions = [];
+  // Générer les actions de statut pour un request
+  const generateStatusActions = (request: any) => {
+    if (!selectedRequest) return [];
     
-    if (request.status === 'pending') {
-      actions.push(
+    const statusActions = getStatusActions(selectedRequest.status);
+    return statusActions.map((action) => {
+      const IconComponent = action.icon;
+      return (
         <Button
-          key="start"
+          key={action.key}
           size="sm"
-          onClick={() => updateRequestStatus(request.id, 'processing')}
+          onClick={() => updateRequestStatus(request.id, action.status)}
           disabled={updatingStatus === request.id}
-          className="bg-blue-600 hover:bg-blue-700"
+          className={action.className}
+          variant={action.key === 'delete' ? 'destructive' : 'default'}
         >
-          <Play className="h-4 w-4 mr-1" />
-          Commencer
+          <IconComponent className="h-4 w-4 mr-1" />
+          {action.label}
         </Button>
       );
-    }
-    
-    if (request.status === 'processing') {
-      actions.push(
-        <Button
-          key="complete"
-          size="sm"
-          onClick={() => updateRequestStatus(request.id, 'completed')}
-          disabled={updatingStatus === request.id}
-          className="bg-green-600 hover:bg-green-700"
-        >
-          <Check className="h-4 w-4 mr-1" />
-          Terminer
-        </Button>
-      );
-    }
-    
-    if (request.status === 'completed') {
-      actions.push(
-        <Button
-          key="archive"
-          size="sm"
-          onClick={() => updateRequestStatus(request.id, 'archived')}
-          disabled={updatingStatus === request.id}
-          className="bg-gray-600 hover:bg-gray-700"
-        >
-          <Archive className="h-4 w-4 mr-1" />
-          Archiver
-        </Button>
-      );
-    }
-
-    // Add delete option for non-deleted requests
-    if (request.status !== 'deleted') {
-      actions.push(
-        <Button
-          key="delete"
-          size="sm"
-          variant="destructive"
-          onClick={() => updateRequestStatus(request.id, 'deleted')}
-          disabled={updatingStatus === request.id}
-        >
-          <Trash2 className="h-4 w-4 mr-1" />
-          Supprimer
-        </Button>
-      );
-    }
-    
-    return actions;
+    });
   };
 
 
@@ -474,7 +200,7 @@ const Admin: React.FC = () => {
               loading={requestDetailLoading}
               getStatusColor={getStatusColor}
               getStatusLabel={getStatusLabel}
-              getStatusActions={getStatusActions}
+              getStatusActions={generateStatusActions}
               onDownloadZip={handleDownloadZip}
             />
           </div>
