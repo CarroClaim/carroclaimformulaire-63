@@ -1,7 +1,7 @@
 import React from 'react';
 import { LanguageSelector } from './LanguageSelector';
-import { LogoDisplay } from './LogoDisplay';
 import { useTranslation } from '@/contexts/LanguageContext';
+import carroClaimLogo from '@/assets/carro-claim-logo.png';
 
 interface HeaderProps {
   showLanguageSelector?: boolean;
@@ -20,19 +20,11 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="w-full bg-background border-b border-border">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          {logoUrl ? (
-            <img 
-              src={logoUrl} 
-              alt={`${companyName} logo`}
-              className="h-8 w-auto"
-            />
-          ) : (
-            <LogoDisplay 
-              type="header" 
-              className="h-8"
-              fallback={<div className="text-lg font-bold text-primary">{companyName}</div>}
-            />
-          )}
+          <img 
+            src={logoUrl || carroClaimLogo} 
+            alt="Carro Claim"
+            className="h-12 w-auto object-contain"
+          />
           <div>
             <h1 className="text-xl font-bold text-foreground">
               {t('common.title')}
