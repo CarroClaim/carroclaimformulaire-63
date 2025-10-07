@@ -21,25 +21,25 @@ interface LogoConfig extends AssetConfig {
 // Configuration des logos personnalisés
 export const LOGOS: Record<string, LogoConfig> = {
   primary: {
-    src: '/assets/logos/logo-primary.png',
-    alt: 'Logo principal',
-    width: 120,
-    height: 40,
+    src: '/assets/logos/carro-claim-logo.png',
+    alt: 'Carro Claim - Expert Auto',
+    width: 200,
+    height: 80,
     type: 'image'
   },
   header: {
-    src: '/assets/logos/logo-header.png', 
-    alt: 'Logo en-tête',
-    width: 100,
-    height: 32,
+    src: '/assets/logos/carro-claim-logo.png', 
+    alt: 'Carro Claim',
+    width: 150,
+    height: 60,
     type: 'image'
   },
   // Ajoutez vos logos personnalisés ici
   custom: {
-    src: '/assets/logos/logo-custom.png',
-    alt: 'Logo personnalisé',
-    width: 80,
-    height: 30,
+    src: '/assets/logos/carro-claim-logo.png',
+    alt: 'Carro Claim',
+    width: 120,
+    height: 48,
     type: 'image'
   }
 };

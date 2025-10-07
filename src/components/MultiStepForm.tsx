@@ -185,7 +185,7 @@ const MultiStepFormContent: React.FC = () => {
 
       // Téléchargement du PDF
       const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: 'application/pdf' });
       saveAs(blob, `rapport-expertise-${Date.now()}.pdf`);
 
       toast({
